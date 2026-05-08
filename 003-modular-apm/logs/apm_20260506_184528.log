@@ -1,0 +1,20 @@
+2026-05-06 18:45:28 | INFO     | apm.main                  | APM Modular starting...
+2026-05-06 18:45:28 | INFO     | apm.main                  | Device: adb_c2407b8a, Journey: testing_model.json
+2026-05-06 18:45:28 | INFO     | apm.device_manager        | [DEVICE] Connecting to device: c2407b8a...
+2026-05-06 18:45:31 | INFO     | apm.device_manager        | [DEVICE] Connected successfully -- screen=1080x2400, window=1080x2400
+2026-05-06 18:45:31 | INFO     | apm.executor              | [JOURNEY START] TESTING MODEL V2 (device=c2407b8a)
+2026-05-06 18:45:31 | INFO     | apm.device_manager        | [NETWORK] Collecting NVT measurements for c2407b8a...
+2026-05-06 18:45:36 | INFO     | apm.device_manager        | [NETWORK] Collecting Journey measurements for c2407b8a...
+2026-05-06 18:45:39 | INFO     | apm.executor              | [DETAIL 1/1] Step 1
+2026-05-06 18:45:39 | INFO     | apm.executor              | [TASK] App Open (type=app_open, critical=True, timeout=30s)
+2026-05-06 18:45:39 | INFO     | apm.SystemTaskHandler     | [APP] Opening app: com.instagram.android (activity=default)
+2026-05-06 18:45:39 | INFO     | apm.executor              | [TASK DONE] App Open -- response_time=5.213s
+2026-05-06 18:45:39 | INFO     | apm.executor              | [TASK] UI Interaction (type=ui, critical=True, timeout=10s)
+2026-05-06 18:45:39 | INFO     | apm.UITaskHandler         | Finding element: TAP UI (by=xpath, timeout=10s)
+2026-05-06 18:45:50 | ERROR    | apm.executor              | [CRITICAL FAIL] Task 'UI Interaction' failed -- aborting journey
+2026-05-06 18:45:50 | INFO     | apm.device_manager        | [DEVICE] Disconnected from c2407b8a
+2026-05-06 18:45:50 | INFO     | apm.main                  | Report saved: logs\report_testing_model_20260506_184550.json
+2026-05-06 18:45:50 | INFO     | apm.main                  | ============================================================
+2026-05-06 18:45:50 | ERROR    | apm.main                  | RESULT: FAILED
+2026-05-06 18:45:50 | ERROR    | apm.main                  |   Error: Unknown error
+2026-05-06 18:45:50 | INFO     | apm.main                  | ============================================================

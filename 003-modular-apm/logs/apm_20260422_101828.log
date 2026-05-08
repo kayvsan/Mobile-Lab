@@ -1,0 +1,6 @@
+2026-04-22 10:18:28 [INFO] apm.main: APM Modular starting...
+2026-04-22 10:18:28 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-22 10:18:28 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-22 10:18:36 [ERROR] apm.device_manager: Device c2407b8a not found in ADB devices
+2026-04-22 10:18:36 [INFO] apm.device_manager: Device disconnected
+2026-04-22 10:18:36 [INFO] apm.main: Report saved: logs\report_result_20260422_101836.json

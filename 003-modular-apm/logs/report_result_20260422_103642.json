@@ -1,0 +1,4 @@
+{
+  "success": false,
+  "error": "NetworkParams.test_ping() got an unexpected keyword argument 'api_url'"
+}

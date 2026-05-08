@@ -1,0 +1,5 @@
+uiautomator2
+adbutils
+typing-extensions
+pathlib
+requests

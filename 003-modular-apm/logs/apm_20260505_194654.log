@@ -1,0 +1,17 @@
+2026-05-05 19:46:54 | INFO     | apm.main                  | APM Modular starting...
+2026-05-05 19:46:54 | INFO     | apm.main                  | Device: adb_c2407b8a, Journey: test_create.json
+2026-05-05 19:46:54 | INFO     | apm.device_manager        | [DEVICE] Connecting to device: c2407b8a...
+2026-05-05 19:46:56 | INFO     | apm.device_manager        | [DEVICE] Connected successfully -- screen=1080x2400, window=1080x2400
+2026-05-05 19:46:56 | INFO     | apm.executor              | [JOURNEY START] TEST CREATE (device=c2407b8a)
+2026-05-05 19:46:56 | INFO     | apm.device_manager        | [NETWORK] Collecting NVT measurements for c2407b8a...
+2026-05-05 19:47:01 | INFO     | apm.device_manager        | [NETWORK] Collecting Journey measurements for c2407b8a...
+2026-05-05 19:47:04 | INFO     | apm.executor              | [DETAIL 1/1] Open APP
+2026-05-05 19:47:04 | INFO     | apm.executor              | [TASK] App Open (type=app_open, critical=True, timeout=30s)
+2026-05-05 19:47:04 | INFO     | apm.SystemTaskHandler     | [APP] Opening app: com.instagram.android (activity=default)
+2026-05-05 19:47:05 | INFO     | apm.device_manager        | [DEVICE] Disconnected from c2407b8a
+2026-05-05 19:47:05 | INFO     | apm.main                  | Report saved: logs\report_test_create_20260505_194705.json
+2026-05-05 19:47:05 | INFO     | apm.main                  | ============================================================
+2026-05-05 19:47:05 | INFO     | apm.main                  | RESULT: SUCCESS
+2026-05-05 19:47:05 | INFO     | apm.main                  |   Total Response Time : 0.0s
+2026-05-05 19:47:05 | INFO     | apm.main                  |   Screenshots Taken   : 0
+2026-05-05 19:47:05 | INFO     | apm.main                  | ============================================================

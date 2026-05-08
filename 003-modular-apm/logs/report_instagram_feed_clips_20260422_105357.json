@@ -1,0 +1,502 @@
+{
+  "journey_id": "instagram_feed_clips",
+  "journey_name": "Instagram Feed to Clips Automation",
+  "location": {
+    "lat": "0",
+    "long": "0"
+  },
+  "nvt_measurements": {
+    "signal_level": {
+      "network_type": "4G",
+      "signal_level": "-76",
+      "signal_quality": "-9",
+      "ber": "0"
+    },
+    "cellid": {
+      "network_type": "4G",
+      "cellid": 0
+    },
+    "test_api": {
+      "status": "1",
+      "response_time": "-1",
+      "result": "timeout"
+    },
+    "test_ping": {
+      "latency": 50.507,
+      "packet_loss": 0
+    }
+  },
+  "details": [
+    {
+      "id": "launch",
+      "name": "Launch Instagram",
+      "tasks": [
+        {
+          "task_id": "open_app",
+          "task_name": "Open Instagram",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.4,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:12.168652",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 0.0,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 45.004,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "navigate_to_clips_tab",
+      "name": "Navigate Feed → Clips Tab",
+      "tasks": [
+        {
+          "task_id": "tap_feed",
+          "task_name": "Tap Feed Tab",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.56,
+          "response_time": 4.899,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:17.068486",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "tap_clips",
+          "task_name": "Tap Clips/Reels Tab",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.74,
+          "response_time": 0.741,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:17.809578",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 5.64,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 41.508,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "clips_screen_interaction",
+      "name": "Interact with Clips Screen",
+      "tasks": [
+        {
+          "task_id": "tap_center_button_1",
+          "task_name": "Tap Center Screen (First)",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.26,
+          "response_time": 3.976,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:21.785908",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "tap_center_button_2",
+          "task_name": "Tap Center Screen (Second)",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.2,
+          "response_time": 0.202,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:21.988216",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 4.178,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 47.094,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "navigate_to_search",
+      "name": "Navigate to Search",
+      "tasks": [
+        {
+          "task_id": "tap_search_icon",
+          "task_name": "Tap Search Icon",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.75,
+          "response_time": 4.032,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:26.020972",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "tap_search",
+          "task_name": "Tap Search Field",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.31,
+          "response_time": 0.313,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:26.333735",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "type_blindly",
+          "task_name": "Type into focused field",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.32,
+          "response_time": 1.318,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:27.652102",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 5.663,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 53.091,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "return_to_clips",
+      "name": "Return to Clips View",
+      "tasks": [
+        {
+          "task_id": "back_to_feed",
+          "task_name": "Back Until Clips Tab Visible",
+          "success": true,
+          "error": null,
+          "duration_seconds": 6.84,
+          "response_time": 10.172,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:37.824415",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "tap_clips_if",
+          "task_name": "Ensure Clips Tab Selected",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.68,
+          "response_time": 0.683,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:38.508606",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "dismiss_popups",
+          "task_name": "Dismiss 'Not Now' Popups",
+          "success": true,
+          "error": null,
+          "duration_seconds": 2.1,
+          "response_time": 2.105,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:40.614215",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 12.96,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 37.187,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "scroll_loop_1",
+      "name": "Scroll Feed (1-3)",
+      "tasks": [
+        {
+          "task_id": "scroll_1",
+          "task_name": "Scroll #1",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.23,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:45.231205",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "scroll_2",
+          "task_name": "Scroll #2",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.32,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:46.550741",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "scroll_3",
+          "task_name": "Scroll #3",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.29,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:47.841763",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 0.0,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 48.865,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "scroll_loop_2",
+      "name": "Scroll Feed (4-5)",
+      "tasks": [
+        {
+          "task_id": "scroll_4",
+          "task_name": "Scroll #4",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.28,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:52.363906",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "scroll_5",
+          "task_name": "Scroll #5",
+          "success": true,
+          "error": null,
+          "duration_seconds": 1.3,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-22T10:53:53.660299",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 0.0,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 52.49,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "cleanup",
+      "name": "Close App",
+      "tasks": [
+        {
+          "task_id": "close_app",
+          "task_name": "Stop Instagram",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.14,
+          "response_time": 3.462,
+          "measured": true,
+          "timestamp": "2026-04-22T10:53:57.122619",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 3.462,
+      "network_params": {
+        "signal_level": {
+          "network_type": "4G",
+          "signal_level": "-76",
+          "signal_quality": "-9",
+          "ber": "0"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 44.982,
+          "packet_loss": 0
+        }
+      }
+    }
+  ],
+  "success": true,
+  "start_time": "2026-04-22T10:53:05.869598",
+  "end_time": "2026-04-22T10:53:57.122633",
+  "summary": {
+    "total_response_time": 31.903,
+    "screenshots": 0
+  }
+}

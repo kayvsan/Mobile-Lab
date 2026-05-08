@@ -1,0 +1,18 @@
+2026-05-07 20:44:12 | INFO     | apm.main                  | APM Modular starting...
+2026-05-07 20:44:12 | INFO     | apm.main                  | Device: adb_c2407b8a, API Source: http://localhost:5000/api/journeys/1afd7c54-dcd4-4a50-8174-ccc0ad6bccd6/apm-payload
+2026-05-07 20:44:12 | INFO     | apm.executor              | Fetching journey from API: http://localhost:5000/api/journeys/1afd7c54-dcd4-4a50-8174-ccc0ad6bccd6/apm-payload
+2026-05-07 20:44:14 | INFO     | apm.device_manager        | [DEVICE] Connecting to device: c2407b8a...
+2026-05-07 20:44:16 | INFO     | apm.device_manager        | [DEVICE] Connected successfully -- screen=1080x2400, window=1080x2400
+2026-05-07 20:44:16 | INFO     | apm.executor              | [JOURNEY START] TEST CREATE (Test Edit) - Modal Test V2 (device=c2407b8a)
+2026-05-07 20:44:17 | INFO     | apm.device_manager        | [NETWORK] Collecting NVT measurements for c2407b8a...
+2026-05-07 20:44:22 | INFO     | apm.device_manager        | [NETWORK] Collecting Journey measurements for c2407b8a...
+2026-05-07 20:44:25 | INFO     | apm.executor              | [DETAIL 1/1] Open APP
+2026-05-07 20:44:25 | INFO     | apm.executor              | [TASK] App Open (type=app_open, critical=True, timeout=30s)
+2026-05-07 20:44:25 | INFO     | apm.SystemTaskHandler     | [APP] Opening app: com.instagram.android (activity=default)
+2026-05-07 20:44:26 | INFO     | apm.device_manager        | [DEVICE] Disconnected from c2407b8a
+2026-05-07 20:44:26 | INFO     | apm.main                  | Report saved: logs\report_test_create_20260507_204426.json
+2026-05-07 20:44:26 | INFO     | apm.main                  | ============================================================
+2026-05-07 20:44:26 | INFO     | apm.main                  | RESULT: SUCCESS
+2026-05-07 20:44:26 | INFO     | apm.main                  |   Total Response Time : 0.0s
+2026-05-07 20:44:26 | INFO     | apm.main                  |   Screenshots Taken   : 0
+2026-05-07 20:44:26 | INFO     | apm.main                  | ============================================================

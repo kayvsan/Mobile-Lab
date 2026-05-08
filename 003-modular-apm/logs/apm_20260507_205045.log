@@ -1,0 +1,21 @@
+2026-05-07 20:50:45 | INFO     | apm.main                  | APM Modular starting...
+2026-05-07 20:50:45 | INFO     | apm.main                  | Device: adb_c2407b8a, API Source: http://localhost:5000/api/journeys/e953afda-6340-4f7f-94c3-b5ee19c7cd4f/apm-payload
+2026-05-07 20:50:45 | INFO     | apm.executor              | Fetching journey from API: http://localhost:5000/api/journeys/e953afda-6340-4f7f-94c3-b5ee19c7cd4f/apm-payload
+2026-05-07 20:50:47 | INFO     | apm.device_manager        | [DEVICE] Connecting to device: c2407b8a...
+2026-05-07 20:50:49 | INFO     | apm.device_manager        | [DEVICE] Connected successfully -- screen=1080x2400, window=1080x2400
+2026-05-07 20:50:49 | INFO     | apm.executor              | [JOURNEY START] TESTING MODEL V2 (device=c2407b8a)
+2026-05-07 20:50:49 | INFO     | apm.device_manager        | [NETWORK] Collecting NVT measurements for c2407b8a...
+2026-05-07 20:50:55 | INFO     | apm.device_manager        | [NETWORK] Collecting Journey measurements for c2407b8a...
+2026-05-07 20:50:58 | INFO     | apm.executor              | [DETAIL 1/1] Step 1
+2026-05-07 20:50:58 | INFO     | apm.executor              | [TASK] App Open (type=app_open, critical=True, timeout=30s)
+2026-05-07 20:50:58 | INFO     | apm.SystemTaskHandler     | [APP] Opening app: com.instagram.android (activity=default)
+2026-05-07 20:50:58 | INFO     | apm.executor              | [TASK DONE] App Open -- response_time=5.269s
+2026-05-07 20:50:58 | INFO     | apm.executor              | [TASK] UI Interaction (type=ui, critical=True, timeout=10s)
+2026-05-07 20:50:58 | INFO     | apm.UITaskHandler         | Finding element: TAP UI (by=xpath, timeout=10s)
+2026-05-07 20:51:08 | ERROR    | apm.executor              | [CRITICAL FAIL] Task 'UI Interaction' failed -- aborting journey
+2026-05-07 20:51:08 | INFO     | apm.device_manager        | [DEVICE] Disconnected from c2407b8a
+2026-05-07 20:51:08 | INFO     | apm.main                  | Report saved: logs\report_testing_model_20260507_205108.json
+2026-05-07 20:51:08 | INFO     | apm.main                  | ============================================================
+2026-05-07 20:51:08 | ERROR    | apm.main                  | RESULT: FAILED
+2026-05-07 20:51:08 | ERROR    | apm.main                  |   Error: Unknown error
+2026-05-07 20:51:08 | INFO     | apm.main                  | ============================================================

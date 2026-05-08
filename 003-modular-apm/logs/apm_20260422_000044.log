@@ -1,0 +1,21 @@
+2026-04-22 00:00:44 [INFO] apm.main: APM Modular starting...
+2026-04-22 00:00:44 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-22 00:00:44 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-22 00:00:46 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-04-22 00:00:46 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-04-22 00:00:46 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-04-22 00:00:47 [INFO] apm.network: Starting API test service with tag: 0-1776790847696
+2026-04-22 00:00:47 [INFO] apm.network: Testing URL: None
+2026-04-22 00:00:47 [INFO] apm.network: Service: net.senosoft.android.url/.HttpRequestService
+2026-04-22 00:02:00 [WARNING] apm.network: No logcat output found for tag 0-1776790847696
+2026-04-22 00:02:04 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-04-22 00:02:07 [INFO] apm.executor: Detail: Launch Instagram
+2026-04-22 00:02:07 [INFO] apm.executor: Task: Open Instagram [app_open]
+2026-04-22 00:02:07 [INFO] apm.SystemTaskHandler: Opening app: com.instagram.android
+2026-04-22 00:02:08 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-04-22 00:02:11 [INFO] apm.executor: Detail: Navigate Feed → Clips Tab
+2026-04-22 00:02:11 [INFO] apm.executor: Task: Tap Feed Tab [within_ui]
+2026-04-22 00:02:16 [ERROR] apm.device_manager: Screenshot failed: device 'c2407b8a' not found
+2026-04-22 00:02:16 [ERROR] apm.executor: Critical task 'Tap Feed Tab' failed. Stopping journey.
+2026-04-22 00:02:16 [INFO] apm.device_manager: Device disconnected
+2026-04-22 00:02:16 [INFO] apm.main: Report saved: logs\report_instagram_feed_clips_20260422_000216.json

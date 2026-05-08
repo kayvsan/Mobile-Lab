@@ -1,0 +1,25 @@
+{
+  "journey": {
+    "id": "test_create",
+    "name": "TEST CREATE",
+    "package": "com.instagram.android",
+    "platform": "android",
+    "details": [
+      {
+        "id": "step_df32e84b-705d-4ca0-bf46-9676e6f60ec1",
+        "name": "Open APP",
+        "measure_response_time": true,
+        "tasks": [
+          {
+            "id": "task_1777985145719_qcv8",
+            "name": "App Open",
+            "type": "app_open",
+            "timeout": 30,
+            "measure_response_time": false,
+            "critical": true
+          }
+        ]
+      }
+    ]
+  }
+}

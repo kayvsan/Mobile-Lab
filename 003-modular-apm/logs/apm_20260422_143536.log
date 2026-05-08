@@ -1,0 +1,16 @@
+2026-04-22 14:35:36 [INFO] apm.main: APM Modular starting...
+2026-04-22 14:35:36 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-22 14:35:36 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-22 14:35:39 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-04-22 14:35:39 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-04-22 14:35:39 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-04-22 14:35:44 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-04-22 14:35:48 [INFO] apm.executor: Detail: Launch Instagram
+2026-04-22 14:35:48 [INFO] apm.executor: Task: Open Instagram [app_open]
+2026-04-22 14:35:48 [INFO] apm.SystemTaskHandler: Opening app: com.instagram.android
+2026-04-22 14:35:48 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-04-22 14:35:51 [INFO] apm.executor: Detail: Navigate Feed → Clips Tab
+2026-04-22 14:35:51 [INFO] apm.executor: Task: Tap Feed Tab [within_ui]
+2026-04-22 14:35:57 [ERROR] apm.executor: Critical task 'Tap Feed Tab' failed. Stopping journey.
+2026-04-22 14:35:57 [INFO] apm.device_manager: Device disconnected
+2026-04-22 14:35:57 [INFO] apm.main: Report saved: logs\report_instagram_feed_clips_20260422_143557.json

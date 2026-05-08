@@ -1,0 +1,29 @@
+{
+  "device_01": {
+    "udid": "c2407b8a",
+    "device_name": "Poco F5",
+    "platform_name": "Android",
+    "platform_version": "13",
+    "params": {
+      "username": "test_user",
+      "password": "test_password"
+    }
+  },
+  "emulator": {
+    "udid": "emulator-5554",
+    "device_name": "Android Emulator",
+    "platform_name": "Android",
+    "platform_version": "11",
+    "params": {
+      "username": "emu_user",
+      "password": "emu_password"
+    }
+  },
+  "adb_c2407b8a": {
+    "udid": "c2407b8a",
+    "device_name": "POCO 23049PCD8G",
+    "platform_name": "Android",
+    "platform_version": "15",
+    "params": {}
+  }
+}

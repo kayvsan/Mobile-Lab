@@ -1,0 +1,92 @@
+{
+  "journey_id": "testing_model",
+  "journey_name": "TESTING MODEL V2",
+  "location": {
+    "lat": "0",
+    "long": "0"
+  },
+  "nvt_measurements": {
+    "signal_level": {
+      "network_type": "WiFi",
+      "signal_level": "99",
+      "signal_quality": "99",
+      "ber": "99"
+    },
+    "cellid": {
+      "network_type": "4G",
+      "cellid": 0
+    },
+    "test_api": {
+      "status": "1",
+      "response_time": "-1",
+      "result": "skipped"
+    },
+    "test_ping": {
+      "latency": 33.383,
+      "packet_loss": 0
+    }
+  },
+  "details": [
+    {
+      "id": "step_372e9c8f-31b8-4a1d-b8e8-94265e75487e",
+      "name": "Step 1",
+      "tasks": [
+        {
+          "task_id": "task_1778050735222_usvh",
+          "task_name": "App Open",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.3,
+          "response_time": 5.157,
+          "measured": true,
+          "timestamp": "2026-05-07T20:33:55.843161",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        },
+        {
+          "task_id": "task_1778067728557_6w6m",
+          "task_name": "UI Interaction",
+          "success": false,
+          "error": "Element not found",
+          "duration_seconds": 10.03,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-05-07T20:34:06.493799",
+          "metadata": {}
+        }
+      ],
+      "success": false,
+      "response_time": null,
+      "network_params": {
+        "signal_level": {
+          "network_type": "WiFi",
+          "signal_level": "99",
+          "signal_quality": "99",
+          "ber": "99"
+        },
+        "cellid": {
+          "network_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 33.191,
+          "packet_loss": 0
+        }
+      }
+    }
+  ],
+  "success": false,
+  "start_time": "2026-05-07T20:33:50.376037",
+  "end_time": "2026-05-07T20:34:06.493978",
+  "summary": {
+    "total_response_time": 5.157,
+    "screenshots": 1,
+    "screenshot_paths": [
+      "screenshots/fail_task_1778067728557_6w6m_20260507_203405.png"
+    ]
+  }
+}

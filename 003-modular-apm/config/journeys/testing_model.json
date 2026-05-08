@@ -1,0 +1,39 @@
+{
+  "journey": {
+    "id": "testing_model",
+    "name": "TESTING MODEL V2",
+    "package": "com.instagram.android",
+    "platform": "android",
+    "details": [
+      {
+        "id": "step_372e9c8f-31b8-4a1d-b8e8-94265e75487e",
+        "measure_response_time": true,
+        "name": "Step 1",
+        "tasks": [
+          {
+            "critical": true,
+            "id": "task_1778050735222_usvh",
+            "measure_response_time": true,
+            "name": "App Open",
+            "timeout": 30,
+            "type": "app_open"
+          },
+          {
+            "id": "task_1778067728557_6w6m",
+            "name": "UI Interaction",
+            "type": "ui",
+            "element_name": "TAP UI",
+            "find_by": "xpath",
+            "content": "asdadsadasda",
+            "action": "tap",
+            "input": "",
+            "handler": "appium",
+            "timeout": 10,
+            "measure_response_time": true,
+            "critical": true
+          }
+        ]
+      }
+    ]
+  }
+}

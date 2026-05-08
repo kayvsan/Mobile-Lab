@@ -1,0 +1,387 @@
+{
+  "info": {
+    "name": "APM Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "APM Backend REST API for managing journeys, reports, devices, and executions."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/register",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.tokens) {",
+                  "    pm.collectionVariables.set(\"access_token\", jsonData.tokens.access_token);",
+                  "    pm.collectionVariables.set(\"refresh_token\", jsonData.tokens.refresh_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+                  "    pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/refresh",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{refresh_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/auth/me",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Journeys",
+      "item": [
+        {
+          "name": "List Journeys",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/journeys",
+              "host": ["{{base_url}}"],
+              "path": ["api", "journeys"],
+              "query": [
+                { "key": "details", "value": "false", "description": "Set to 'true' to include full step details" }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Journey Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/journeys/:journey_uuid",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Create Journey",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/journeys",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"journey_key\": \"my_new_journey\",\n  \"name\": \"My New Journey\",\n  \"package\": \"com.example.app\",\n  \"platform\": \"android\",\n  \"details\": [\n    {\n      \"id\": \"step_1\",\n      \"name\": \"Open App\",\n      \"measure_response_time\": true,\n      \"tasks\": [\n        {\n          \"id\": \"open\",\n          \"name\": \"Launch App\",\n          \"type\": \"app_open\",\n          \"timeout\": 30,\n          \"critical\": true\n        }\n      ]\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Journey",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/journeys/:journey_uuid",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Journey Name\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Journey",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/journeys/:journey_uuid",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Import Journeys from Files",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/journeys/import",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "List Reports",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reports?limit=10&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports"],
+              "query": [
+                { "key": "limit", "value": "10" },
+                { "key": "offset", "value": "0" },
+                { "key": "journey_id", "value": "instagram_feed_clips", "disabled": true },
+                { "key": "success", "value": "true", "disabled": true },
+                { "key": "network_type", "value": "4G", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Report Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/reports/:report_id",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reports/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports", "stats"],
+              "query": [
+                { "key": "journey_id", "value": "instagram_feed_clips", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Import Reports from Logs",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/reports/import",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"<device_uuid>\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Report",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/reports/:report_id",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "List Devices",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/devices",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Refresh Devices (ADB Scan)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/devices/refresh",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Device",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/devices/:device_uuid",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Executions",
+      "item": [
+        {
+          "name": "Start Execution",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/execute/:journey_uuid",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"<device_uuid>\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Executions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/executions?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "executions"],
+              "query": [
+                { "key": "limit", "value": "10" },
+                { "key": "journey_id", "value": "instagram_feed_clips", "disabled": true },
+                { "key": "status", "value": "completed", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Execution Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/executions/:execution_id",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Stream Execution (SSE)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/executions/:execution_id/stream",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "description": "SSE endpoint - better tested in browser or EventSource client"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhook",
+      "item": [
+        {
+          "name": "Push Report (Webhook)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/webhook/report",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Device-Id", "value": "<device_uuid>" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"journey_id\": \"<journey_uuid>\",\n  \"journey_name\": \"Instagram Feed to Clips\",\n  \"success\": true,\n  \"location\": {\"lat\": \"0\", \"long\": \"0\"},\n  \"nvt_measurements\": {\n    \"signal_level\": {\"network_type\": \"4G\", \"signal_level\": \"-79\"},\n    \"test_ping\": {\"latency\": 45.2, \"packet_loss\": 0}\n  },\n  \"details\": [],\n  \"summary\": {\"total_response_time\": 25.5, \"screenshots\": 0},\n  \"start_time\": \"2026-04-22T23:00:00\",\n  \"end_time\": \"2026-04-22T23:01:00\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

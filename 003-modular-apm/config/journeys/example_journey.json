@@ -1,0 +1,52 @@
+{
+  "journey": {
+    "id": "example_journey",
+    "name": "Generic App Journey",
+    "package": "com.android.settings",
+    "platform": "android",
+    "details": [
+      {
+        "id": "launch",
+        "name": "Open Settings",
+        "tasks": [
+          {
+            "id": "start_app",
+            "name": "Start Android Settings",
+            "type": "app_open",
+            "measure_response_time": true,
+            "critical": true
+          },
+          {
+            "id": "wait_main",
+            "name": "Wait for Main Screen",
+            "type": "ui",
+            "find_by": "xpath",
+            "content": "//*[@resource-id='android:id/list']",
+            "element_name": "Settings List",
+            "timeout": 10,
+            "measure_response_time": true,
+            "critical": false
+          }
+        ]
+      },
+      {
+        "id": "navigate",
+        "name": "Navigate Back",
+        "tasks": [
+          {
+            "id": "back_to_home",
+            "name": "Press Back until Home",
+            "type": "back_until_ui",
+            "find_by": "xpath",
+            "content": "//*[@resource-id='com.android.launcher3:id/workspace']",
+            "element_name": "Home Workspace",
+            "timeout": 20,
+            "max_presses": 3,
+            "critical": false
+          }
+        ]
+      }
+    ],
+    "created_at": "2026-04-22T15:25:53.544076"
+  }
+}

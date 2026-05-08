@@ -1,0 +1,10 @@
+2026-04-26 07:27:52 [INFO] apm.main: APM Modular starting...
+2026-04-26 07:27:52 [INFO] apm.main: Device: c2407b8a, Journey: instagram_feed_clips.json
+2026-04-26 07:27:52 [ERROR] apm.executor: Run failed: Device 'c2407b8a' not found in config\device.json
+Traceback (most recent call last):
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 169, in run
+    device_config = self.load_device_config(device_id)
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 60, in load_device_config
+    raise ValueError(f"Device '{device_id}' not found in {config_path}")
+ValueError: Device 'c2407b8a' not found in config\device.json
+2026-04-26 07:27:52 [INFO] apm.main: Report saved: logs\report_result_20260426_072752.json

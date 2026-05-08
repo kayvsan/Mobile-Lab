@@ -1,0 +1,26 @@
+2026-04-22 10:34:59 [INFO] apm.main: APM Modular starting...
+2026-04-22 10:34:59 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-22 10:34:59 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-22 10:35:01 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-04-22 10:35:01 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-04-22 10:35:02 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-04-22 10:35:03 [ERROR] apm.executor: Run failed: 'NetworkParams' object has no attribute 'test_api'
+Traceback (most recent call last):
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 189, in run
+    self._refresh_network_params(is_nvt=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 148, in _refresh_network_params
+    self._ar_param = self.device.get_network_param(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        settings=settings,
+        ^^^^^^^^^^^^^^^^^^
+        is_nvt=is_nvt
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\device_manager.py", line 271, in get_network_param
+    obj_return["test_api"] = collector.test_api(
+                             ^^^^^^^^^^^^^^^^^^
+AttributeError: 'NetworkParams' object has no attribute 'test_api'. Did you mean: 'test_ping'?
+2026-04-22 10:35:03 [INFO] apm.device_manager: Device disconnected
+2026-04-22 10:35:03 [INFO] apm.main: Report saved: logs\report_result_20260422_103503.json

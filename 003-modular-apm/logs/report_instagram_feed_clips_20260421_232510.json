@@ -1,0 +1,113 @@
+{
+  "journey_id": "instagram_feed_clips",
+  "journey_name": "Instagram Feed to Clips Automation",
+  "location": {
+    "lat": "0",
+    "long": "0"
+  },
+  "nvt_measurements": {
+    "signal_level": {
+      "network_type": "WiFi",
+      "signal_level": "99",
+      "signal_quality": "99",
+      "ber": "99"
+    },
+    "cellid": {
+      "nentwork_type": "4G",
+      "cellid": 0
+    },
+    "test_api": {
+      "status": "1",
+      "response_time": "-1",
+      "result": "timeout"
+    },
+    "test_ping": {
+      "latency": 32.702,
+      "packet_loss": 0
+    }
+  },
+  "details": [
+    {
+      "id": "launch",
+      "name": "Launch Instagram",
+      "tasks": [
+        {
+          "task_id": "open_app",
+          "task_name": "Open Instagram",
+          "success": true,
+          "error": null,
+          "duration_seconds": 0.38,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-21T23:25:01.196814",
+          "metadata": {
+            "success": true,
+            "error": null,
+            "data": null,
+            "wait_applied": 0.0
+          }
+        }
+      ],
+      "success": true,
+      "response_time": 0.0,
+      "network_params": {
+        "signal_level": {
+          "network_type": "WiFi",
+          "signal_level": "99",
+          "signal_quality": "99",
+          "ber": "99"
+        },
+        "cellid": {
+          "nentwork_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 33.291,
+          "packet_loss": 0
+        }
+      }
+    },
+    {
+      "id": "navigate_to_clips_tab",
+      "name": "Navigate Feed → Clips Tab",
+      "tasks": [
+        {
+          "task_id": "tap_feed",
+          "task_name": "Tap Feed Tab",
+          "success": false,
+          "error": "None of the elements found within timeout",
+          "duration_seconds": 5.51,
+          "response_time": null,
+          "measured": false,
+          "timestamp": "2026-04-21T23:25:10.060467",
+          "metadata": {}
+        }
+      ],
+      "success": false,
+      "response_time": null,
+      "network_params": {
+        "signal_level": {
+          "network_type": "WiFi",
+          "signal_level": "99",
+          "signal_quality": "99",
+          "ber": "99"
+        },
+        "cellid": {
+          "nentwork_type": "4G",
+          "cellid": 0
+        },
+        "test_ping": {
+          "latency": 33.359,
+          "packet_loss": 0
+        }
+      }
+    }
+  ],
+  "success": false,
+  "start_time": "2026-04-21T23:24:55.537878",
+  "end_time": "2026-04-21T23:25:10.060788",
+  "summary": {
+    "total_response_time": 0.0,
+    "screenshots": 1
+  }
+}

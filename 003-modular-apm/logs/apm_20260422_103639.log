@@ -1,0 +1,33 @@
+2026-04-22 10:36:39 [INFO] apm.main: APM Modular starting...
+2026-04-22 10:36:39 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-22 10:36:39 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-22 10:36:40 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-04-22 10:36:40 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-04-22 10:36:41 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-04-22 10:36:42 [ERROR] apm.executor: Run failed: NetworkParams.test_ping() got an unexpected keyword argument 'api_url'
+Traceback (most recent call last):
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 189, in run
+    self._refresh_network_params(is_nvt=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\executor.py", line 148, in _refresh_network_params
+    self._ar_param = self.device.get_network_param(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        settings=settings,
+        ^^^^^^^^^^^^^^^^^^
+        is_nvt=is_nvt
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\faiza\Desktop\all-in-one\mobile-lab\003-modular-apm\core\device_manager.py", line 271, in get_network_param
+    obj_return["test_api"] = collector.test_ping(
+                             ~~~~~~~~~~~~~~~~~~~^
+        api_url=api_url,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        device_id=device_id
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: NetworkParams.test_ping() got an unexpected keyword argument 'api_url'
+2026-04-22 10:36:42 [INFO] apm.device_manager: Device disconnected
+2026-04-22 10:36:42 [INFO] apm.main: Report saved: logs\report_result_20260422_103642.json

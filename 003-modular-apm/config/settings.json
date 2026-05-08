@@ -1,0 +1,25 @@
+{
+  "app": {
+    "package": "",
+    "activity": "",
+    "launch_timeout": 30
+  },
+  "timeouts": {
+    "element_find": 30,
+    "task_default": 60
+  },
+  "defaults": {
+    "handler": "uiauto2",
+    "wait_after_action": 1,
+    "screenshot_on_fail": true
+  },
+  "screenshots": {
+    "path": "screenshots",
+    "extension": "png"
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/apm_{timestamp}.log",
+    "console": true
+  }
+}

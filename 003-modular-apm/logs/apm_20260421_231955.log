@@ -1,0 +1,8 @@
+2026-04-21 23:19:55 [INFO] apm.main: APM Modular starting...
+2026-04-21 23:19:55 [INFO] apm.main: Device: device_01, Journey: instagram_feed_clips.json
+2026-04-21 23:19:55 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-04-21 23:19:57 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-04-21 23:19:57 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-04-21 23:19:57 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-04-21 23:19:58 [INFO] apm.network: Starting API test service with tag: 0-1776788398227
+2026-04-21 23:20:05 [INFO] apm.device_manager: Device disconnected

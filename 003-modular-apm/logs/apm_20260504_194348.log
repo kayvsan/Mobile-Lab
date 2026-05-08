@@ -1,0 +1,68 @@
+2026-05-04 19:43:48 [INFO] apm.main: APM Modular starting...
+2026-05-04 19:43:48 [INFO] apm.main: Device: adb_c2407b8a, Journey: instagram_feed_clips.json
+2026-05-04 19:43:48 [INFO] apm.device_manager: Connecting to device: c2407b8a
+2026-05-04 19:43:50 [INFO] apm.device_manager: Connected successfully. Screen: {'width': 1080, 'height': 2400}
+2026-05-04 19:43:50 [INFO] apm.executor: Journey: Instagram Feed to Clips Automation
+2026-05-04 19:43:50 [INFO] apm.device_manager: Collecting NVT measurements (get_network_param)...
+2026-05-04 19:43:55 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:43:58 [INFO] apm.executor: Detail: Launch Instagram
+2026-05-04 19:43:58 [INFO] apm.executor: Task: Open Instagram [app_open]
+2026-05-04 19:43:58 [INFO] apm.SystemTaskHandler: Opening app: com.instagram.android
+2026-05-04 19:43:58 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:01 [INFO] apm.executor: Detail: Navigate Feed â†’ Clips Tab
+2026-05-04 19:44:01 [INFO] apm.executor: Task: Tap Feed Tab [within_ui]
+2026-05-04 19:44:02 [INFO] apm.executor: Response time: 3.339s
+2026-05-04 19:44:02 [INFO] apm.executor: Task: Tap Clips/Reels Tab [within_ui]
+2026-05-04 19:44:02 [INFO] apm.executor: Response time: 0.464s
+2026-05-04 19:44:02 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:05 [INFO] apm.executor: Detail: Interact with Clips Screen
+2026-05-04 19:44:05 [INFO] apm.executor: Task: Tap Center Screen (First) [tap_coords]
+2026-05-04 19:44:05 [INFO] apm.TapCoordsActionHandler: 👆 Tapping coordinates: (540, 679)
+2026-05-04 19:44:05 [INFO] apm.executor: Response time: 3.058s
+2026-05-04 19:44:05 [INFO] apm.executor: Task: Tap Center Screen (Second) [tap_coords]
+2026-05-04 19:44:05 [INFO] apm.TapCoordsActionHandler: 👆 Tapping coordinates: (540, 679)
+2026-05-04 19:44:05 [INFO] apm.executor: Response time: 0.144s
+2026-05-04 19:44:05 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:08 [INFO] apm.executor: Detail: Navigate to Search
+2026-05-04 19:44:08 [INFO] apm.executor: Task: Tap Search Icon [within_ui]
+2026-05-04 19:44:09 [INFO] apm.executor: Response time: 3.535s
+2026-05-04 19:44:09 [INFO] apm.executor: Task: Tap Search Field [tap_coords]
+2026-05-04 19:44:09 [INFO] apm.TapCoordsActionHandler: 👆 Tapping coordinates: (355, 198)
+2026-05-04 19:44:09 [INFO] apm.executor: Response time: 0.247s
+2026-05-04 19:44:09 [INFO] apm.executor: Task: Type into focused field [ui]
+2026-05-04 19:44:09 [INFO] apm.UITaskHandler: Finding element: 
+2026-05-04 19:44:10 [INFO] apm.executor: Response time: 0.843s
+2026-05-04 19:44:10 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:13 [INFO] apm.executor: Detail: Return to Clips View
+2026-05-04 19:44:13 [INFO] apm.executor: Task: Back Until Clips Tab Visible [back_until_ui]
+2026-05-04 19:44:15 [INFO] apm.FlowTaskHandler: Target UI not found, pressing BACK
+2026-05-04 19:44:18 [INFO] apm.FlowTaskHandler: Target UI not found, pressing BACK
+2026-05-04 19:44:20 [INFO] apm.FlowTaskHandler: Target UI 'Clips Tab Indicator' found after 2 back presses
+2026-05-04 19:44:20 [INFO] apm.executor: Response time: 9.764s
+2026-05-04 19:44:20 [INFO] apm.executor: Task: Ensure Clips Tab Selected [do_if_ui]
+2026-05-04 19:44:20 [INFO] apm.FlowTaskHandler: Element 'Icon clips' found, performing action
+2026-05-04 19:44:20 [INFO] apm.executor: Response time: 0.54s
+2026-05-04 19:44:20 [INFO] apm.executor: Task: Dismiss 'Not Now' Popups [do_while_ui]
+2026-05-04 19:44:22 [INFO] apm.FlowTaskHandler: UI 'Not Now Button' disappeared, loop finished
+2026-05-04 19:44:22 [INFO] apm.executor: Response time: 2.077s
+2026-05-04 19:44:22 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:25 [INFO] apm.executor: Detail: Scroll Feed (1-3)
+2026-05-04 19:44:25 [INFO] apm.executor: Task: Scroll #1 [scroll_with_timing]
+2026-05-04 19:44:25 [INFO] apm.ScrollActionHandler: Scroll #1: up (scale=0.6)
+2026-05-04 19:44:26 [INFO] apm.executor: Task: Scroll #2 [scroll_with_timing]
+2026-05-04 19:44:26 [INFO] apm.ScrollActionHandler: Scroll #2: up (scale=0.6)
+2026-05-04 19:44:28 [INFO] apm.executor: Task: Scroll #3 [scroll_with_timing]
+2026-05-04 19:44:28 [INFO] apm.ScrollActionHandler: Scroll #3: up (scale=0.6)
+2026-05-04 19:44:29 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:32 [INFO] apm.executor: Detail: Scroll Feed (4-5)
+2026-05-04 19:44:32 [INFO] apm.executor: Task: Scroll #4 [scroll_with_timing]
+2026-05-04 19:44:32 [INFO] apm.ScrollActionHandler: Scroll #4: up (scale=0.6)
+2026-05-04 19:44:33 [INFO] apm.executor: Task: Scroll #5 [scroll_with_timing]
+2026-05-04 19:44:33 [INFO] apm.ScrollActionHandler: Scroll #5: up (scale=0.6)
+2026-05-04 19:44:35 [INFO] apm.device_manager: Collecting Journey measurements (get_network_param)...
+2026-05-04 19:44:37 [INFO] apm.executor: Detail: Close App
+2026-05-04 19:44:37 [INFO] apm.executor: Task: Stop Instagram [app_close]
+2026-05-04 19:44:37 [INFO] apm.SystemTaskHandler: Closing app: com.instagram.android
+2026-05-04 19:44:37 [INFO] apm.executor: Response time: 2.921s
+2026-05-04 19:44:37 [INFO] apm.device_manager: Device disconnected
+2026-05-04 19:44:37 [INFO] apm.main: Report saved: logs\report_instagram_feed_clips_20260504_194437.json
