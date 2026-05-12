@@ -159,7 +159,7 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
                   </div>
                 </div>
               )}
-
+              
               {/* Breakdown Timeline */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest px-1">Execution Breakdown</h3>

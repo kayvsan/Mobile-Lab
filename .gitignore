@@ -1,0 +1,22 @@
+# Common
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+env/
+venv/
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# Project Specific
+004-backend/*.db
+004-backend/uploads/
+003-modular-apm/logs/
+003-modular-apm/screenshots/
+*.mp4

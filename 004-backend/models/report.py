@@ -39,6 +39,9 @@ class Report(db.Model):
     # Screenshots (list of paths)
     screenshots = db.Column(db.JSON)
 
+    # Screen recording video path
+    recording = db.Column(db.String(255))
+
     # Timing
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
@@ -62,6 +65,7 @@ class Report(db.Model):
             "packet_loss": self.packet_loss,
             "nvt_measurements": self.nvt_measurements,
             "screenshots": self.screenshots,
+            "recording": self.recording,
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "end_time": self.end_time.isoformat() if self.end_time else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
@@ -111,6 +115,7 @@ class Report(db.Model):
             packet_loss=packet_loss_val,
             details=report_data.get('details', []),
             screenshots=report_data.get('summary', {}).get('screenshot_paths', []),
+            recording=report_data.get('summary', {}).get('recording_path'),
             start_time=start_time,
             end_time=end_time,
         )

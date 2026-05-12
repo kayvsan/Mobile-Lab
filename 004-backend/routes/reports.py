@@ -122,3 +122,18 @@ def get_screenshot(report_id, filename):
         return jsonify({"error": "Screenshot not found"}), 404
         
     return send_from_directory(report_screenshots_dir, filename)
+
+
+@reports_bp.route('/reports/<report_id>/recording', methods=['GET'])
+def get_recording(report_id):
+    """Serve recording video file for a report"""
+    from flask import send_from_directory
+    from config import Config
+    import os
+    
+    report = Report.query.filter_by(id=report_id).first()
+    if not report or not report.recording:
+        return jsonify({"error": "Recording not found"}), 404
+        
+    # report.recording stores just the basename
+    return send_from_directory(Config.RECORDINGS_DIR, report.recording)

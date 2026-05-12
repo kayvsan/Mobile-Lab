@@ -2,10 +2,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { 
   FileText, CheckCircle2, XCircle, Clock, Wifi, Activity, 
   Search, RefreshCcw, ChevronLeft, ChevronRight, AlertCircle, Monitor,
-  Eye
+  Eye, PlayCircle
 } from 'lucide-react';
 import api from '../services/api';
 import ReportDetailModal from '../components/ReportDetailModal';
+import VideoPlayerModal from '../components/VideoPlayerModal';
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
@@ -16,6 +17,11 @@ const ReportsPage = () => {
   // Modal state
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Video player state
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [videoReportId, setVideoReportId] = useState(null);
+  const [videoJourneyName, setVideoJourneyName] = useState('');
 
   // Pagination state
   const [limit] = useState(10);
@@ -58,6 +64,12 @@ const ReportsPage = () => {
   const openDetail = (id) => {
     setSelectedReportId(id);
     setIsModalOpen(true);
+  };
+
+  const openVideo = (report) => {
+    setVideoReportId(report.id);
+    setVideoJourneyName(report.journey_id);
+    setIsVideoOpen(true);
   };
 
   const filteredReports = useMemo(() => {
@@ -231,13 +243,24 @@ const ReportsPage = () => {
                         </div>
                       </td>
                       <td className="py-4 px-6 text-right">
-                        <button 
-                          onClick={() => openDetail(report.id)}
-                          className="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-200 hover:bg-white hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm active:scale-95"
-                          title="View Details"
-                        >
-                          <Eye size={18} />
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          {report.recording && (
+                            <button 
+                              onClick={() => openVideo(report)}
+                              className="p-2 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 hover:bg-purple-600 hover:text-white transition-all shadow-sm active:scale-95"
+                              title="Play Recording"
+                            >
+                              <PlayCircle size={18} />
+                            </button>
+                          )}
+                          <button 
+                            onClick={() => openDetail(report.id)}
+                            className="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-200 hover:bg-white hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm active:scale-95"
+                            title="View Details"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -281,6 +304,13 @@ const ReportsPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         reportId={selectedReportId}
+      />
+
+      <VideoPlayerModal 
+        isOpen={isVideoOpen}
+        onClose={() => setIsVideoOpen(false)}
+        reportId={videoReportId}
+        journeyName={videoJourneyName}
       />
     </div>
   );

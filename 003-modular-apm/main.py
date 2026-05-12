@@ -42,6 +42,11 @@ def parse_args():
         help='API Key for authenticating to the Backend'
     )
     parser.add_argument(
+        '--exec-id',
+        required=False,
+        help='Execution ID from Backend'
+    )
+    parser.add_argument(
         '-c', '--config',
         default='config',
         help='Config directory (default: config)'
@@ -81,7 +86,8 @@ def main():
         device_id=args.device, 
         journey_filename=args.journey,
         api_url=args.api_url,
-        api_key=args.api_key
+        api_key=args.api_key,
+        exec_id=args.exec_id
     )
     
     # Save report

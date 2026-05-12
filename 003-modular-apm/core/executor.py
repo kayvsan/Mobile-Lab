@@ -181,8 +181,9 @@ class JourneyExecutor:
             self._refresh_network_params()
 
     def run(self, device_id: str, journey_filename: str = None, 
-            api_url: str = None, api_key: str = None) -> Dict[str, Any]:
+            api_url: str = None, api_key: str = None, exec_id: str = None) -> Dict[str, Any]:
         """Main entry point: run a journey on a device"""
+        local_recording_path = None
         try:
             device_config = self.load_device_config(device_id)
             
@@ -207,6 +208,14 @@ class JourneyExecutor:
                 return {'success': False, 'error': "Device connection failed"}
             
             logger.info(f"[JOURNEY START] {journey.name} (device={device_config['udid']})")
+            
+            # Start screen recording
+            timestamp = generate_timestamp("%Y%m%d_%H%M%S")
+            # Use exec_id if available, otherwise fallback to journey_id + timestamp
+            recording_id = exec_id if exec_id else f"{journey.id}_{timestamp}"
+            recording_filename = f"record_{recording_id}.mp4"
+            local_recording_path = str(Path("logs") / recording_filename)
+            self.device.start_recording()
             
             # --- START NVT & LOCATION (Legacy-like) ---
             location = self.device.get_location()
@@ -289,7 +298,8 @@ class JourneyExecutor:
             journey_result['summary'] = {
                 'total_response_time': round(total_rt, 3),
                 'screenshots': len(self.context['screenshots']),
-                'screenshot_paths': list(self.context['screenshots'])
+                'screenshot_paths': list(self.context['screenshots']),
+                'recording_path': local_recording_path
             }
             
             return journey_result
@@ -300,6 +310,8 @@ class JourneyExecutor:
             return {'success': False, 'error': str(e)}
         finally:
             if self.device:
+                if local_recording_path:
+                    self.device.stop_recording(local_recording_path)
                 self.device.disconnect()
 
     def save_report(self, result: Dict[str, Any], output_dir: str = "logs") -> str:

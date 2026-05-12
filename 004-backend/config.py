@@ -22,6 +22,7 @@ class Config:
     DEVICE_CONFIG_PATH = os.path.join(MODULAR_APM_PATH, "config", "device.json")
     SCREENSHOTS_SRC_DIR = os.path.join(MODULAR_APM_PATH, "screenshots")
     SCREENSHOTS_DIR = os.path.join(BASE_DIR, "uploads", "screenshots")
+    RECORDINGS_DIR = os.path.join(BASE_DIR, "uploads", "recordings")
 
     # Scrcpy settings
     SCRCPY_HOST = os.environ.get('SCRCPY_HOST', 'localhost')
@@ -30,7 +31,7 @@ class Config:
     INSPECT_PORT = os.environ.get('INSPECT_PORT', '20242')
 
     # Execution settings
-    PYTHON_EXECUTABLE = os.environ.get('PYTHON_EXE', 'python')
+    PYTHON_EXECUTABLE = os.environ.get('PYTHON_EXE', os.path.join(MODULAR_APM_PATH, 'env', 'bin', 'python'))
     SERVER_PORT = int(os.environ.get('SERVER_PORT', '5000'))
 
     # Security settings

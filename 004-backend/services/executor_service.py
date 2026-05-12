@@ -197,7 +197,8 @@ def _run_automation(execution_id: str, journey_id: str, device_id: str, user_id:
             Config.PYTHON_EXECUTABLE, "main.py",
             "-d", device_key,
             "--api-url", api_url,
-            "--api-key", app.config.get('WEBHOOK_API_KEY', '')
+            "--api-key", app.config.get('WEBHOOK_API_KEY', ''),
+            "--exec-id", execution_id
         ]
 
         # Execute main.py with Popen for real-time log streaming
@@ -320,7 +321,8 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
                     Config.PYTHON_EXECUTABLE, "main.py",
                     "-d", device_key,
                     "--api-url", api_url,
-                    "--api-key", api_key
+                    "--api-key", api_key,
+                    "--exec-id", execution_id
                 ]
 
                 process = subprocess.Popen(
@@ -420,6 +422,21 @@ def _find_and_save_report(journey_key: str, device_id: str, user_id: str, execut
         
         # update the report model with just the basenames (or relative paths)
         report.screenshots = saved_screenshots
+
+    # Copy recording if any
+    if report.recording:
+        import shutil
+        src_file = os.path.join(Config.MODULAR_APM_PATH, report.recording)
+        if os.path.exists(src_file):
+            recordings_dir = getattr(Config, 'RECORDINGS_DIR', os.path.join(os.path.dirname(Config.SCREENSHOTS_DIR), 'recordings'))
+            os.makedirs(recordings_dir, exist_ok=True)
+            basename = os.path.basename(report.recording)
+            dst_file = os.path.join(recordings_dir, basename)
+            try:
+                shutil.copy2(src_file, dst_file)
+                report.recording = basename
+            except Exception as e:
+                print(f"Failed to copy recording {src_file}: {e}")
 
     db.session.commit()
 

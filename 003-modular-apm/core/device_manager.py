@@ -245,6 +245,51 @@ class DeviceManager:
             logger.warning(f"Failed to get location: {e}")
         return result
 
+    def start_recording(self, remote_path: str = "/sdcard/journey_record.mp4") -> bool:
+        """Start screen recording"""
+        try:
+            self.stop_recording() # Ensure no previous recording
+            self._run_adb(f"shell rm {remote_path}") # Clean old file if exists
+            
+            # Use --time-limit 1200 (20 minutes). Default is 180s.
+            cmd = f"adb -s {self.udid} shell screenrecord --time-limit 1200 {remote_path}"
+            self._recording_process = subprocess.Popen(
+                cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            self._remote_recording_path = remote_path
+            logger.info(f"[DEVICE] Started recording to {remote_path}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start recording: {e}")
+            return False
+
+    def stop_recording(self, local_path: Optional[str] = None) -> bool:
+        """Stop screen recording and optionally pull it"""
+        if hasattr(self, '_recording_process') and self._recording_process:
+            try:
+                # Need to send SIGINT to stop screenrecord gracefully so it saves the mp4 headers
+                # but Popen with shell=True is tricky.
+                # It's better to just kill the screenrecord process via adb
+                self._run_adb("shell pkill -2 screenrecord")
+                self._recording_process.wait(timeout=5)
+            except Exception as e:
+                logger.warning(f"Error stopping recording process: {e}")
+            finally:
+                self._recording_process = None
+                
+            time.sleep(2) # Give it time to finish saving the file on device
+            
+            if local_path and hasattr(self, '_remote_recording_path'):
+                try:
+                    Path(local_path).parent.mkdir(parents=True, exist_ok=True)
+                    self._run_adb(f"pull {self._remote_recording_path} {local_path}")
+                    self._run_adb(f"shell rm {self._remote_recording_path}")
+                    logger.info(f"[DEVICE] Recording pulled to {local_path}")
+                    return True
+                except Exception as e:
+                    logger.error(f"Failed to pull recording: {e}")
+        return False
+
     def get_network_param(self, settings: Dict[str, Any], is_nvt: bool = False) -> Dict[str, Any]:
         """
         Collect network parameters matching legacy logic exactly.

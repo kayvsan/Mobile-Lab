@@ -13,8 +13,8 @@ const DeviceCard = ({ device }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <Smartphone size={16} className="text-slate-400 flex-shrink-0" />
-            <h3 className="font-semibold text-slate-800 text-lg truncate" title={device.name}>
-              {device.name}
+            <h3 className="font-semibold text-slate-800 text-lg truncate" title={device.brand}>
+              {device.brand}
             </h3>
           </div>
           <div className="text-xs text-slate-500 font-mono truncate">{device.udid}</div>
@@ -36,7 +36,7 @@ const DeviceCard = ({ device }) => {
           </div>
           <div>
             <span className="block text-slate-400 text-xs mb-0.5">Brand</span>
-            <span className="font-medium text-slate-700">{device.brand}</span>
+            <span className="font-medium text-slate-700">{device.manufacturer}</span>
           </div>
           <div>
             <span className="block text-slate-400 text-xs mb-0.5">Model</span>
