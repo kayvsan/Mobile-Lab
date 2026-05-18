@@ -64,6 +64,7 @@ def start_execution(journey_id: str, device_id: str, user_id: str, app) -> Execu
         exec_id = execution.id
         journey_id = journey.id
         device_id = device.id
+        device_agent_id = device.agent_id
         
         # We need the keys for the physical execution (files/ADB)
         j_key = journey.journey_key
@@ -72,15 +73,20 @@ def start_execution(journey_id: str, device_id: str, user_id: str, app) -> Execu
 
         _push_event(exec_id, "queued", {"journey_id": journey_id, "device_id": device_id})
 
-    # Launch background thread
-    thread = threading.Thread(
-        target=_run_automation,
-        args=(exec_id, journey_id, device_id, user_id, j_key, d_key, d_udid, app),
-        daemon=True
-    )
-    thread.start()
-
-    return execution
+    # DUAL MODE: Check if device is local or remote
+    if device_agent_id:
+        # REMOTE MODE: Just leave it as 'queued', agent will poll it
+        _push_event(exec_id, "queued", {"message": "Task queued for remote agent"})
+        return execution
+    else:
+        # LOCAL MODE: Launch background thread
+        thread = threading.Thread(
+            target=_run_automation,
+            args=(exec_id, journey_id, device_id, user_id, j_key, d_key, d_udid, app),
+            daemon=True
+        )
+        thread.start()
+        return execution
 
 
 def start_cycle_execution(device_id: str, journey_ids: list, cycles: int, interval: int, user_id: str, app) -> Execution:

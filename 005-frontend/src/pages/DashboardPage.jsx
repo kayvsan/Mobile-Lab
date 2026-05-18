@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { dummyDevices } from '../data/dummyDevices';
 import DeviceCard from '../components/DeviceCard';
-import { RefreshCw, Filter, Smartphone, AlertCircle } from 'lucide-react';
+import { RefreshCw, Filter, Smartphone, AlertCircle, Monitor } from 'lucide-react';
 import api from '../services/api';
 
 const DashboardPage = () => {
@@ -103,46 +103,60 @@ const DashboardPage = () => {
       {/* Grid Content */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-            <div key={i} className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm h-[200px] flex flex-col">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-2/3 h-5 bg-slate-200 rounded animate-pulse"></div>
-                <div className="w-16 h-5 bg-slate-200 rounded-full animate-pulse"></div>
-              </div>
-              <div className="w-1/2 h-3 bg-slate-200 rounded mb-6 animate-pulse"></div>
-              <div className="flex-1 bg-slate-50 rounded-lg p-3 animate-pulse"></div>
-              <div className="grid grid-cols-2 gap-3 mt-4">
-                <div className="h-9 bg-slate-200 rounded animate-pulse"></div>
-                <div className="h-9 bg-slate-200 rounded animate-pulse"></div>
-              </div>
-            </div>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm h-[200px] animate-pulse"></div>
           ))}
-        </div>
-      ) : filteredDevices.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-slate-200 border-dashed text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-4">
-            <Smartphone size={32} />
-          </div>
-          <h3 className="text-lg font-medium text-slate-800 mb-1">Tidak ada device</h3>
-          <p className="text-slate-500 max-w-sm">
-            {filter === 'all' 
-              ? 'Belum ada device yang terhubung ke server saat ini.' 
-              : `Tidak ada device dengan status ${filter} saat ini.`}
-          </p>
-          {filter !== 'all' && (
-            <button 
-              onClick={() => setFilter('all')}
-              className="mt-4 text-blue-600 font-medium hover:text-blue-700 text-sm"
-            >
-              Lihat semua device
-            </button>
-          )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredDevices.map(device => (
-            <DeviceCard key={device.id} device={device} />
-          ))}
+        <div className="space-y-10">
+          {/* Local Devices */}
+          {devices.filter(d => !d.agent_id).length > 0 && (
+            <section>
+              <div className="flex items-center gap-2 mb-4 text-slate-400">
+                <div className="p-1 bg-slate-100 rounded text-slate-600"><Monitor size={16} /></div>
+                <h2 className="text-sm font-bold uppercase tracking-widest">Server (Local Devices)</h2>
+                <div className="h-px bg-slate-100 flex-1 ml-2"></div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {devices.filter(d => !d.agent_id && (filter === 'all' || d.status === filter)).map(device => (
+                  <DeviceCard key={device.id} device={device} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Agents and their devices */}
+          {Array.from(new Set(devices.filter(d => d.agent_id).map(d => d.agent_id))).map(agentId => {
+            const agentName = devices.find(d => d.agent_id === agentId)?.agent_name;
+            const agentDevices = devices.filter(d => d.agent_id === agentId && (filter === 'all' || d.status === filter));
+            
+            if (agentDevices.length === 0 && filter !== 'all') return null;
+
+            return (
+              <section key={agentId}>
+                <div className="flex items-center gap-2 mb-4 text-slate-400">
+                  <div className="p-1 bg-blue-50 rounded text-blue-600"><Smartphone size={16} /></div>
+                  <h2 className="text-sm font-bold uppercase tracking-widest">{agentName || 'Remote Agent'}</h2>
+                  <div className="h-px bg-slate-100 flex-1 ml-2"></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {agentDevices.map(device => (
+                    <DeviceCard key={device.id} device={device} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+
+          {devices.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-slate-200 border-dashed text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-4">
+                <Smartphone size={32} />
+              </div>
+              <h3 className="text-lg font-medium text-slate-800 mb-1">Tidak ada device</h3>
+              <p className="text-slate-500 max-w-sm">Belum ada device yang terhubung ke server atau agent.</p>
+            </div>
+          )}
         </div>
       )}
       

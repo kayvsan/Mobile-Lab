@@ -131,14 +131,18 @@ def refresh_device_status() -> list:
         pass
 
     # Update/Create devices in DB based on ADB discovery
-    all_devices = Device.query.all()
-    db_udids = {d.udid: d for d in all_devices}
+    # Find all devices that match the connected UDIDs
+    existing_devices = Device.query.filter(Device.udid.in_(connected_udids)).all() if connected_udids else []
+    db_udids = {d.udid: d for d in existing_devices}
 
     for udid in connected_udids:
         if udid in db_udids:
             device = db_udids[udid]
             device.status = 'online'
             device.last_seen = datetime.now(timezone.utc)
+            
+            # If it was an agent device, it's now LOCAL
+            device.agent_id = None 
             
             # Update properties if missing
             if not device.brand or not device.model:
@@ -151,27 +155,38 @@ def refresh_device_status() -> list:
                 device.type_os = props['type_os']
                 device.platform_version = props['android_version']
         else:
-            # New device found!
-            props = get_device_properties(udid)
-            new_device = Device(
-                device_key=f"adb_{udid}",
-                udid=udid,
-                name=f"{props['brand']} {props['model']}".strip() or f"Device {udid[:6]}",
-                status='online',
-                last_seen=datetime.now(timezone.utc),
-                brand=props['brand'],
-                model=props['model'],
-                manufacturer=props['manufacturer'],
-                android_version=props['android_version'],
-                sdk_version=props['sdk_version'],
-                type_os=props['type_os'],
-                platform='Android',
-                platform_version=props['android_version']
-            )
-            db.session.add(new_device)
+            # Check if it exists at all (even if not in current connected batch)
+            # to be doubly sure about unique constraints
+            device = Device.query.filter_by(udid=udid).first()
+            if device:
+                device.status = 'online'
+                device.last_seen = datetime.now(timezone.utc)
+                device.agent_id = None
+            else:
+                # New local device found!
+                props = get_device_properties(udid)
+                new_device = Device(
+                    device_key=f"adb_{udid}",
+                    udid=udid,
+                    name=f"{props['brand']} {props['model']}".strip() or f"Device {udid[:6]}",
+                    status='online',
+                    last_seen=datetime.now(timezone.utc),
+                    brand=props['brand'],
+                    model=props['model'],
+                    manufacturer=props['manufacturer'],
+                    android_version=props['android_version'],
+                    sdk_version=props['sdk_version'],
+                    type_os=props['type_os'],
+                    platform='Android',
+                    platform_version=props['android_version'],
+                    agent_id=None # explicitly local
+                )
+                db.session.add(new_device)
 
-    # Mark others as offline
-    for device in all_devices:
+    # Mark other LOCAL devices as offline
+    # (Devices that are NOT in the connected list AND have agent_id=None)
+    all_local_devices = Device.query.filter_by(agent_id=None).all()
+    for device in all_local_devices:
         if device.udid not in connected_udids:
             device.status = 'offline'
 

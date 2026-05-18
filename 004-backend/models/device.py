@@ -25,6 +25,11 @@ class Device(db.Model):
     status = db.Column(db.String(50), default='offline')  # online, busy, offline
     last_seen = db.Column(db.DateTime)
 
+    # NULL = local device (connected to server)
+    # Set = remote device (connected via agent)
+    agent_id = db.Column(db.String(36), db.ForeignKey('agents.id'), nullable=True)
+    agent = db.relationship('Agent', backref='devices')
+
     def to_dict(self):
         from services.device_service import generate_scrcpy_url, generate_inspect_url
         return {
@@ -39,6 +44,9 @@ class Device(db.Model):
             "platform_version": self.platform_version,
             "status": self.status,
             "last_seen": self.last_seen.isoformat() if self.last_seen else None,
-            "stream_url": generate_scrcpy_url(self.udid) if self.status == 'online' else None,
-            "inspect_url": generate_inspect_url(self.udid) if self.status == 'online' else None
+            "agent_id": self.agent_id,
+            "agent_name": self.agent.name if self.agent else None,
+            "source": "agent" if self.agent_id else "local",
+            "stream_url": generate_scrcpy_url(self.udid) if self.status == 'online' and not self.agent_id else None,
+            "inspect_url": generate_inspect_url(self.udid) if self.status == 'online' and not self.agent_id else None
         }

@@ -11,5 +11,6 @@ from .device import Device
 from .execution import Execution
 from .user import User
 from .app_package import AppPackage
+from .agent import Agent
 
-__all__ = ['db', 'Journey', 'Report', 'Device', 'Execution', 'User', 'AppPackage']
+__all__ = ['db', 'Journey', 'Report', 'Device', 'Execution', 'User', 'AppPackage', 'Agent']

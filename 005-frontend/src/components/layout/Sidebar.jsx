@@ -13,6 +13,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { icon: <Smartphone size={20} />, label: 'Devices', path: '/' },
     { icon: <Map size={20} />, label: 'Journeys', path: '/Journeys' },
     { icon: <Terminal size={20} />, label: 'Execution', path: '/Execution' },
+    // { icon: <Users size={20} />, label: 'Agents', path: '/Agents' },
     { icon: <FileText size={20} />, label: 'Reports', path: '/Reports' },
     // { icon: <Settings size={20} />, label: 'Settings', path: '/settings' },
   ];

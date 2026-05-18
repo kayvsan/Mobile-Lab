@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 import JourneysPage from './pages/JourneysPage';
 import ExecutionPage from './pages/ExecutionPage';
 import ReportsPage from './pages/ReportsPage';
+import AgentsPage from './pages/AgentsPage';
 import CreateJourneyPage from './pages/CreateJourneyPage';
 import EditJourneyPage from './pages/EditJourneyPage';
 import MainLayout from './components/layout/MainLayout';
@@ -50,6 +51,10 @@ function App() {
           <Route 
             path="/Execution" 
             element={isAuthenticated ? <ExecutionPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/Agents" 
+            element={isAuthenticated ? <AgentsPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/Reports" 

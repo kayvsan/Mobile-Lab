@@ -19,11 +19,16 @@ const DeviceCard = ({ device }) => {
           </div>
           <div className="text-xs text-slate-500 font-mono truncate">{device.udid}</div>
         </div>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium uppercase tracking-wider flex-shrink-0 ${statusColor}`}>
-          <div className={`w-1.5 h-1.5 rounded-full ${statusDot} ${isOnline ? 'animate-pulse' : ''}`}></div>
-          {isOnline ? 'Online' : 'Offline'}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium uppercase tracking-wider flex-shrink-0 ${statusColor}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${statusDot} ${isOnline ? 'animate-pulse' : ''}`}></div>
+            {isOnline ? 'Online' : 'Offline'}
+          </div>
         </div>
-      </div>
+        {device.agent_name && (
+          <div className="mb-4 flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px] font-bold uppercase tracking-tight w-fit">
+            via {device.agent_name}
+          </div>
+        )}
 
       {/* Info Body */}
       <div className="flex-1 mb-5 bg-slate-50 rounded-lg p-3 border border-slate-100">
@@ -53,36 +58,39 @@ const DeviceCard = ({ device }) => {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3 mt-auto">
-        <a 
-          // Update ke format snake_case sesuai data baru
-          href={isOnline ? device.stream_url : '#'} 
-          target={isOnline ? "_blank" : "_self"}
-          rel="noreferrer"
-          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-            isOnline 
-              ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-blue-500/20' 
-              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-          }`}
-          onClick={(e) => !isOnline && e.preventDefault()}
-        >
-          <MonitorPlay size={16} />
-          <span>Stream</span>
-        </a>
-        <a 
-          // Update ke format snake_case sesuai data baru
-          href={isOnline ? device.inspect_url : '#'} 
-          target={isOnline ? "_blank" : "_self"}
-          rel="noreferrer"
-          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-            isOnline 
-              ? 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-blue-600' 
-              : 'bg-slate-100 text-slate-400 border border-slate-100 cursor-not-allowed'
-          }`}
-          onClick={(e) => !isOnline && e.preventDefault()}
-        >
-          <TerminalSquare size={16} />
-          <span>Inspect</span>
-        </a>
+        {device.stream_url ? (
+          <a 
+            href={device.stream_url} 
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-blue-500/20"
+          >
+            <MonitorPlay size={16} />
+            <span>Stream</span>
+          </a>
+        ) : (
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium bg-slate-100 text-slate-400 cursor-not-allowed">
+            <MonitorPlay size={16} />
+            <span>Stream</span>
+          </div>
+        )}
+
+        {device.inspect_url ? (
+          <a 
+            href={device.inspect_url} 
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-blue-600"
+          >
+            <TerminalSquare size={16} />
+            <span>Inspect</span>
+          </a>
+        ) : (
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium bg-slate-100 text-slate-400 border border-slate-100 cursor-not-allowed">
+            <TerminalSquare size={16} />
+            <span>Inspect</span>
+          </div>
+        )}
       </div>
     </div>
   );
