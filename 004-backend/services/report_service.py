@@ -118,7 +118,7 @@ def get_journey_stats(journey_id: str = None, user_id: str = None) -> dict:
 
 def get_detail_breakdown(report_id: str) -> list:
     """
-    Parse a report's details to return per-step metrics.
+    Parse a report's details to return per-sub-journey metrics.
     Useful for detailed performance analysis.
     """
     report = db.session.get(Report, report_id)

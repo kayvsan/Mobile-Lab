@@ -82,7 +82,7 @@ class NetworkParams:
         self.udid = device_manager.udid
         
         # Default service name for API testing (sesuaikan dengan APK Anda)
-        self.default_test_service = "net.senosoft.android.url/.HttpRequestService"
+        self.default_test_service = "net.senosoft.android.url/.URLService"
         
     def get_signal_level(self) -> Dict[str, Any]:
         """Get cellular signal information following legacy logic exactly"""
@@ -251,48 +251,31 @@ class NetworkParams:
             logger.info(f"Testing URL: {api_url}")
             logger.info(f"Service: {test_service}")
             
-            # Start service dengan format yang benar
-            test_service = "com.example.app/.TestService"  # Contoh lengkap
-            start_cmd = f'shell am start-foreground-service -n {test_service} --es tag {tag} --es url {api_url} --ei timeout {timeout}'
-            #                                          ^^^^^^                       ^^^^                       ^^^^
-            #                                          --es untuk string, --ei untuk integer
-            
+            # Start service with legacy format using correct test_service
+            start_cmd = f'shell am start-foreground-service -n {test_service} -e tag {tag} -e url "{api_url}" -e timeout {timeout}'
             self.dm._run_adb(start_cmd)
             
-            # Polling logcat dengan timeout
-            max_attempts = 20
-            for i in range(max_attempts):
-                time.sleep(1)  # Tunggu log muncul
-                
-                # Clear buffer dulu atau gunakan -d
-                command = (f'logcat -d | findstr "{tag}"' if os.name == "nt"
-                           else f'logcat -d | grep "{tag}"')
-                
-                result = self.dm._run_adb(command)
-                if result:
-                    # Parse result
-                    break
-            else:
-                # Timeout, tidak ada log ditemukan
-                raise TimeoutError(f"Log with tag {tag} not found")
+            # Polling logcat using legacy-like structure
+            command = (f'logcat -d | findstr "{tag}"' if os.name == "nt"
+                       else f'logcat -d | grep "{tag}"')
             
             n_seconds = 0
-            max_wait = timeout/1000 + 5
-            # Wait loop (legacy-like polling)
-            result_output = []
+            max_wait = int(timeout / 1000) + 5
+            resp_lines = []
+            
             while n_seconds < max_wait:
-                result_output = self.dm._run_adb(command)
-                if result_output:
+                resp_lines = self.dm._run_adb(command)
+                if resp_lines:
                     break
                 time.sleep(1)
                 n_seconds += 1
 
-            if not result_output:
+            if not resp_lines:
                 logger.warning(f"No logcat output found for tag {tag}")
                 return {"status": "1", "response_time": "-1", "result": "timeout"}
 
             # Parse JSON from logcat line
-            resp_line = result_output[0]
+            resp_line = resp_lines[0]
             json_start = resp_line.find("{")
             if json_start > -1:
                 json_str = resp_line[json_start:]
@@ -353,6 +336,8 @@ class NetworkParams:
                 possible_paths = [
                     os.path.join(os.getcwd(), "config", "apks", test_apk),
                     os.path.join(os.path.dirname(__file__), "config", "apks", test_apk),
+                    os.path.join(os.getcwd(), "config", test_apk),
+                    os.path.join(os.path.dirname(__file__), "..", "config", test_apk),
                     os.path.join(os.getcwd(), test_apk),
                     test_apk
                 ]

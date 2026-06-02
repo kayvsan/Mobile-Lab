@@ -4,7 +4,8 @@ Report routes — list, detail, stats, and import
 from flask import Blueprint, request, jsonify, g
 
 from models import db, Report
-from services import report_service
+from services import report_service, kpi_service, performance_service, availability_service
+from services import nvt_service
 from services.auth_middleware import auth_required
 
 reports_bp = Blueprint('reports', __name__)
@@ -61,6 +62,90 @@ def get_report(report_id):
     result = report.to_dict(include_details=True)
     result["breakdown"] = report_service.get_detail_breakdown(report_id)
     return jsonify(result)
+
+
+@reports_bp.route('/reports/kpi', methods=['GET'])
+@auth_required
+def get_kpi():
+    """
+    Get detailed KPI statistics (journey-wise and page-wise).
+    Optional query params: journey_id, execution_id
+    """
+    journey_id = request.args.get('journey_id')
+    execution_id = request.args.get('execution_id')
+    
+    data = kpi_service.get_journey_kpi(
+        user_id=g.current_user.id,
+        journey_id=journey_id,
+        execution_id=execution_id
+    )
+    return jsonify(data)
+
+
+@reports_bp.route('/reports/performance', methods=['GET'])
+@auth_required
+def get_performance():
+    """
+    Get time-series performance statistics.
+    Optional query params: journey_id, date_from, date_to
+    """
+    journey_id = request.args.get('journey_id')
+    date_from = request.args.get('date_from')
+    date_to = request.args.get('date_to')
+    
+    data = performance_service.get_performance_data(
+        user_id=g.current_user.id,
+        journey_id=journey_id,
+        date_from=date_from,
+        date_to=date_to
+    )
+    return jsonify(data)
+
+
+@reports_bp.route('/reports/availability', methods=['GET'])
+@auth_required
+def get_availability():
+    """
+    Get availability analysis data.
+    Optional query params: journey_id, date_from, date_to
+    """
+    journey_id = request.args.get('journey_id')
+    date_from = request.args.get('date_from')
+    date_to = request.args.get('date_to')
+    
+    data = availability_service.get_availability_data(
+        user_id=g.current_user.id,
+        journey_id=journey_id,
+        date_from=date_from,
+        date_to=date_to
+    )
+    return jsonify(data)
+
+
+@reports_bp.route('/reports/nvt', methods=['GET'])
+@auth_required
+def get_nvt():
+    """
+    Get NVT (Network Verification Test) data per report.
+    Optional query params: journey_id, network_type, date_from, date_to, limit, offset
+    """
+    journey_id = request.args.get('journey_id')
+    network_type = request.args.get('network_type')
+    date_from = request.args.get('date_from')
+    date_to = request.args.get('date_to')
+    limit = request.args.get('limit', 50, type=int)
+    offset = request.args.get('offset', 0, type=int)
+
+    data = nvt_service.get_nvt_data(
+        user_id=g.current_user.id,
+        journey_id=journey_id,
+        network_type=network_type,
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+        offset=offset
+    )
+    return jsonify(data)
 
 
 @reports_bp.route('/reports/stats', methods=['GET'])

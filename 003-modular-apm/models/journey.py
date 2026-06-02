@@ -9,7 +9,7 @@ from .task import Task
 
 @dataclass
 class JourneyDetail:
-    """A detail/step within a journey containing multiple tasks"""
+    """A sub journey within a journey containing multiple tasks"""
     id: str
     name: str
     tasks: List[Task]

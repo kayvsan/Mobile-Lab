@@ -33,7 +33,7 @@ class Report(db.Model):
     ping_latency = db.Column(db.Float)        # ms
     packet_loss = db.Column(db.Float)         # percentage
 
-    # Execution step details (full JSON)
+    # Execution sub journey details (full JSON)
     details = db.Column(db.JSON)
 
     # Screenshots (list of paths)
@@ -78,6 +78,13 @@ class Report(db.Model):
     def from_report_json(cls, report_data: dict, device_id: str, user_id: str, execution_id: str = None):
         """Factory method to create Report from APM JSON report output"""
         nvt = report_data.get('nvt_measurements', {})
+
+        # Fallback to the first detail's network_params if root NVT is empty 
+        # (happens because NVT is now only taken at the start of details)
+        if not nvt:
+            details = report_data.get('details', [])
+            if details and len(details) > 0:
+                nvt = details[0].get('network_params', {})
 
         # Extract network type from signal_level data
         signal_info = nvt.get('signal_level', {})

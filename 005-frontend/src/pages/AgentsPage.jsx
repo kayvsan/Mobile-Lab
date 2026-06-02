@@ -55,38 +55,38 @@ const AgentsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in">
       {/* Header */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-            <Users size={28} />
+          <div className="p-3 bg-surface-strong text-primary rounded-full">
+            <Users size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Agent Management</h1>
-            <p className="text-slate-500 text-sm mt-1">Manage remote automation agents</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Agent Management</h1>
+            <p className="text-body text-base">Manage remote automation agents</p>
           </div>
         </div>
         <button 
           onClick={fetchAgents}
-          className="p-2.5 bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm active:scale-95"
+          className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
         >
           <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Register Section */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Plus size={20} className="text-blue-600" />
+          <div className="bg-canvas p-8 rounded-3xl border border-hairline shadow-sm space-y-8">
+            <h2 className="text-xl font-normal tracking-tight text-ink flex items-center gap-3 border-b border-hairline pb-4">
+              <Plus size={20} className="text-primary" />
               Register New Agent
             </h2>
             
-            <form onSubmit={handleRegister} className="space-y-4">
+            <form onSubmit={handleRegister} className="space-y-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-ink mb-2">
                   Agent Name
                 </label>
                 <input 
@@ -94,14 +94,14 @@ const AgentsPage = () => {
                   placeholder="e.g. Laptop Kams"
                   value={newAgentName}
                   onChange={(e) => setNewAgentName(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                  className="w-full px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none text-ink font-semibold"
                   required
                 />
               </div>
               <button 
                 type="submit"
                 disabled={isRegistering || !newAgentName.trim()}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 disabled:opacity-50"
+                className="w-full bg-primary hover:bg-primary-active text-on-primary py-4 px-6 rounded-full font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
               >
                 {isRegistering ? 'Registering...' : 'Register Agent'}
               </button>
@@ -132,52 +132,52 @@ const AgentsPage = () => {
 
         {/* Agents List */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-canvas rounded-3xl border border-hairline shadow-sm overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-widest border-b border-slate-100">
-                  <th className="px-6 py-4">Agent Name</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Devices</th>
-                  <th className="px-6 py-4">Last Heartbeat</th>
+                <tr className="bg-surface-soft text-muted text-[10px] font-bold uppercase tracking-widest border-b border-hairline">
+                  <th className="px-8 py-5">Agent Name</th>
+                  <th className="px-8 py-5">Status</th>
+                  <th className="px-8 py-5">Devices</th>
+                  <th className="px-8 py-5">Last Heartbeat</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-hairline">
                 {isLoading ? (
                   [1, 2, 3].map(i => (
                     <tr key={i} className="animate-pulse">
-                      <td colSpan="4" className="px-6 py-8"><div className="h-4 bg-slate-100 rounded w-full"></div></td>
+                      <td colSpan="4" className="px-8 py-8"><div className="h-4 bg-surface-strong rounded w-full"></div></td>
                     </tr>
                   ))
                 ) : agents.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-12 text-center text-slate-400">
-                      <Users size={40} className="mx-auto mb-3 opacity-20" />
-                      <p className="text-sm font-medium">Belum ada agent terdaftar.</p>
+                    <td colSpan="4" className="px-8 py-16 text-center text-muted">
+                      <Users size={40} className="mx-auto mb-4 opacity-20" />
+                      <p className="text-sm font-semibold">Belum ada agent terdaftar.</p>
                     </td>
                   </tr>
                 ) : (
                   agents.map(agent => (
-                    <tr key={agent.id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-slate-800">{agent.name}</div>
-                        <div className="text-[10px] text-slate-400 font-mono">{agent.id}</div>
+                    <tr key={agent.id} className="hover:bg-surface-soft transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className="font-semibold text-ink">{agent.name}</div>
+                        <div className="text-[11px] text-muted font-mono mt-1 tracking-widest">{agent.id}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          agent.status === 'online' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-400 border border-slate-200'
+                      <td className="px-8 py-6">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                          agent.status === 'online' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-surface-strong text-muted border border-hairline'
                         }`}>
-                          <div className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></div>
+                          <div className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-muted'}`}></div>
                           {agent.status}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-slate-600 font-bold">
-                          <Smartphone size={14} className="text-slate-400" />
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-2 text-ink font-semibold">
+                          <Smartphone size={16} className="text-muted" />
                           {agent.device_count} Devices
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-xs text-slate-500">
+                      <td className="px-8 py-6 text-sm text-muted font-medium">
                         {agent.last_heartbeat ? new Date(agent.last_heartbeat).toLocaleString() : 'Never'}
                       </td>
                     </tr>

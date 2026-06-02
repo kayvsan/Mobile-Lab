@@ -46,17 +46,17 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
   const IconComponent = iconMap[typeSchema.icon];
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden mb-3 transition-all hover:border-blue-300 group">
+    <div className="bg-canvas rounded-2xl border border-hairline shadow-sm overflow-hidden mb-3 transition-all hover:border-hairline-soft group">
       {/* Task Header - Always visible */}
-      <div className={`px-4 py-3 flex items-center gap-3 bg-slate-50 border-b border-slate-100 ${isExpanded ? '' : 'border-b-0'}`}>
+      <div className={`px-5 py-4 flex items-center gap-4 bg-surface-soft border-b border-hairline ${isExpanded ? '' : 'border-b-0'}`}>
         
         {/* Reorder Buttons (Simulated drag handle for simplicity) */}
-        <div className="flex flex-col gap-1 text-slate-300">
+        <div className="flex flex-col gap-1 text-muted">
           <button 
             type="button"
             onClick={onMoveUp} 
             disabled={isFirst}
-            className={`hover:text-blue-600 focus:outline-none ${isFirst ? 'opacity-30 cursor-not-allowed' : ''}`}
+            className={`hover:text-primary focus:outline-none ${isFirst ? 'opacity-30 cursor-not-allowed' : ''}`}
             title="Move Up"
           >
              <ChevronUp size={14} />
@@ -65,7 +65,7 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
              type="button"
             onClick={onMoveDown} 
             disabled={isLast}
-            className={`hover:text-blue-600 focus:outline-none ${isLast ? 'opacity-30 cursor-not-allowed' : ''}`}
+            className={`hover:text-primary focus:outline-none ${isLast ? 'opacity-30 cursor-not-allowed' : ''}`}
             title="Move Down"
           >
              <ChevronDown size={14} />
@@ -77,17 +77,17 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
           className="flex-1 cursor-pointer flex items-center gap-3"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className={`p-1.5 rounded-md ${typeSchema.color.split(' ')[0]} ${typeSchema.color.split(' ')[1]}`}>
+          <div className={`p-1.5 rounded-lg ${typeSchema.color.split(' ')[0]} ${typeSchema.color.split(' ')[1]}`}>
             {IconComponent && <IconComponent size={14} />}
           </div>
-          <div className="font-medium text-slate-800 text-sm truncate max-w-[200px] md:max-w-xs">
+          <div className="font-semibold text-ink text-sm truncate max-w-[200px] md:max-w-xs tracking-tight">
             {task.name}
           </div>
-          <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${typeSchema.color}`}>
+          <span className={`px-2 py-0.5 rounded uppercase tracking-wider text-[10px] font-bold border ${typeSchema.color}`}>
             {typeSchema.label}
           </span>
           {task.critical && (
-             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 border border-red-200 uppercase">
+             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-semantic-down border border-rose-100 uppercase tracking-wider">
                 Critical
              </span>
           )}
@@ -98,14 +98,14 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
            <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            className="p-1.5 text-muted hover:text-primary hover:bg-surface-strong rounded-full transition-colors"
           >
-            <span className="text-xs font-medium px-1">{isExpanded ? 'Collapse' : 'Edit'}</span>
+            <span className="text-xs font-semibold px-2">{isExpanded ? 'Collapse' : 'Edit'}</span>
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors opacity-0 group-hover:opacity-100"
+            className="p-1.5 text-muted hover:text-semantic-down hover:bg-surface-strong rounded-full transition-colors opacity-0 group-hover:opacity-100"
             title="Delete Task"
           >
             <Trash2 size={16} />
@@ -115,34 +115,34 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="p-4 bg-white animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="p-5 bg-canvas animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Task Name</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Task Name</label>
               <input
                 type="text"
                 value={task.name}
                 onChange={(e) => handleFieldChange('name', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="w-full px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-ink transition-all"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Task ID</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Task ID</label>
               <input
                 type="text"
                 value={task.id}
                 onChange={(e) => handleFieldChange('id', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 bg-slate-50 text-slate-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono"
+                className="w-full px-4 py-2 border border-hairline bg-surface-strong text-muted rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-mono transition-all"
               />
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-xs font-medium text-slate-700 mb-1">Task Type</label>
+          <div className="mb-5">
+            <label className="block text-xs font-semibold text-ink mb-1">Task Type</label>
             <select
               value={task.type}
               onChange={handleTypeChange}
-              className="w-full md:w-1/2 px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-medium"
+              className="w-full md:w-1/2 px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-semibold text-ink transition-all appearance-none"
             >
               {Object.entries(TASK_TYPES).map(([key, schema]) => (
                 <option key={key} value={key}>{schema.label}</option>
@@ -150,8 +150,8 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
             </select>
           </div>
 
-          <div className="border-t border-slate-100 pt-4 mt-2">
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Task Configuration</h4>
+          <div className="border-t border-hairline pt-5 mt-4">
+            <h4 className="text-[10px] font-bold text-muted uppercase tracking-widest mb-4">Task Configuration</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
               {typeSchema.fields.map(field => (
                 <TaskFieldRenderer

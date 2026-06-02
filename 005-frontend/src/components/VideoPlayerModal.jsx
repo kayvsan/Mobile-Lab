@@ -10,22 +10,22 @@ const VideoPlayerModal = ({ isOpen, onClose, reportId, journeyName }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col relative animate-scale-up"
+        className="bg-canvas w-full max-w-4xl rounded-3xl shadow-2xl border border-hairline overflow-hidden flex flex-col relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
-          <div className="flex items-center gap-2 text-slate-800">
-            <PlayCircle size={18} className="text-purple-600" />
-            <h2 className="font-bold text-sm truncate max-w-[600px]">
+        <div className="p-5 border-b border-hairline flex items-center justify-between bg-surface-soft/50 shrink-0">
+          <div className="flex items-center gap-3 text-ink">
+            <PlayCircle size={20} className="text-primary" />
+            <h2 className="font-semibold text-sm truncate max-w-[600px]">
               Recording: {journeyName || reportId}
             </h2>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 hover:bg-slate-200 rounded-full text-slate-400 transition-colors"
+            className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
@@ -42,8 +42,8 @@ const VideoPlayerModal = ({ isOpen, onClose, reportId, journeyName }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-white border-t border-slate-100 text-center">
-          <p className="text-[10px] text-slate-400 font-medium">
+        <div className="p-4 bg-surface-soft/50 border-t border-hairline text-center">
+          <p className="text-[11px] text-muted font-semibold tracking-widest uppercase">
             HTML5 Video Player • {reportId}
           </p>
         </div>

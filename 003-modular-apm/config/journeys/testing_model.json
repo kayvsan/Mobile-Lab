@@ -8,7 +8,7 @@
       {
         "id": "step_372e9c8f-31b8-4a1d-b8e8-94265e75487e",
         "measure_response_time": true,
-        "name": "Step 1",
+        "name": "Sub Journey 1",
         "tasks": [
           {
             "critical": true,

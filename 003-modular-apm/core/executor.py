@@ -157,28 +157,23 @@ class JourneyExecutor:
         if self.device.screenshot(filepath):
             self.context['screenshots'].append(filepath)
 
-    def _refresh_network_params(self, is_nvt: bool = False):
+    def _refresh_network_params(self, is_nvt: bool = False, run_api: bool = False):
         """Update the internal _ar_param snapshot using refined logic"""
         # Combine settings like legacy logic
         settings = {**self.context.get('device', {}), **self.context.get('any_param', {})}
         
         self._ar_param = self.device.get_network_param(
             settings=settings,
-            is_nvt=is_nvt
+            is_nvt=is_nvt,
+            run_api=run_api
         )
         self.context['nvt_snapshot'] = self._ar_param # For templates
 
     def _check_network_hook(self, task: Task, phase: str):
         """Refresh network params if task flags match current phase"""
-        if not task.record_param:
-            return
-            
-        # Hook mapping: e.g. record_param_when="before_ui" matches phase="before" if type starts with "ui"
-        hook = task.record_param_when.lower()
-        if phase == "before" and hook.startswith("before"):
-            self._refresh_network_params()
-        elif phase == "after" and hook.startswith("after"):
-            self._refresh_network_params()
+        # Di-disable sesuai request: semua pengecekan jaringan (termasuk signal, 
+        # ping, cellid, dan API) HANYA dilakukan di awal journey dan awal detail.
+        return
 
     def run(self, device_id: str, journey_filename: str = None, 
             api_url: str = None, api_key: str = None, exec_id: str = None) -> Dict[str, Any]:
@@ -219,8 +214,8 @@ class JourneyExecutor:
             
             # --- START NVT & LOCATION (Legacy-like) ---
             location = self.device.get_location()
-            self._refresh_network_params(is_nvt=True)
-            nvt_data = self._ar_param
+            # NVT snapshot removed per user request, only happens per detail
+            nvt_data = {}
             # --- END NVT & LOCATION ---
 
             journey_result = {
@@ -244,8 +239,8 @@ class JourneyExecutor:
                 time.sleep(2)
             
             for detail in journey.details:
-                # Refresh snapshot at the start of each detail
-                self._refresh_network_params(is_nvt=False)
+                # API measurement at the start of each sub journey
+                self._refresh_network_params(is_nvt=False, run_api=True)
                 
                 detail_success = True
                 detail_rt = 0.0
@@ -262,7 +257,7 @@ class JourneyExecutor:
                 logger.info(f"[DETAIL {journey.details.index(detail) + 1}/{detail_count}] {detail.name}")
                 
                 for task in detail.tasks:
-                    # Overide with step-level flag if necessary
+                    # Override with sub journey-level flag if necessary
                     if not detail.measure_response_time:
                         task.measure_response_time = False
                         

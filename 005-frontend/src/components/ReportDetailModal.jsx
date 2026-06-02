@@ -47,14 +47,14 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative animate-scale-up"
+        className="bg-canvas w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border border-hairline overflow-hidden flex flex-col relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
+        <div className="p-6 border-b border-hairline flex items-center justify-between bg-surface-soft/50 shrink-0">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold text-slate-800">
+              <h2 className="text-2xl font-normal tracking-tight text-ink">
                 {data ? `Report: ${data.journey_id}` : 'Loading Report...'}
               </h2>
               {data && (
@@ -66,72 +66,72 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               )}
             </div>
             {data && (
-              <p className="text-xs text-slate-400 mt-1 font-mono uppercase tracking-tighter">
+              <p className="text-xs text-muted mt-1 font-mono uppercase tracking-widest font-semibold">
                 Execution ID: {data.execution_id}
               </p>
             )}
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+            className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto p-6 space-y-8">
+        <div className="flex-1 overflow-auto p-8 space-y-10">
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center space-y-4">
-              <div className="w-12 h-12 border-4 border-purple-100 border-t-purple-600 rounded-full animate-spin"></div>
-              <p className="text-slate-500 animate-pulse font-medium">Menarik data detail...</p>
+              <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              <p className="text-muted animate-pulse font-semibold">Menarik data detail...</p>
             </div>
           ) : error ? (
             <div className="py-20 text-center space-y-4">
-              <div className="p-4 bg-red-50 text-red-500 rounded-full inline-block">
+              <div className="p-4 bg-rose-50 text-semantic-down rounded-full inline-block">
                 <XCircle size={40} />
               </div>
-              <p className="text-slate-600 font-medium">{error}</p>
-              <button onClick={fetchDetail} className="text-purple-600 font-bold hover:underline">Coba lagi</button>
+              <p className="text-ink font-semibold">{error}</p>
+              <button onClick={fetchDetail} className="text-primary font-bold hover:underline">Coba lagi</button>
             </div>
           ) : data && (
             <>
               {/* Summary Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                  <div className="text-slate-400 mb-1 flex items-center gap-2">
-                    <Smartphone size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Device</span>
+                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
+                  <div className="text-muted mb-2 flex items-center gap-2">
+                    <Smartphone size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Device</span>
                   </div>
-                  <div className="text-sm font-semibold text-slate-800 truncate" title={data.device}>
+                  <div className="text-sm font-semibold text-ink truncate" title={data.device}>
                     {data.device}
                   </div>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                  <div className="text-slate-400 mb-1 flex items-center gap-2">
-                    <Wifi size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Network</span>
+                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
+                  <div className="text-muted mb-2 flex items-center gap-2">
+                    <Wifi size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Network</span>
                   </div>
-                  <div className="text-sm font-semibold text-slate-800">
-                    {data.network_type} <span className="text-xs text-slate-400 font-normal ml-1">({data.signal_level})</span>
-                  </div>
-                </div>
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                  <div className="text-slate-400 mb-1 flex items-center gap-2">
-                    <Activity size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Performance</span>
-                  </div>
-                  <div className="text-sm font-semibold text-slate-800">
-                    {data.ping_latency}ms <span className="text-xs text-slate-400 font-normal ml-1">({data.packet_loss}%)</span>
+                  <div className="text-sm font-semibold text-ink">
+                    {data.network_type} <span className="text-xs text-muted font-medium ml-1">({data.signal_level})</span>
                   </div>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                  <div className="text-slate-400 mb-1 flex items-center gap-2">
-                    <Clock size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Time</span>
+                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
+                  <div className="text-muted mb-2 flex items-center gap-2">
+                    <Activity size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Performance</span>
                   </div>
-                  <div className="text-sm font-semibold text-slate-800">
-                    {data.total_response_time}s <span className="text-xs text-slate-400 font-normal ml-1">Total</span>
+                  <div className="text-sm font-semibold text-ink">
+                    {data.ping_latency}ms <span className="text-xs text-muted font-medium ml-1">({data.packet_loss}%)</span>
+                  </div>
+                </div>
+                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
+                  <div className="text-muted mb-2 flex items-center gap-2">
+                    <Clock size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Time</span>
+                  </div>
+                  <div className="text-sm font-semibold text-ink">
+                    {data.total_response_time}s <span className="text-xs text-muted font-medium ml-1">Total</span>
                   </div>
                 </div>
               </div>
@@ -139,11 +139,11 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               {/* Screenshots Gallery */}
               {data.screenshots && data.screenshots.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest px-1">Failure Screenshots</h3>
+                  <h3 className="text-sm font-bold text-muted uppercase tracking-widest px-1">Failure Screenshots</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {data.screenshots.map((filename, idx) => (
-                      <div key={idx} className="border border-slate-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow group relative">
-                        <div className="aspect-[9/16] bg-slate-100 relative">
+                      <div key={idx} className="border border-hairline rounded-2xl overflow-hidden bg-canvas shadow-sm hover:shadow-md transition-shadow group relative">
+                        <div className="aspect-[9/16] bg-surface-soft relative">
                           <img 
                             src={`http://localhost:5000/api/reports/${data.id}/screenshots/${filename}`}
                             alt="Screenshot"
@@ -151,8 +151,8 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
                             onError={(e) => { e.target.src = 'https://placehold.co/400x800/png?text=Image+Not+Found'; }}
                           />
                         </div>
-                        <div className="p-2 absolute bottom-0 left-0 right-0 bg-slate-900/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                          <p className="text-[10px] text-white truncate text-center font-mono">{filename}</p>
+                        <div className="p-3 absolute bottom-0 left-0 right-0 bg-surface-dark/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
+                          <p className="text-xs text-white truncate text-center font-mono font-medium">{filename}</p>
                         </div>
                       </div>
                     ))}
@@ -162,58 +162,58 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               
               {/* Breakdown Timeline */}
               <div className="space-y-4">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest px-1">Execution Breakdown</h3>
+                <h3 className="text-sm font-bold text-muted uppercase tracking-widest px-1">Execution Breakdown</h3>
                 <div className="space-y-3">
                   {data.breakdown.map((step, idx) => (
                     <div 
                       key={step.id || idx} 
-                      className="border border-slate-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                      className="border border-hairline rounded-2xl overflow-hidden bg-canvas hover:border-primary/50 transition-colors"
                     >
                       <div 
-                        className="p-4 flex items-center justify-between cursor-pointer group hover:bg-slate-50/50"
+                        className="p-5 flex items-center justify-between cursor-pointer group hover:bg-surface-soft/50"
                         onClick={() => toggleStep(step.id || idx)}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`p-2 rounded-lg ${step.success ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'}`}>
-                            {step.success ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+                          <div className={`p-2.5 rounded-xl ${step.success ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'}`}>
+                            {step.success ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                            <div className="text-sm font-bold text-ink transition-colors">
                               {step.name}
                             </div>
-                            <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-0.5">
-                              <span className="flex items-center gap-1"><Wifi size={10} /> {step.network_type}</span>
-                              <span className="flex items-center gap-1"><Activity size={10} /> {step.ping_latency}ms</span>
+                            <div className="flex items-center gap-3 text-xs text-muted mt-1 font-medium">
+                              <span className="flex items-center gap-1.5"><Wifi size={12} /> {step.network_type}</span>
+                              <span className="flex items-center gap-1.5"><Activity size={12} /> {step.ping_latency}ms</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
                           <div className="text-right">
-                            <div className="text-xs font-mono font-bold text-slate-600">{step.response_time}s</div>
-                            <div className="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">Response Time</div>
+                            <div className="text-sm font-mono font-bold text-ink">{step.response_time}s</div>
+                            <div className="text-[10px] text-muted uppercase font-bold tracking-widest mt-0.5">Response Time</div>
                           </div>
-                          <div className={`p-1 rounded-md transition-transform duration-200 ${expandedSteps[step.id || idx] ? 'rotate-180 bg-slate-100' : 'bg-transparent'}`}>
-                            <ChevronDown size={16} className="text-slate-400" />
+                          <div className={`p-1.5 rounded-full transition-transform duration-200 ${expandedSteps[step.id || idx] ? 'rotate-180 bg-surface-strong' : 'bg-transparent text-muted group-hover:text-ink group-hover:bg-hairline-soft'}`}>
+                            <ChevronDown size={20} />
                           </div>
                         </div>
                       </div>
 
                       {/* Tasks List (Expanded) */}
                       {expandedSteps[step.id || idx] && step.tasks && (
-                        <div className="bg-slate-50/50 border-t border-slate-50 px-4 py-3 divide-y divide-slate-100">
+                        <div className="bg-surface-soft/30 border-t border-hairline px-6 py-4 divide-y divide-hairline">
                           {step.tasks.map((task, tidx) => (
-                            <div key={tidx} className="py-2 flex items-center justify-between">
+                            <div key={tidx} className="py-3 flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <div className={`w-1.5 h-1.5 rounded-full ${task.success ? 'bg-emerald-400' : 'bg-rose-400'}`} />
-                                <span className="text-xs font-medium text-slate-600">{task.task_name}</span>
+                                <div className={`w-2 h-2 rounded-full ${task.success ? 'bg-emerald-400' : 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.4)]'}`} />
+                                <span className="text-sm font-semibold text-ink">{task.task_name}</span>
                               </div>
-                              <div className="flex items-center gap-4 text-[10px] font-mono">
-                                <div className="text-slate-400">
-                                  Dur: <span className="text-slate-600 font-bold">{task.duration_seconds}s</span>
+                              <div className="flex items-center gap-6 text-xs font-mono font-medium">
+                                <div className="text-muted">
+                                  Dur: <span className="text-ink font-bold">{task.duration_seconds}s</span>
                                 </div>
                                 {task.measured && (
-                                  <div className="text-slate-400">
-                                    Resp: <span className="text-purple-600 font-bold">{task.response_time}s</span>
+                                  <div className="text-muted">
+                                    Resp: <span className="text-primary font-bold">{task.response_time}s</span>
                                   </div>
                                 )}
                               </div>
@@ -231,12 +231,12 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
 
         {/* Footer Info */}
         {data && (
-          <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[10px] font-medium text-slate-400 px-6 shrink-0">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5"><Calendar size={12} /> Created: {new Date(data.created_at).toLocaleString()}</span>
-              <span className="flex items-center gap-1.5"><MapPin size={12} /> {data.location?.lat || '-'}, {data.location?.long || '-'}</span>
+          <div className="p-5 bg-surface-soft/50 border-t border-hairline flex items-center justify-between text-[11px] font-semibold text-muted px-8 shrink-0">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2"><Calendar size={14} /> Created: {new Date(data.created_at).toLocaleString()}</span>
+              <span className="flex items-center gap-2"><MapPin size={14} /> {data.location?.lat || '-'}, {data.location?.long || '-'}</span>
             </div>
-            <div>
+            <div className="font-mono tracking-widest uppercase">
               ID: {data.id}
             </div>
           </div>

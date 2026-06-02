@@ -50,53 +50,53 @@ const EditJourneyPage = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto p-20 flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-        <p className="text-slate-500 animate-pulse">Memuat data journey...</p>
+      <div className="max-w-[1000px] mx-auto p-20 flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 border-4 border-hairline border-t-primary rounded-full animate-spin"></div>
+        <p className="text-body animate-pulse">Loading journey data...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-5xl mx-auto p-20 flex flex-col items-center justify-center text-center space-y-4">
-        <div className="p-4 bg-red-50 text-red-500 rounded-full">
+      <div className="max-w-[1000px] mx-auto p-20 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="p-4 bg-surface-strong text-semantic-down rounded-full">
           <AlertCircle size={40} />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-slate-800">Ups! Terjadi Kesalahan</h3>
-          <p className="text-slate-500 max-w-xs mx-auto">{error}</p>
+          <h3 className="text-xl font-normal tracking-tight text-ink">Oops! Something went wrong</h3>
+          <p className="text-body max-w-xs mx-auto">{error}</p>
         </div>
         <button 
           onClick={() => navigate('/Journeys')}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-surface-strong text-ink rounded-full font-semibold hover:bg-hairline transition-colors"
         >
           <ChevronLeft size={16} />
-          Kembali ke Journeys
+          Back to Journeys
         </button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-12">
+    <div className="max-w-[1000px] mx-auto py-12 px-2 md:px-6 space-y-8 animate-fade-in pb-24">
       {/* Page Header */}
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-4 mb-12">
         <button
           onClick={() => navigate('/Journeys')}
-          className="p-2 -ml-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+          className="p-3 -ml-3 text-muted hover:text-ink hover:bg-surface-soft rounded-full transition-colors"
           title="Back to Journeys"
         >
           <ChevronLeft size={24} />
         </button>
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-500 mb-1">
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted mb-2">
             <Map size={14} />
             <span>Journeys</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-blue-600">Edit Journey</span>
+            <span className="text-hairline-soft">/</span>
+            <span className="text-primary">Edit Journey</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800">Edit Automation Journey</h1>
+          <h1 className="text-[44px] font-normal tracking-tight text-ink leading-none">Edit Automation Journey</h1>
         </div>
       </div>
 

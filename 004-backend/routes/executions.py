@@ -173,3 +173,23 @@ def stream_execution(execution_id):
             'X-Accel-Buffering': 'no',
         }
     )
+
+
+@executions_bp.route('/executions/<execution_id>/stop', methods=['POST'])
+@auth_required
+def stop_execution(execution_id):
+    """
+    Stop a running execution.
+    """
+    execution = Execution.query.filter_by(id=execution_id, user_id=g.current_user.id).first()
+    if not execution:
+        return jsonify({"error": f"Execution {execution_id} not found"}), 404
+
+    if execution.status in ('completed', 'failed', 'cancelled'):
+        return jsonify({"message": f"Execution already {execution.status}"}), 400
+
+    try:
+        executor_service.stop_execution(execution_id, current_app._get_current_object())
+        return jsonify({"message": "Execution stopped successfully"})
+    except Exception as e:
+        return jsonify({"error": f"Failed to stop execution: {str(e)}"}), 500

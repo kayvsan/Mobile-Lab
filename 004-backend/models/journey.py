@@ -12,7 +12,7 @@ class Journey(db.Model):
     name = db.Column(db.String(200), nullable=False)
     package = db.Column(db.String(200), nullable=False, default='')
     platform = db.Column(db.String(50), default='android')
-    # Full steps/tasks definition as JSON
+    # Full sub journeys/tasks definition as JSON
     details = db.Column(db.JSON, nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),

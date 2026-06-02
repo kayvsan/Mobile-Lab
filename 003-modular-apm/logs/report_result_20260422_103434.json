@@ -1,4 +1,0 @@
-{
-  "success": false,
-  "error": "'NetworkParams' object has no attribute 'test_api'"
-}

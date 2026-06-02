@@ -34,6 +34,7 @@ const ExecutionPage = () => {
   const [interval, setInterval] = useState(60);
   
   const [isExecuting, setIsExecuting] = useState(false);
+  const [currentExecutionId, setCurrentExecutionId] = useState(null);
   const [logs, setLogs] = useState([]);
   const logEndRef = useRef(null);
   const abortControllerRef = useRef(null);
@@ -121,6 +122,7 @@ const ExecutionPage = () => {
         executionId = response.data.execution?.id;
       }
 
+      setCurrentExecutionId(executionId);
       addLog('Eksekusi berhasil dimulai.', 'success');
       addLog(`Execution ID: ${executionId || 'N/A'}`, 'info');
 
@@ -159,6 +161,7 @@ const ExecutionPage = () => {
             const { done, value } = await reader.read();
             if (done) {
               setIsExecuting(false);
+              setCurrentExecutionId(null);
               addLog('Stream selesai.', 'success');
               break;
             }
@@ -204,12 +207,15 @@ const ExecutionPage = () => {
                     : (data.message || 'Completed');
                   addLog(`✅ ${detail}`, 'success');
                   setIsExecuting(false);
+                  setCurrentExecutionId(null);
                 } else if (eventType === 'failed') {
                   addLog(`❌ ${data.error || 'Execution failed'}`, 'error');
                   setIsExecuting(false);
+                  setCurrentExecutionId(null);
                 } else if (eventType === 'close') {
                   addLog(`Stream closed: ${data.reason}`, 'system');
                   setIsExecuting(false);
+                  setCurrentExecutionId(null);
                 } else {
                   // Fallback for unknown event types
                   addLog(data.message || JSON.stringify(data), 'info');
@@ -237,8 +243,19 @@ const ExecutionPage = () => {
     }
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     setIsExecuting(false);
+    
+    if (currentExecutionId) {
+      try {
+        await api.post(`/executions/${currentExecutionId}/stop`);
+        addLog('Perintah berhenti dikirim ke backend.', 'system');
+      } catch (err) {
+        addLog(`Gagal mengirim perintah berhenti: ${err?.response?.data?.error || err.message}`, 'error');
+      }
+      setCurrentExecutionId(null);
+    }
+    
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -246,23 +263,23 @@ const ExecutionPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in flex flex-col h-full">
+    <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in flex flex-col h-full">
       {/* Header */}
-      <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-            <Terminal size={28} />
+          <div className="p-3 bg-surface-strong text-primary rounded-full">
+            <Terminal size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Execution</h1>
-            <p className="text-slate-500 text-sm mt-1">Real-time automation monitoring</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Execution</h1>
+            <p className="text-body text-base">Real-time automation monitoring</p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
           <button 
             onClick={fetchData}
-            className="p-2.5 bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm active:scale-95"
+            className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
             title="Refresh Options"
           >
             <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
@@ -270,16 +287,16 @@ const ExecutionPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
         {/* Control Panel */}
         <div className="lg:col-span-1 min-h-0">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-full overflow-hidden">
+          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
             {/* Tabs Navigation */}
-            <div className="flex border-b border-slate-100 p-1 bg-slate-50/50">
+            <div className="flex border-b border-hairline p-2 bg-surface-soft/50">
               <button 
                 onClick={() => setActiveTab('single')}
                 disabled={isExecuting}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all rounded-xl ${activeTab === 'single' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'single' ? 'bg-canvas text-primary shadow-sm' : 'text-muted hover:text-ink'}`}
               >
                 <Play size={16} fill={activeTab === 'single' ? 'currentColor' : 'none'} />
                 Execution
@@ -287,43 +304,43 @@ const ExecutionPage = () => {
               <button 
                 onClick={() => setActiveTab('cycle')}
                 disabled={isExecuting}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all rounded-xl ${activeTab === 'cycle' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'cycle' ? 'bg-canvas text-primary shadow-sm' : 'text-muted hover:text-ink'}`}
               >
                 <Repeat size={16} />
                 Cycle
               </button>
             </div>
 
-            <div className="p-6 flex-1 overflow-auto space-y-6">
+            <div className="p-8 flex-1 overflow-auto space-y-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                <h3 className="text-[10px] font-bold text-muted uppercase tracking-widest">
                   Configuration
                 </h3>
-                <Settings2 size={16} className="text-slate-300" />
+                <Settings2 size={16} className="text-muted" />
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 text-red-600 rounded-lg text-xs flex items-start gap-2 border border-red-100">
-                  <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                  <p>{error}</p>
+                <div className="p-4 bg-rose-50 text-semantic-down rounded-2xl text-sm flex items-start gap-3 border border-rose-100">
+                  <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                  <p className="font-medium">{error}</p>
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Device Selection */}
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                  <label className="block text-xs font-semibold text-ink mb-2">
                     Select Device
                   </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
                       <Smartphone size={18} />
                     </div>
                     <select 
                       value={selectedDevice}
                       onChange={(e) => setSelectedDevice(e.target.value)}
                       disabled={isExecuting || isLoading}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none appearance-none font-medium text-slate-700"
+                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
                     >
                       <option value="">Choose a device...</option>
                       {devices.map(device => (
@@ -337,20 +354,20 @@ const ExecutionPage = () => {
 
                 {/* Journey Selection */}
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                  <label className="block text-xs font-semibold text-ink mb-2">
                     Select Journey{activeTab === 'cycle' && 's'}
                   </label>
                   
                   {activeTab === 'single' ? (
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
                         <Map size={18} />
                       </div>
                       <select 
                         value={selectedJourney}
                         onChange={(e) => setSelectedJourney(e.target.value)}
                         disabled={isExecuting || isLoading}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none appearance-none font-medium text-slate-700"
+                        className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
                       >
                         <option value="">Choose a journey...</option>
                         {journeys.map(journey => (
@@ -397,30 +414,33 @@ const ExecutionPage = () => {
                         }}
                         disabled={isExecuting || isLoading}
                         sx={{
-                          backgroundColor: '#f8fafc', // slate-50
-                          borderRadius: '0.75rem', // xl
+                          backgroundColor: '#f8f9fa',
+                          borderRadius: '0.75rem',
+                          fontFamily: 'Inter, sans-serif',
+                          color: '#0a0b0d',
+                          fontWeight: 600,
                           '.MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#e2e8f0', // slate-200
+                            borderColor: '#e5e7ea',
                           },
                           '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#cbd5e1', // slate-300
+                            borderColor: '#d1d5db',
                           },
                           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#3b82f6', // blue-500
+                            borderColor: '#0052ff',
                             borderWidth: '2px',
                           },
                           '&.Mui-focused': {
                             backgroundColor: '#ffffff',
                           },
                           '.MuiSelect-select': {
-                            padding: '11px 14px',
+                            padding: '11px 16px',
                           }
                         }}
                       >
                         {journeys.map((journey) => (
                           <MenuItem key={journey.id} value={journey.id}>
                             <Checkbox checked={selectedJourneys.indexOf(journey.id) > -1} size="small" />
-                            <ListItemText primary={journey.name} primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 500 }} />
+                            <ListItemText primary={journey.name} primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 600, fontFamily: 'Inter' }} />
                           </MenuItem>
                         ))}
                       </MuiSelect>
@@ -432,11 +452,11 @@ const ExecutionPage = () => {
                 {activeTab === 'cycle' && (
                   <div className="grid grid-cols-2 gap-4 animate-fade-in">
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                      <label className="block text-xs font-semibold text-ink mb-2">
                         Cycles
                       </label>
                       <div className="relative group">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
                           <Repeat size={16} />
                         </div>
                         <input 
@@ -446,16 +466,16 @@ const ExecutionPage = () => {
                           onChange={(e) => setCycleCount(e.target.value)}
                           disabled={isExecuting}
                           placeholder="Ex: 10"
-                          className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium"
+                          className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                      <label className="block text-xs font-semibold text-ink mb-2">
                         Interval (s)
                       </label>
                       <div className="relative group">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
                           <Clock size={16} />
                         </div>
                         <input 
@@ -465,7 +485,7 @@ const ExecutionPage = () => {
                           onChange={(e) => setInterval(e.target.value)}
                           disabled={isExecuting}
                           placeholder="Ex: 60"
-                          className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium"
+                          className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
                         />
                       </div>
                     </div>
@@ -474,7 +494,7 @@ const ExecutionPage = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-slate-100 bg-slate-50/30 space-y-3">
+            <div className="p-8 border-t border-hairline bg-surface-soft/30 space-y-4">
               {selectedDevice && (
                 <button 
                   onClick={() => {
@@ -485,7 +505,7 @@ const ExecutionPage = () => {
                       toast.error('Monitoring stream tidak tersedia untuk device ini.');
                     }
                   }}
-                  className="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 px-6 rounded-2xl font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 group"
+                  className="w-full bg-surface-dark hover:bg-black text-white py-4 px-6 rounded-full font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 group"
                 >
                   <Monitor size={18} className="group-hover:animate-pulse" />
                   Live Monitoring
@@ -496,7 +516,7 @@ const ExecutionPage = () => {
                 <button 
                   onClick={handleStart}
                   disabled={isLoading || !selectedDevice || (activeTab === 'single' ? !selectedJourney : selectedJourneys.length === 0)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-2xl font-bold transition-all shadow-lg shadow-blue-500/20 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
+                  className="w-full bg-primary hover:bg-primary-active text-on-primary py-4 px-6 rounded-full font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
                 >
                   <Play size={20} fill="currentColor" />
                   Start {activeTab === 'single' ? 'Execution' : 'Cycle Loop'}
@@ -504,7 +524,7 @@ const ExecutionPage = () => {
               ) : (
                 <button 
                   onClick={handleStop}
-                  className="w-full bg-red-500 hover:bg-red-600 text-white py-4 px-6 rounded-2xl font-bold transition-all shadow-lg shadow-red-500/20 active:scale-95 flex items-center justify-center gap-2"
+                  className="w-full bg-semantic-down hover:opacity-90 text-white py-4 px-6 rounded-full font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
                 >
                   <Square size={20} fill="currentColor" />
                   Stop Execution
@@ -516,31 +536,31 @@ const ExecutionPage = () => {
 
         {/* Log Viewer */}
         <div className="lg:col-span-2 min-h-0 flex flex-col">
-          <div className="bg-slate-900 rounded-2xl shadow-xl overflow-hidden flex flex-col flex-1 border border-slate-800">
+          <div className="bg-[#0a0b0d] rounded-3xl overflow-hidden flex flex-col flex-1 border border-hairline shadow-2xl">
             {/* Terminal Header */}
-            <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.4)]"></div>
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+            <div className="bg-[#111214] px-6 py-4 flex items-center justify-between border-b border-white/5 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]"></div>
+                  <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]"></div>
+                  <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"></div>
                 </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-4">Terminal Logs</span>
+                <span className="text-xs font-semibold text-slate-400 tracking-wide ml-4">Terminal Logs</span>
               </div>
               {isExecuting && (
-                <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
-                  <span className="text-[9px] text-blue-400 font-bold uppercase tracking-tighter">Active Process</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-[#0052ff]/10 rounded-full border border-[#0052ff]/20">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                  <span className="text-[10px] text-primary font-bold uppercase tracking-widest">Active Process</span>
                 </div>
               )}
             </div>
 
             {/* Terminal Content */}
-            <div className="flex-1 overflow-auto p-5 font-mono text-[13px] space-y-1.5 bg-slate-900 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+            <div className="flex-1 overflow-auto p-6 font-mono text-[14px] space-y-2 bg-[#0a0b0d] scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
               {logs.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-700 space-y-3 opacity-40">
-                  <Terminal size={40} strokeWidth={1.5} />
-                  <p className="text-xs font-bold uppercase tracking-widest">Ready for deployment</p>
+                <div className="h-full flex flex-col items-center justify-center text-slate-600 space-y-4 opacity-40">
+                  <Terminal size={48} strokeWidth={1} />
+                  <p className="text-sm font-semibold tracking-wider">Ready for deployment</p>
                 </div>
               ) : (
                 logs.map((log, idx) => (
@@ -550,10 +570,10 @@ const ExecutionPage = () => {
                       flex-1 break-all
                       ${log.type === 'error' ? 'text-rose-400' : ''}
                       ${log.type === 'success' ? 'text-emerald-400' : ''}
-                      ${log.type === 'system' ? 'text-blue-400 font-bold' : ''}
+                      ${log.type === 'system' ? 'text-primary font-bold' : ''}
                       ${log.type === 'info' ? 'text-slate-300' : ''}
                     `}>
-                      <span className="mr-2 opacity-40 group-hover:opacity-100 transition-opacity">
+                      <span className="mr-3 opacity-40 group-hover:opacity-100 transition-opacity inline-block w-4 text-center">
                         {log.type === 'error' ? '✖' : ''}
                         {log.type === 'success' ? '✔' : ''}
                         {log.type === 'system' ? '➜' : ''}

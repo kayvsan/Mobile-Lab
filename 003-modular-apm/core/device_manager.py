@@ -58,6 +58,13 @@ class DeviceManager:
             self.screen_size = self._get_screen_size()
             self.window_size = self._get_window_size()
             
+            # Check and install CURL service app for NVT
+            try:
+                collector = NetworkParams(self)
+                collector.install_curl()
+            except Exception as e:
+                logger.warning(f"Failed to install/verify NVT URL service: {e}")
+            
             logger.info(f"[DEVICE] Connected successfully -- screen={self.screen_size['width']}x{self.screen_size['height']}, window={self.window_size['width']}x{self.window_size['height']}")
             return True
         except Exception as e:
@@ -221,26 +228,38 @@ class DeviceManager:
             return False
 
     def get_location(self) -> Dict[str, Any]:
-        """Get device GPS coordinates using analyze-based parsing"""
+        """Get device GPS coordinates using robust regex parsing"""
         result = {"lat": "0", "long": "0"}
         try:
-            command = (r'shell dumpsys location | findstr /c:": Location"' if os.name == "nt"
-                       else r'shell dumpsys location | grep ":\ Location"')
-            resp = self._run_adb(command)
-            if not resp: return result
-            
-            str_temp = resp[0].strip()
-            ar_temp = analyze(str_temp)
-            if ar_temp == "error" or "2" not in ar_temp:
+            resp = self._run_adb("shell dumpsys location")
+            if not resp:
                 return result
                 
-            loc_data = ar_temp["2"]
+            pattern = r"Location\[(gps|fused|network)\s+([-\d.]+),([-\d.]+)"
+            locations = []
+            
+            for line in resp:
+                match = re.search(pattern, line)
+                if match:
+                    locations.append({
+                        "type": match.group(1),
+                        "lat": match.group(2),
+                        "long": match.group(3)
+                    })
+            
+            if not locations:
+                return result
+                
+            # Select location based on priority: gps > fused > network
+            priority = {"gps": 3, "fused": 2, "network": 1}
+            best_loc = max(locations, key=lambda x: priority.get(x["type"], 0))
+            
             result = {
-                "type": loc_data.get("0", "unknown"),
-                "lat": loc_data.get("1", "0"),
-                "long": loc_data.get("2", "0")
+                "type": best_loc["type"],
+                "lat": best_loc["lat"],
+                "long": best_loc["long"]
             }
-            logger.info(f"[DEVICE] Location captured: lat={result['lat']}, long={result['long']} (type={result.get('type', 'unknown')})")
+            logger.info(f"[DEVICE] Location captured: lat={result['lat']}, long={result['long']} (type={result['type']})")
         except Exception as e:
             logger.warning(f"Failed to get location: {e}")
         return result
@@ -290,7 +309,7 @@ class DeviceManager:
                     logger.error(f"Failed to pull recording: {e}")
         return False
 
-    def get_network_param(self, settings: Dict[str, Any], is_nvt: bool = False) -> Dict[str, Any]:
+    def get_network_param(self, settings: Dict[str, Any], is_nvt: bool = False, run_api: bool = False) -> Dict[str, Any]:
         """
         Collect network parameters matching legacy logic exactly.
         is_nvt=True includes API test and uses NVT-specific ping count.
@@ -298,27 +317,27 @@ class DeviceManager:
         collector = NetworkParams(self)
         obj_return = {}
         
-        mode = "NVT" if is_nvt else "Journey"
+        mode = "NVT" if is_nvt else ("Detail" if run_api else "Task Hook")
         logger.info(f"[NETWORK] Collecting {mode} measurements for {self.udid}...")
         
         # 1. Signal & CellID
         obj_return["signal_level"] = collector.get_signal_level()
         obj_return["cellid"] = collector.get_cell_id()
         
-        # 2. Test API (NVT Only) - Disabled for now
-        if is_nvt:
-            # device_id = settings.get("id", self.udid) 
-            # test_service = settings.get("test_api_service")
-            # api_timeout = int(settings.get("test_api_timeout", 30000))
+        # 2. Test API (NVT or run_api requested)
+        if is_nvt or run_api:
+            device_id = settings.get("id", self.udid) 
+            test_service = settings.get("test_api_service")
+            api_timeout = int(settings.get("test_api_timeout", 30000))
+            api_url = settings.get("test_api_url", "http://8.8.8.8")
             
-            # obj_return["test_api"] = collector.test_api(
-            #     api_url="8.8.8.8",
-            #     timeout=api_timeout,
-            #     test_service=test_service,
-            #     udid=self.udid,
-            #     device_id=device_id
-            # )
-            obj_return["test_api"] = {"status": "1", "response_time": "-1", "result": "skipped"}
+            obj_return["test_api"] = collector.test_api(
+                api_url=api_url,
+                timeout=api_timeout,
+                test_service=test_service,
+                udid=self.udid,
+                device_id=device_id
+            )
         
         # 3. Ping (Dynamic packets)
         if is_nvt:

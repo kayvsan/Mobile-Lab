@@ -5,6 +5,10 @@ import JourneysPage from './pages/JourneysPage';
 import ExecutionPage from './pages/ExecutionPage';
 import ReportsPage from './pages/ReportsPage';
 import AgentsPage from './pages/AgentsPage';
+import KpiPage from './pages/KpiPage';
+import PerformancePage from './pages/PerformancePage';
+import AvailabilityPage from './pages/AvailabilityPage';
+import NvtPage from './pages/NvtPage';
 import CreateJourneyPage from './pages/CreateJourneyPage';
 import EditJourneyPage from './pages/EditJourneyPage';
 import MainLayout from './components/layout/MainLayout';
@@ -34,6 +38,10 @@ function App() {
         <Route element={<MainLayout />}>
           <Route 
             path="/" 
+            element={isAuthenticated ? <KpiPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/Devices" 
             element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
@@ -59,6 +67,18 @@ function App() {
           <Route 
             path="/Reports" 
             element={isAuthenticated ? <ReportsPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/performance" 
+            element={isAuthenticated ? <PerformancePage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/availability" 
+            element={isAuthenticated ? <AvailabilityPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/nvt" 
+            element={isAuthenticated ? <NvtPage /> : <Navigate to="/login" replace />} 
           />
         </Route>
         

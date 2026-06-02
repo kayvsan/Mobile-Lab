@@ -118,7 +118,7 @@
               "host": ["{{base_url}}"],
               "path": ["api", "journeys"],
               "query": [
-                { "key": "details", "value": "false", "description": "Set to 'true' to include full step details" }
+                { "key": "details", "value": "false", "description": "Set to 'true' to include full sub journey details" }
               ]
             },
             "header": [
@@ -147,7 +147,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"journey_key\": \"my_new_journey\",\n  \"name\": \"My New Journey\",\n  \"package\": \"com.example.app\",\n  \"platform\": \"android\",\n  \"details\": [\n    {\n      \"id\": \"step_1\",\n      \"name\": \"Open App\",\n      \"measure_response_time\": true,\n      \"tasks\": [\n        {\n          \"id\": \"open\",\n          \"name\": \"Launch App\",\n          \"type\": \"app_open\",\n          \"timeout\": 30,\n          \"critical\": true\n        }\n      ]\n    }\n  ]\n}"
+              "raw": "{\n  \"journey_key\": \"my_new_journey\",\n  \"name\": \"My New Journey\",\n  \"package\": \"com.example.app\",\n  \"platform\": \"android\",\n  \"details\": [\n    {\n      \"id\": \"sub_journey_1\",\n      \"name\": \"Open App\",\n      \"measure_response_time\": true,\n      \"tasks\": [\n        {\n          \"id\": \"open\",\n          \"name\": \"Launch App\",\n          \"type\": \"app_open\",\n          \"timeout\": 30,\n          \"critical\": true\n        }\n      ]\n    }\n  ]\n}"
             }
           }
         },

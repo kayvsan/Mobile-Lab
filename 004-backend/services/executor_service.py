@@ -13,6 +13,8 @@ from config import Config
 
 # Simple in-memory execution state for SSE
 _execution_events = {}  # execution_id -> list of event dicts
+_active_processes = {}  # execution_id -> subprocess.Popen object
+_stop_flags = {}        # execution_id -> bool
 
 
 def get_execution_events(execution_id: str) -> list:
@@ -135,6 +137,27 @@ def start_cycle_execution(device_id: str, journey_ids: list, cycles: int, interv
     return execution
 
 
+def stop_execution(execution_id: str, app):
+    """Stop a running execution (single or cycle)"""
+    _stop_flags[execution_id] = True
+    process = _active_processes.get(execution_id)
+    
+    if process:
+        try:
+            process.terminate()
+        except Exception as e:
+            print(f"Error terminating process for execution {execution_id}: {e}")
+            
+    with app.app_context():
+        execution = db.session.get(Execution, execution_id)
+        if execution and execution.status in ('queued', 'running'):
+            execution.status = 'cancelled'
+            execution.finished_at = datetime.now(timezone.utc)
+            db.session.commit()
+            
+    _push_event(execution_id, "failed", {"error": "Execution stopped by user"})
+
+
 def _sync_journey_to_file(journey: Journey):
     """Write the journey definition from DB back to the file system using journey_key"""
     journey_file = os.path.join(Config.JOURNEYS_DIR, f"{journey.journey_key}.json")
@@ -216,6 +239,8 @@ def _run_automation(execution_id: str, journey_id: str, device_id: str, user_id:
             text=True,
             bufsize=1  # Line buffered
         )
+        
+        _active_processes[execution_id] = process
 
         stdout_lines = []
         # Read stdout line by line as it becomes available
@@ -231,6 +256,12 @@ def _run_automation(execution_id: str, journey_id: str, device_id: str, user_id:
         except subprocess.TimeoutExpired:
             process.kill()
             raise
+        finally:
+            _active_processes.pop(execution_id, None)
+
+        # Skip DB update if cancelled by stop_execution
+        if _stop_flags.pop(execution_id, False):
+            return
 
         with app.app_context():
             execution = db.session.get(Execution, execution_id)
@@ -304,11 +335,19 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
 
         api_port = app.config.get('SERVER_PORT', 5000)
         api_key = app.config.get('WEBHOOK_API_KEY', '')
+        
+        _stop_flags[execution_id] = False
 
         for cycle_idx in range(1, cycles + 1):
+            if _stop_flags.get(execution_id):
+                break
+                
             _push_event(execution_id, "log", {"message": f"--- STARTING CYCLE {cycle_idx}/{cycles} ---"})
             
             for j_idx, j_id in enumerate(journey_ids):
+                if _stop_flags.get(execution_id):
+                    break
+                    
                 with app.app_context():
                     journey = db.session.get(Journey, j_id) or Journey.query.filter_by(id=j_id).first()
                     if not journey:
@@ -339,11 +378,17 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
                     text=True,
                     bufsize=1
                 )
+                
+                _active_processes[execution_id] = process
 
                 for line in process.stdout:
                     _push_event(execution_id, "log", {"message": line.rstrip('\n')})
 
                 process.wait(timeout=600)
+                _active_processes.pop(execution_id, None)
+                
+                if _stop_flags.get(execution_id):
+                    break
                 
                 # Ingest report for this run
                 with app.app_context():
@@ -355,7 +400,17 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
                 if cycle_idx < cycles or j_idx < len(journey_ids) - 1:
                     if interval > 0:
                         _push_event(execution_id, "log", {"message": f"Waiting {interval}s interval..."})
-                        time.sleep(interval)
+                        
+                        # Wait for interval but check stop flag periodically
+                        sleep_time = 0
+                        while sleep_time < interval:
+                            if _stop_flags.get(execution_id):
+                                break
+                            time.sleep(1)
+                            sleep_time += 1
+
+        if _stop_flags.pop(execution_id, False):
+            return
 
         with app.app_context():
             execution = db.session.get(Execution, execution_id)
