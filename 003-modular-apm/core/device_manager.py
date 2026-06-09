@@ -329,7 +329,7 @@ class DeviceManager:
             device_id = settings.get("id", self.udid) 
             test_service = settings.get("test_api_service")
             api_timeout = int(settings.get("test_api_timeout", 30000))
-            api_url = settings.get("test_api_url", "http://8.8.8.8")
+            api_url = settings.get("test_api_url", "https://www.google.com")
             
             obj_return["test_api"] = collector.test_api(
                 api_url=api_url,

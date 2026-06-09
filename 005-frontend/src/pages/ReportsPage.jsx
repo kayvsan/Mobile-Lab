@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { 
   FileText, CheckCircle2, XCircle, Clock, Wifi, Activity, 
   Search, RefreshCcw, ChevronLeft, ChevronRight, AlertCircle, Monitor,
-  Eye, PlayCircle, Filter, Download
+  Eye, PlayCircle, Filter, Download, Globe
 } from 'lucide-react';
 import api from '../services/api';
 import ReportDetailModal from '../components/ReportDetailModal';
@@ -77,21 +77,59 @@ const ReportsPage = () => {
       const exportData = response.data.data;
       
       const formattedData = exportData.map(report => ({
-        'Report ID': report.id,
-        'Journey': report.journey_id,
+        'Journey': report.journey || report.journey_id,
         'Device': report.device,
         'Response Time (s)': report.total_response_time,
         'Ping (ms)': report.ping_latency,
         'Packet Loss (%)': report.packet_loss,
+        'API Status': report.nvt_measurements?.test_api?.status || '-',
+        'API Resp (s)': report.nvt_measurements?.test_api?.response_time !== undefined && report.nvt_measurements?.test_api?.response_time !== "-1" ? report.nvt_measurements.test_api.response_time : '-',
         'Network Type': report.network_type,
         'Signal Level': report.signal_level,
         'Status': report.success ? 'Success' : 'Failed',
         'Time': new Date(report.created_at).toLocaleString('id-ID')
       }));
 
+      // Create details data for the second sheet
+      const detailsData = [];
+      exportData.forEach(report => {
+        let details = report.details;
+        if (typeof details === 'string') {
+          try { details = JSON.parse(details); } catch(e) { details = []; }
+        }
+        
+        if (Array.isArray(details)) {
+          details.forEach((d, idx) => {
+            const net = d.network_params || {};
+            const sig = net.signal_level || {};
+            const ping = net.test_ping || {};
+            const cell = net.cellid || {};
+            
+            detailsData.push({
+              'Journey': report.journey || report.journey_id,
+              'Step Sequence': idx + 1,
+              'Detail Name': d.name,
+              'Status': d.success ? 'Success' : 'Failed',
+              'Response Time (s)': d.response_time !== null ? d.response_time : '-',
+              'Signal Level (dBm)': sig.signal_level !== undefined ? sig.signal_level : '-',
+              'Signal Quality': sig.signal_quality !== undefined ? sig.signal_quality : '-',
+              'Network Type': sig.network_type || '-',
+              'Cell ID': cell.cellid !== undefined ? cell.cellid : '-',
+              'Ping (ms)': ping.latency !== undefined ? ping.latency : '-',
+              'Packet Loss (%)': ping.packet_loss !== undefined ? ping.packet_loss : '-',
+              'API Status': net.test_api?.status || '-',
+              'API Resp (s)': net.test_api?.response_time !== undefined && net.test_api?.response_time !== "-1" ? net.test_api.response_time : '-'
+            });
+          });
+        }
+      });
+
       const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const detailsWorksheet = XLSX.utils.json_to_sheet(detailsData);
+      
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
+      XLSX.utils.book_append_sheet(workbook, detailsWorksheet, "Journey Details");
       
       const dateStr = new Date().toISOString().split('T')[0];
       XLSX.writeFile(workbook, `Reports_Export_${dateStr}.xlsx`);
@@ -322,7 +360,7 @@ const ReportsPage = () => {
                   {filteredReports.map((report) => (
                     <tr key={report.id} className="hover:bg-surface-soft/50 transition-colors group">
                       <td className="py-5 px-8">
-                        <div className="font-semibold text-ink">{report.journey_id}</div>
+                        <div className="font-semibold text-ink">{report.journey || report.journey_id}</div>
                         <div className="flex items-center gap-2 text-[11px] text-muted mt-1.5 font-medium">
                           <Monitor size={14} className="text-muted" />
                           <span>{report.device}</span>
@@ -338,15 +376,36 @@ const ReportsPage = () => {
                         </div>
                       </td>
                       <td className="py-5 px-8">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-ink">
-                            <Activity size={16} className="text-primary" />
-                            <span className="font-semibold">{report.ping_latency}ms</span>
-                            <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Ping</span>
+                        <div className="flex flex-col gap-3">
+                          {/* Ping Section */}
+                          <div>
+                            <div className="flex items-center gap-2 text-ink">
+                              <Activity size={16} className="text-primary shrink-0" />
+                              <span className="font-semibold">{report.ping_latency}ms</span>
+                              <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Ping</span>
+                            </div>
+                            <div className="text-xs font-medium mt-1 pl-6">
+                              <span className="text-muted">Loss: <span className={report.packet_loss > 0 ? 'text-semantic-down font-bold' : 'text-ink'}>{report.packet_loss}%</span></span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-3 text-xs font-medium">
-                            <span className="text-muted">Loss: <span className={report.packet_loss > 0 ? 'text-semantic-down font-bold' : 'text-ink'}>{report.packet_loss}%</span></span>
-                          </div>
+                          
+                          {/* API Section */}
+                          {report.nvt_measurements?.test_api && (
+                            <div className="pt-3 border-t border-hairline border-dashed">
+                              <div className="flex items-center gap-2 text-ink">
+                                <Globe size={16} className="text-sky-500 shrink-0" />
+                                <span className="font-semibold">
+                                  {report.nvt_measurements.test_api.response_time !== undefined && report.nvt_measurements.test_api.response_time !== "-1"
+                                    ? `${report.nvt_measurements.test_api.response_time}s` 
+                                    : '-'}
+                                </span>
+                                <span className="text-[10px] font-bold text-muted uppercase tracking-widest">API</span>
+                              </div>
+                              <div className="text-xs font-medium mt-1 pl-6">
+                                <span className="text-muted">Status: <span className={String(report.nvt_measurements.test_api.status) === "200" ? 'text-emerald-600 font-bold' : 'text-semantic-down font-bold'}>{report.nvt_measurements.test_api.status}</span></span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="py-5 px-8">

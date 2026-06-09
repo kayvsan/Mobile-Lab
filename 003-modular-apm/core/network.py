@@ -225,72 +225,40 @@ class NetworkParams:
 
     def test_api(self, api_url: str, timeout: int = 10000, test_service: str = None, 
                  udid: str = None, device_id: str = None) -> Dict[str, Any]:
-        """Test API via custom Android service and logcat polling
-        
-        Args:
-            api_url: URL endpoint to test
-            timeout: Timeout in milliseconds (default: 10000)
-            test_service: Service component name (e.g., "package/.Service")
-            udid: Device UDID (default: self.udid)
-            device_id: Device identifier for tagging (default: self.udid)
-        """
+        """Test API via device's built-in curl to get actual HTTP Status Codes"""
         try:
-            # Use default values if not provided
-            if test_service is None:
-                test_service = self.default_test_service
-            if udid is None:
-                udid = self.udid
-            if device_id is None:
-                device_id = self.udid
+            logger.info(f"Testing URL with curl: {api_url}")
             
-            millis = int(round(time.time() * 1000))
-            tag = f"{device_id}-{millis}"
-            logger.info(f"device_id: {device_id}")
-
-            logger.info(f"Starting API test service with tag: {tag}")
-            logger.info(f"Testing URL: {api_url}")
-            logger.info(f"Service: {test_service}")
+            # Convert timeout from ms to seconds for curl
+            timeout_sec = max(1, int(timeout / 1000))
             
-            # Start service with legacy format using correct test_service
-            start_cmd = f'shell am start-foreground-service -n {test_service} -e tag {tag} -e url "{api_url}" -e timeout {timeout}'
-            self.dm._run_adb(start_cmd)
+            # Use curl to fetch http code and total time (comma separated to avoid ADB escaping issues)
+            # -s = silent, -o /dev/null = hide body, -w = write format
+            curl_cmd = f'shell curl -s -o /dev/null -w "%{{http_code}},%{{time_total}}" --max-time {timeout_sec} "{api_url}"'
             
-            # Polling logcat using legacy-like structure
-            command = (f'logcat -d | findstr "{tag}"' if os.name == "nt"
-                       else f'logcat -d | grep "{tag}"')
+            resp_lines = self.dm._run_adb(curl_cmd)
+            full_resp = "".join(resp_lines).strip()
             
-            n_seconds = 0
-            max_wait = int(timeout / 1000) + 5
-            resp_lines = []
-            
-            while n_seconds < max_wait:
-                resp_lines = self.dm._run_adb(command)
-                if resp_lines:
-                    break
-                time.sleep(1)
-                n_seconds += 1
-
-            if not resp_lines:
-                logger.warning(f"No logcat output found for tag {tag}")
-                return {"status": "1", "response_time": "-1", "result": "timeout"}
-
-            # Parse JSON from logcat line
-            resp_line = resp_lines[0]
-            json_start = resp_line.find("{")
-            if json_start > -1:
-                json_str = resp_line[json_start:]
-                ar_resp = json.loads(json_str)
+            if not full_resp or ',' not in full_resp:
+                return {"status": "timeout", "response_time": "-1", "result": "Timeout or connection failed"}
+                
+            try:
+                parts = full_resp.split(',')
+                status_code = parts[0].strip()
+                resp_time = float(parts[1].strip())
+                
                 return {
-                    "status": ar_resp.get("status", "1"), 
-                    "response_time": ar_resp.get("response_time", "-1"), 
-                    "result": ar_resp.get("result", "")
+                    "status": status_code, 
+                    "response_time": f"{resp_time:.3f}", 
+                    "result": "Success" if status_code in ["200", "201", "301", "302"] else "Failed/Error"
                 }
-            
-            logger.warning(f"No JSON found in logcat line: {resp_line}")
-            return {"status": "1", "response_time": "-1", "result": "parse_error"}
+            except Exception as e:
+                # If curl returned an error message or invalid format
+                return {"status": "error", "response_time": "-1", "result": full_resp}
+                
         except Exception as e:
             logger.error(f"API test failed: {e}")
-            return {"status": "1", "response_time": "-1", "result": str(e)}
+            return {"status": "error", "response_time": "-1", "result": str(e)}
 
     def test_api_with_curl(self, api_url: str, timeout: int = 10) -> Dict[str, Any]:
         """Alternative API test using curl command (if available on device)"""

@@ -2,8 +2,12 @@
 Backend Configuration
 """
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
 MODULAR_APM_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "003-modular-apm"))
 
 
@@ -14,6 +18,12 @@ class Config:
         'sqlite:///' + os.path.join(BASE_DIR, 'apm_backend.db')
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Engine options for connection pooling (mostly applicable for PostgreSQL)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
 
     # Path to 003-modular-apm project
     MODULAR_APM_PATH = MODULAR_APM_PATH

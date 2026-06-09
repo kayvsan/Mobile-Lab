@@ -31,10 +31,16 @@ def import_reports_from_logs(device_id: str = "unknown", user_id: str = None) ->
             with open(filepath, 'r') as f:
                 data = json.load(f)
 
-            journey_id = data.get('journey_id')
+            journey_key = data.get('journey_id')
             start_time_str = data.get('start_time')
 
-            if not journey_id or not start_time_str:
+            if not journey_key or not start_time_str:
+                continue
+
+            from models import Journey
+            journey = Journey.query.filter_by(journey_key=journey_key).first()
+            if not journey:
+                print(f"Warning: Journey {journey_key} not found for report.")
                 continue
 
             # Check if already imported (match by journey_id + start_time)
@@ -44,7 +50,7 @@ def import_reports_from_logs(device_id: str = "unknown", user_id: str = None) ->
                 continue
 
             existing = Report.query.filter_by(
-                journey_id=journey_id,
+                journey_id=journey.id,
                 start_time=start_time
             ).first()
 

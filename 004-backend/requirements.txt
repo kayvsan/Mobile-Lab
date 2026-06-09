@@ -4,3 +4,5 @@ flask-cors
 requests
 PyJWT
 bcrypt
+python-dotenv
+psycopg2-binary

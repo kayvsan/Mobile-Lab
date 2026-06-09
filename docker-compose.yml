@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  # ── PostgreSQL Database ──
+  postgres:
+    image: postgres:16-alpine
+    container_name: apm-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-apm_db}
+      POSTGRES_USER: ${DB_USER:-apm_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432" # Hanya bind ke localhost agar aman
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-apm_user} -d ${DB_NAME:-apm_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - apm-network
+
+  # ── Flask Backend API ──
+  backend:
+    build:
+      context: ./004-backend
+      dockerfile: Dockerfile
+    container_name: apm-backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-apm_user}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-apm_db}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+      WEBHOOK_API_KEY: ${WEBHOOK_API_KEY:-apm-default-api-key}
+      SERVER_PORT: "5000"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - apm-network
+
+  # ── Nginx (Frontend + Reverse Proxy) ──
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: apm-nginx
+    restart: always
+    ports:
+      - "${APP_PORT:-80}:80"
+    volumes:
+      - uploads:/app/uploads:ro # Read-only akses ke folder uploads untuk serve static files
+    depends_on:
+      - backend
+    networks:
+      - apm-network
+
+volumes:
+  pgdata:
+  uploads: # Shared volume untuk backend menyimpan screenshot dan nginx untuk menampilkannya
+
+networks:
+  apm-network:
+    driver: bridge

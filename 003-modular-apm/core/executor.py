@@ -214,8 +214,9 @@ class JourneyExecutor:
             
             # --- START NVT & LOCATION (Legacy-like) ---
             location = self.device.get_location()
-            # NVT snapshot removed per user request, only happens per detail
-            nvt_data = {}
+            # NVT snapshot at the beginning (includes API test)
+            self._refresh_network_params(is_nvt=True)
+            nvt_data = self._ar_param.copy()
             # --- END NVT & LOCATION ---
 
             journey_result = {
@@ -239,8 +240,8 @@ class JourneyExecutor:
                 time.sleep(2)
             
             for detail in journey.details:
-                # API measurement at the start of each sub journey
-                self._refresh_network_params(is_nvt=False, run_api=True)
+                # Network measurement at the start of each sub journey (API disabled to prevent UI freeze, Ping & Signal remain)
+                self._refresh_network_params(is_nvt=False, run_api=False)
                 
                 detail_success = True
                 detail_rt = 0.0

@@ -107,8 +107,22 @@ class Report(db.Model):
         except (ValueError, TypeError):
             pass
 
+        from models import Journey
+        
+        journey_key = report_data.get('journey_id')
+        
+        # In SQLite, we accidentally saved journey_key into journey_id field
+        # In PostgreSQL, this strict foreign key check requires actual UUID
+        journey = Journey.query.filter_by(journey_key=journey_key).first()
+        
+        if journey:
+            actual_journey_id = journey.id
+        else:
+            # Fallback if somehow journey is missing (might fail FK constraint)
+            actual_journey_id = journey_key
+
         return cls(
-            journey_id=report_data.get('journey_id'),
+            journey_id=actual_journey_id,
             device_id=device_id,
             user_id=user_id,
             execution_id=execution_id,

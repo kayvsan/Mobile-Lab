@@ -1,18 +1,18 @@
 from app import create_app
 from models import db
-from sqlalchemy import text
+from sqlalchemy import text, inspect
 
 app = create_app()
 with app.app_context():
     # 1. Create all tables (will create 'agents' if missing)
     db.create_all()
     
-    # 2. Add agent_id column to devices table manually for SQLite
+    # 2. Add agent_id column to devices table manually
     try:
         with db.engine.connect() as conn:
             # Check if column exists first
-            result = conn.execute(text("PRAGMA table_info(devices)"))
-            columns = [row[1] for row in result]
+            inspector = inspect(db.engine)
+            columns = [col['name'] for col in inspector.get_columns('devices')]
             
             if 'agent_id' not in columns:
                 conn.execute(text("ALTER TABLE devices ADD COLUMN agent_id VARCHAR(36) REFERENCES agents(id)"))

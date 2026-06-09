@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import * as XLSX from 'xlsx';
 import { 
-  X, CheckCircle2, XCircle, Clock, Wifi, Activity, 
-  ChevronDown, Monitor, MapPin, Calendar, Smartphone
+  X, CheckCircle2, XCircle, Clock, Wifi, Activity, Globe,
+  ChevronDown, Monitor, MapPin, Calendar, Smartphone, Download
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -39,6 +40,48 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
     }));
   };
 
+  const exportDetailToExcel = () => {
+    if (!data || !data.breakdown) return;
+    
+    const exportData = [];
+    
+    data.breakdown.forEach((step, sIdx) => {
+      exportData.push({
+        'Step': sIdx + 1,
+        'Type': 'Sub Journey',
+        'Name': step.name,
+        'Status': step.success ? 'Success' : 'Failed',
+        'Response Time (s)': step.response_time,
+        'Duration (s)': '-',
+        'Network': step.network_type,
+        'Ping (ms)': step.ping_latency,
+        'Signal (dBm)': step.signal_level || '-',
+      });
+      
+      if (step.tasks && step.tasks.length > 0) {
+        step.tasks.forEach((task, tIdx) => {
+          exportData.push({
+            'Step': `${sIdx + 1}.${tIdx + 1}`,
+            'Type': 'Task',
+            'Name': task.task_name,
+            'Status': task.success ? 'Success' : 'Failed',
+            'Response Time (s)': task.response_time !== undefined ? task.response_time : '-',
+            'Duration (s)': task.duration_seconds !== undefined ? task.duration_seconds : '-',
+            'Network': '-',
+            'Ping (ms)': '-',
+            'Signal (dBm)': '-',
+          });
+        });
+      }
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Report Details");
+    
+    XLSX.writeFile(workbook, `Detail_${data.journey_id}_${data.execution_id}.xlsx`);
+  };
+
   if (!isOpen) return null;
 
   const modalContent = (
@@ -71,12 +114,24 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               </p>
             )}
           </div>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
-          >
-            <X size={20} />
-          </button>
+          <div className="flex items-center gap-3">
+            {data && (
+              <button
+                onClick={exportDetailToExcel}
+                className="px-4 py-2 bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-white transition-all flex items-center gap-2 text-xs font-bold"
+                title="Export this detail to Excel"
+              >
+                <Download size={14} />
+                Export
+              </button>
+            )}
+            <button 
+              onClick={onClose}
+              className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -97,7 +152,7 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
           ) : data && (
             <>
               {/* Summary Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
                   <div className="text-muted mb-2 flex items-center gap-2">
                     <Smartphone size={16} />
@@ -132,6 +187,18 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
                   </div>
                   <div className="text-sm font-semibold text-ink">
                     {data.total_response_time}s <span className="text-xs text-muted font-medium ml-1">Total</span>
+                  </div>
+                </div>
+                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
+                  <div className="text-muted mb-2 flex items-center gap-2">
+                    <Globe size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">API Test</span>
+                  </div>
+                  <div className="text-sm font-semibold text-ink">
+                    {data.nvt_measurements?.test_api?.response_time !== undefined && data.nvt_measurements?.test_api?.response_time !== "-1" ? `${data.nvt_measurements.test_api.response_time}s` : '-'} 
+                    <span className="text-xs font-medium ml-1 flex items-center gap-1 inline-flex">
+                      Status: <span className={String(data.nvt_measurements?.test_api?.status) === "200" || data.nvt_measurements?.test_api?.status === 200 ? 'text-emerald-500' : 'text-rose-500'}>{data.nvt_measurements?.test_api?.status || '-'}</span>
+                    </span>
                   </div>
                 </div>
               </div>
