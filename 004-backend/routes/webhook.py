@@ -68,17 +68,45 @@ def receive_report():
         os.makedirs(report_screenshots_dir, exist_ok=True)
         
         for spath in screenshot_paths:
+            basename = os.path.basename(spath)
             src_file = os.path.join(Config.MODULAR_APM_PATH, spath)
+            temp_agent_file = os.path.join(Config.SCREENSHOTS_DIR, "temp_agent", execution_id, basename) if execution_id else None
+            
+            src_to_copy = None
             if os.path.exists(src_file):
-                basename = os.path.basename(spath)
+                src_to_copy = src_file
+            elif temp_agent_file and os.path.exists(temp_agent_file):
+                src_to_copy = temp_agent_file
+                
+            if src_to_copy:
                 dst_file = os.path.join(report_screenshots_dir, basename)
                 try:
-                    shutil.copy2(src_file, dst_file)
+                    shutil.copy2(src_to_copy, dst_file)
                     saved_screenshots.append(basename)
                 except Exception as e:
-                    print(f"Failed to copy screenshot {src_file}: {e}")
+                    print(f"Failed to copy screenshot {src_to_copy}: {e}")
         
         report.screenshots = saved_screenshots
+
+    # Copy/Associate recording if any
+    if report.recording:
+        import os, shutil
+        from config import Config
+        
+        basename = os.path.basename(report.recording)
+        src_file = os.path.join(Config.MODULAR_APM_PATH, report.recording)
+        uploaded_file = os.path.join(Config.RECORDINGS_DIR, basename)
+        
+        if os.path.exists(src_file):
+            os.makedirs(Config.RECORDINGS_DIR, exist_ok=True)
+            dst_file = os.path.join(Config.RECORDINGS_DIR, basename)
+            try:
+                shutil.copy2(src_file, dst_file)
+                report.recording = basename
+            except Exception as e:
+                print(f"Failed to copy recording {src_file}: {e}")
+        elif os.path.exists(uploaded_file):
+            report.recording = basename
 
     db.session.commit()
 

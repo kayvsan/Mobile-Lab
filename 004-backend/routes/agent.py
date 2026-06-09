@@ -1,11 +1,12 @@
 """
 Agent routes — endpoints for remote agents and management
 """
+import os
+import functools
 from flask import Blueprint, request, jsonify, current_app, g
 from models import db, Agent, Execution, Device, Journey
 from services import agent_service, executor_service
 from services.auth_middleware import auth_required, webhook_auth_required
-import functools
 
 agent_bp = Blueprint('agent', __name__)
 

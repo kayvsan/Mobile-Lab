@@ -41,6 +41,15 @@ class AgentAPI:
     def post_file(self, endpoint, files, data):
         return requests.post(f"{self.server_url}{endpoint}", files=files, data=data, headers=self.headers)
 
+    def submit_report(self, report_data, webhook_key, execution_id, device_key):
+        headers = {
+            "X-API-Key": webhook_key,
+            "X-Execution-Id": execution_id,
+            "X-Device-Id": device_key,
+            "Content-Type": "application/json"
+        }
+        return requests.post(f"{self.server_url}/webhook/report", json=report_data, headers=headers)
+
 def register(server_url, name):
     """Register agent via manual command (needs admin token or prompt)"""
     print(f"Registering agent '{name}' at {server_url}...")

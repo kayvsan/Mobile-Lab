@@ -196,7 +196,11 @@ const ExecutionPage = () => {
                 
                 // Map backend event types to log display
                 if (eventType === 'queued') {
-                  addLog(`Queued — Journey: ${data.journey_id}, Device: ${data.device_id}`, 'system');
+                  if (data.message) {
+                    addLog(`Queued — ${data.message}`, 'system');
+                  } else {
+                    addLog(`Queued — Journey: ${data.journey_id}, Device: ${data.device_id}`, 'system');
+                  }
                 } else if (eventType === 'running') {
                   addLog(data.message || 'Automation running...', 'info');
                 } else if (eventType === 'log') {
