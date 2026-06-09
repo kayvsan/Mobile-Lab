@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Copy, Check } from 'lucide-react';
+import { copyToClipboard } from '../../utils/clipboard';
 
 const JsonPreviewModal = ({ isOpen, onClose, data }) => {
   const [copied, setCopied] = useState(false);
@@ -10,7 +11,7 @@ const JsonPreviewModal = ({ isOpen, onClose, data }) => {
   const jsonString = JSON.stringify(data, null, 2);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(jsonString);
+    copyToClipboard(jsonString);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Users, Plus, RefreshCw, Smartphone, CheckCircle2, XCircle, Key, Copy, Check } from 'lucide-react';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { copyToClipboard as copyToClipboardHelper } from '../utils/clipboard';
 
 const AgentsPage = () => {
   const [agents, setAgents] = useState([]);
@@ -49,7 +50,7 @@ const AgentsPage = () => {
   };
 
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
+    copyToClipboardHelper(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
