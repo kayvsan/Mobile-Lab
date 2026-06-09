@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Save, Code, AlertCircle, Search } from 'lucide-react';
 import api from '../../services/api';
 import DetailCard from './DetailCard';
 import JsonPreviewModal from './JsonPreviewModal';
 import PackageSelectionModal from './PackageSelectionModal';
 import ConfirmModal from '../ui/ConfirmModal';
+import { generateUUID } from '../../utils/uuid';
 
 const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) => {
   const [journey, setJourney] = useState({
@@ -57,7 +58,7 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
 
   const handleAddStep = () => {
     const newStep = {
-      id: `step_${crypto.randomUUID()}`,
+      id: `step_${generateUUID()}`,
       name: `Journey Detail ${journey.details.length + 1}`,
       measure_response_time: true,
       tasks: []
@@ -124,7 +125,7 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
   const handleConfirmedSubmit = () => {
     // Generate final JSON
     const finalData = {
-      id: journey.id || crypto.randomUUID(),
+      id: journey.id || generateUUID(),
       journey_key: journey.journey_key,
       name: journey.name,
       package: journey.package,
