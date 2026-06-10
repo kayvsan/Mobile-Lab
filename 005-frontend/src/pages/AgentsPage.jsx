@@ -77,60 +77,6 @@ const AgentsPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Register Section */}
-        <div className="lg:col-span-1">
-          <div className="bg-canvas p-8 rounded-3xl border border-hairline shadow-sm space-y-8">
-            <h2 className="text-xl font-normal tracking-tight text-ink flex items-center gap-3 border-b border-hairline pb-4">
-              <Plus size={20} className="text-primary" />
-              Register New Agent
-            </h2>
-            
-            <form onSubmit={handleRegister} className="space-y-6">
-              <div>
-                <label className="block text-xs font-semibold text-ink mb-2">
-                  Agent Name
-                </label>
-                <input 
-                  type="text"
-                  placeholder="e.g. Laptop Kams"
-                  value={newAgentName}
-                  onChange={(e) => setNewAgentName(e.target.value)}
-                  className="w-full px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none text-ink font-semibold"
-                  required
-                />
-              </div>
-              <button 
-                type="submit"
-                disabled={isRegistering || !newAgentName.trim()}
-                className="w-full bg-primary hover:bg-primary-active text-on-primary py-4 px-6 rounded-full font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
-              >
-                {isRegistering ? 'Registering...' : 'Register Agent'}
-              </button>
-            </form>
-
-            {registeredApiKey && (
-              <div className="mt-6 p-4 bg-emerald-50 border border-emerald-100 rounded-xl space-y-3 animate-fade-in">
-                <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm">
-                  <Key size={16} />
-                  Agent API Key
-                </div>
-                <p className="text-[10px] text-emerald-600 font-medium">
-                  SIMPAN KEY INI! Key ini hanya muncul sekali dan diperlukan untuk setup agent di laptop.
-                </p>
-                <div className="flex items-center gap-2 bg-white p-2 rounded-lg border border-emerald-200">
-                  <code className="text-xs font-mono text-emerald-800 flex-1 truncate">{registeredApiKey}</code>
-                  <button 
-                    onClick={() => copyToClipboard(registeredApiKey)}
-                    className="p-1.5 hover:bg-emerald-50 rounded text-emerald-600 transition-colors"
-                  >
-                    {copied ? <Check size={16} /> : <Copy size={16} />}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Agents List */}
         <div className="lg:col-span-2">
           <div className="bg-canvas rounded-3xl border border-hairline shadow-sm overflow-hidden">
