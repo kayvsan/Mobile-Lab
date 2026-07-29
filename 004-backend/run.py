@@ -12,4 +12,4 @@ if __name__ == '__main__':
     print("  http://localhost:5000")
     print("  Health: http://localhost:5000/health")
     print("=" * 50)
-    app.run(debug=True, port=5000, threaded=True)
+    app.run(host='0.0.0.0', debug=True, port=5000, threaded=True)
