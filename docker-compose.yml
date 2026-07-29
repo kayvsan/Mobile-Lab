@@ -20,6 +20,19 @@ services:
     networks:
       - apm-network
 
+  # ── ADB Server ──
+  adb-server:
+    build:
+      context: ./adb-server
+      dockerfile: Dockerfile
+    container_name: apm-adb-server
+    restart: always
+    privileged: true
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+    networks:
+      - apm-network
+
   # ── Flask Backend API ──
   backend:
     build:
@@ -27,7 +40,6 @@ services:
       dockerfile: Dockerfile
     container_name: apm-backend
     restart: always
-    privileged: true
     ports:
       - "5000:5000"
     environment:
@@ -35,12 +47,33 @@ services:
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       WEBHOOK_API_KEY: ${WEBHOOK_API_KEY:-apm-default-api-key}
       SERVER_PORT: "5000"
+      ADB_SERVER_SOCKET: tcp:adb-server:5037
+      PYTHON_EXE: python
     volumes:
       - uploads:/app/uploads
-      - /dev/bus/usb:/dev/bus/usb
+      - ./003-modular-apm:/003-modular-apm
     depends_on:
       postgres:
         condition: service_healthy
+      adb-server:
+        condition: service_started
+    networks:
+      - apm-network
+
+  # ── ws-scrcpy (Device Screen Streaming) ──
+  ws-scrcpy:
+    build:
+      context: ./ws-scrcpy
+      dockerfile: Dockerfile
+    container_name: apm-ws-scrcpy
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      ADB_HOST: adb-server
+    depends_on:
+      adb-server:
+        condition: service_started
     networks:
       - apm-network
 

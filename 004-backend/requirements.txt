@@ -6,3 +6,7 @@ PyJWT
 bcrypt
 python-dotenv
 psycopg2-binary
+uiautomator2
+adbutils
+typing-extensions
+pathlib
