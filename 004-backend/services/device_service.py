@@ -9,7 +9,7 @@ from urllib.parse import quote
 from models import db, Device
 from config import Config
 
-def generate_scrcpy_url(udid, player='broadway', host='100.81.129.118', port=None):
+def generate_scrcpy_url(udid, player='mse', host='100.81.129.118', port=None):
     """
     Generate streaming URL for ws-scrcpy
     """
@@ -21,6 +21,8 @@ def generate_scrcpy_url(udid, player='broadway', host='100.81.129.118', port=Non
     ws_params = f"action=proxy-adb&remote=tcp%3A8886&udid={udid}"
     ws_url = f"ws://{host}:{port}/?{ws_params}"
     ws_encoded = quote(ws_url, safe='')
+    
+    # Format output: http://HOST:PORT/#!action=stream&udid=UDID&player=mse&ws=ENCODED_WS_URL
     
     # Build final URL with hash fragment
     return f"{base}/#!action=stream&udid={udid}&player={player}&ws={ws_encoded}"
