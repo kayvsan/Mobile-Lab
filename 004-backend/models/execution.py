@@ -1,4 +1,5 @@
 """Execution model — tracks each automation run lifecycle"""
+import json
 import uuid
 from datetime import datetime, timezone
 from . import db
@@ -34,6 +35,13 @@ class Execution(db.Model):
     return_code = db.Column(db.Integer, nullable=True)
 
     def to_dict(self):
+        cycle_data = None
+        if self.cycle_params:
+            try:
+                cycle_data = json.loads(self.cycle_params)
+            except (json.JSONDecodeError, TypeError):
+                cycle_data = None
+
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -41,6 +49,8 @@ class Execution(db.Model):
             "device_id": self.device_id,
             "status": self.status,
             "error_message": self.error_message,
+            "is_cycle": self.is_cycle or False,
+            "cycle_params": cycle_data,
             "queued_at": self.queued_at.isoformat() if self.queued_at else None,
             "started_at": self.started_at.isoformat() if self.started_at else None,
             "finished_at": self.finished_at.isoformat() if self.finished_at else None,

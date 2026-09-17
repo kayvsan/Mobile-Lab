@@ -338,11 +338,18 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
         
         _stop_flags[execution_id] = False
 
-        for cycle_idx in range(1, cycles + 1):
+        cycle_idx = 1
+        while True:
+            if cycles > 0 and cycle_idx > cycles:
+                break
+                
             if _stop_flags.get(execution_id):
                 break
                 
-            _push_event(execution_id, "log", {"message": f"--- STARTING CYCLE {cycle_idx}/{cycles} ---"})
+            if cycles == 0:
+                _push_event(execution_id, "log", {"message": f"--- STARTING CYCLE {cycle_idx} (Infinite) ---"})
+            else:
+                _push_event(execution_id, "log", {"message": f"--- STARTING CYCLE {cycle_idx}/{cycles} ---"})
             
             for j_idx, j_id in enumerate(journey_ids):
                 if _stop_flags.get(execution_id):
@@ -397,7 +404,7 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
                         _push_event(execution_id, "log", {"message": f"Success: Report generated (ID: {report.id})"})
                 
                 # Between journeys or cycles
-                if cycle_idx < cycles or j_idx < len(journey_ids) - 1:
+                if cycles == 0 or cycle_idx < cycles or j_idx < len(journey_ids) - 1:
                     if interval > 0:
                         _push_event(execution_id, "log", {"message": f"Waiting {interval}s interval..."})
                         
@@ -408,6 +415,8 @@ def _run_cycle_automation(execution_id: str, device_id: str, journey_ids: list, 
                                 break
                             time.sleep(1)
                             sleep_time += 1
+            
+            cycle_idx += 1
 
         if _stop_flags.pop(execution_id, False):
             return

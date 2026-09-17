@@ -9,7 +9,7 @@ from urllib.parse import quote
 from models import db, Device
 from config import Config
 
-def generate_scrcpy_url(udid, player='mse', host='100.81.129.118', port=None):
+def generate_scrcpy_url(udid, player='mse', host='127.0.0.1', port=None):
     """
     Generate streaming URL for ws-scrcpy
     """

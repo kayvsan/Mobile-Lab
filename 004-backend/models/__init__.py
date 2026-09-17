@@ -12,5 +12,7 @@ from .execution import Execution
 from .user import User
 from .app_package import AppPackage
 from .agent import Agent
+from .execution_config import ExecutionConfig
 
-__all__ = ['db', 'Journey', 'Report', 'Device', 'Execution', 'User', 'AppPackage', 'Agent']
+__all__ = ['db', 'Journey', 'Report', 'Device', 'Execution', 'User', 'AppPackage', 'Agent', 'ExecutionConfig']
+

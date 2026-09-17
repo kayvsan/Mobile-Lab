@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { LogOut, Smartphone, Settings, Users, Activity, X, Terminal, FileText, LayoutDashboard, Map, AlertCircle, BarChart3, TrendingUp, Shield, Radio } from 'lucide-react';
+import { LogOut, Smartphone, Settings, Users, Activity, X, Terminal, FileText, LayoutDashboard, Map, AlertCircle, BarChart3, TrendingUp, Shield, Radio, Settings2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -17,7 +17,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { icon: <Smartphone size={20} />, label: 'Devices', path: '/Devices' },
     { icon: <Map size={20} />, label: 'Journeys', path: '/Journeys' },
     { icon: <Terminal size={20} />, label: 'Execution', path: '/Execution' },
-    { icon: <Users size={20} />, label: 'Agents', path: '/Agents' },
+    { icon: <Settings2 size={20} />, label: 'Saved Configs', path: '/Configs' },
+    // { icon: <Users size={20} />, label: 'Agents', path: '/Agents' },
     { icon: <FileText size={20} />, label: 'Reports', path: '/Reports' },
     // { icon: <Settings size={20} />, label: 'Settings', path: '/settings' },
   ];

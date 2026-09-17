@@ -100,7 +100,11 @@ def list_executions():
 
     status = request.args.get('status')
     if status:
-        query = query.filter_by(status=status)
+        statuses = [s.strip() for s in status.split(',')]
+        if len(statuses) > 1:
+            query = query.filter(Execution.status.in_(statuses))
+        else:
+            query = query.filter_by(status=statuses[0])
 
     limit = request.args.get('limit', 50, type=int)
     offset = request.args.get('offset', 0, type=int)

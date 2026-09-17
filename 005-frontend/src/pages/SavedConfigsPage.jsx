@@ -1,0 +1,786 @@
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { 
+  Terminal, Play, RefreshCw, Smartphone, Map, 
+  Settings2, Activity, Loader, StopCircle, Save, Trash2, Edit2,
+  GripVertical, X, Plus, ChevronDown, Repeat, Clock, AlertCircle,
+  ChevronRight, CheckCircle2
+} from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import api, { API_BASE_URL } from '../services/api';
+
+const SavedConfigsPage = () => {
+  const [devices, setDevices] = useState([]);
+  const [journeys, setJourneys] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const [savedConfigs, setSavedConfigs] = useState([]);
+  const [editingConfigId, setEditingConfigId] = useState(null);
+  const [configName, setConfigName] = useState('');
+
+  // Log modal state
+  const [logModal, setLogModal] = useState(null); // { configName, executionId }
+  const [modalLogs, setModalLogs] = useState([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const modalLogEndRef = useRef(null);
+  const sseRef = useRef(null);
+  
+  // Form state
+  const [selectedDevice, setSelectedDevice] = useState('');
+  const [selectedJourneys, setSelectedJourneys] = useState([]); 
+  const [cycleCount, setCycleCount] = useState(5);
+  const [interval, setInterval] = useState(60);
+  
+  // Drag-and-drop refs for journey reordering
+  const dragItem = useRef(null);
+  const dragOverItem = useRef(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleAddJourney = useCallback((journeyId) => {
+    if (!selectedJourneys.includes(journeyId)) {
+      setSelectedJourneys(prev => [...prev, journeyId]);
+    }
+  }, [selectedJourneys]);
+
+  const handleRemoveJourney = useCallback((journeyId) => {
+    setSelectedJourneys(prev => prev.filter(id => id !== journeyId));
+  }, []);
+
+  const handleDragStart = useCallback((index) => {
+    dragItem.current = index;
+  }, []);
+
+  const handleDragEnter = useCallback((index) => {
+    dragOverItem.current = index;
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragItem.current === null || dragOverItem.current === null) return;
+    const reordered = [...selectedJourneys];
+    const [removed] = reordered.splice(dragItem.current, 1);
+    reordered.splice(dragOverItem.current, 0, removed);
+    setSelectedJourneys(reordered);
+    dragItem.current = null;
+    dragOverItem.current = null;
+  }, [selectedJourneys]);
+
+  const toast = useToast();
+
+  // Auto-scroll modal logs
+  useEffect(() => {
+    modalLogEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [modalLogs]);
+
+  const addModalLog = (message, type = 'info') => {
+    const timestamp = new Date().toLocaleTimeString();
+    setModalLogs(prev => [...prev, { timestamp, message, type }]);
+  };
+
+  const openLogModal = (cfg) => {
+    if (!cfg.active_execution_id) {
+      toast.error('Tidak ada execution aktif untuk config ini.');
+      return;
+    }
+
+    // Close any existing stream
+    if (sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
+    }
+
+    setModalLogs([]);
+    setLogModal({ configName: cfg.name, executionId: cfg.active_execution_id });
+    setIsStreaming(true);
+
+    const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
+    const token = tokens.access_token || '';
+    const sse = new EventSource(`${API_BASE_URL}/executions/${cfg.active_execution_id}/stream?token=${encodeURIComponent(token)}`);
+    sseRef.current = sse;
+
+    const handleLog = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        addModalLog(data.message || JSON.stringify(data), 'info');
+      } catch {
+        addModalLog(e.data, 'info');
+      }
+    };
+
+    const handleCompleted = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        addModalLog(data.message || 'Eksekusi selesai.', 'success');
+      } catch {
+        addModalLog('Eksekusi selesai.', 'success');
+      }
+      setIsStreaming(false);
+      sse.close();
+      sseRef.current = null;
+    };
+
+    const handleFailed = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        addModalLog(data.error || 'Eksekusi gagal.', 'error');
+      } catch {
+        addModalLog('Eksekusi gagal.', 'error');
+      }
+      setIsStreaming(false);
+      sse.close();
+      sseRef.current = null;
+    };
+
+    const handleClose = () => {
+      setIsStreaming(false);
+      sse.close();
+      sseRef.current = null;
+    };
+
+    sse.addEventListener('log', handleLog);
+    sse.addEventListener('running', handleLog);
+    sse.addEventListener('queued', handleLog);
+    sse.addEventListener('completed', handleCompleted);
+    sse.addEventListener('failed', handleFailed);
+    sse.addEventListener('close', handleClose);
+
+    sse.onerror = () => {
+      addModalLog('Koneksi log terputus.', 'error');
+      setIsStreaming(false);
+      sse.close();
+      sseRef.current = null;
+    };
+  };
+
+  const closeLogModal = () => {
+    if (sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
+    }
+    setLogModal(null);
+    setModalLogs([]);
+    setIsStreaming(false);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [devicesRes, journeysRes] = await Promise.all([
+        api.get('/devices'),
+        api.get('/journeys')
+      ]);
+      setDevices(devicesRes.data);
+      setJourneys(journeysRes.data);
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setError('Gagal memuat data. Pastikan backend berjalan.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Poll saved configs every 5 seconds
+  useEffect(() => {
+    let timeoutId;
+    let isCancelled = false;
+    const pollConfigs = async () => {
+      if (isCancelled) return;
+      try {
+        const res = await api.get('/execution-configs');
+        if (!isCancelled) {
+          setSavedConfigs(res.data || []);
+        }
+      } catch (e) {
+        // silently ignore polling errors
+      }
+      if (!isCancelled) {
+        timeoutId = window.setTimeout(pollConfigs, 5000);
+      }
+    };
+    pollConfigs();
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const getElapsedTime = (startedAt) => {
+    if (!startedAt) return '—';
+    const diff = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000);
+    if (diff < 60) return `${diff}s`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ${diff % 60}s`;
+    return `${Math.floor(diff / 3600)}h ${Math.floor((diff % 3600) / 60)}m`;
+  };
+
+  const resetForm = () => {
+    setConfigName('');
+    setSelectedDevice('');
+    setSelectedJourneys([]);
+    setCycleCount(5);
+    setInterval(60);
+    setEditingConfigId(null);
+  };
+
+  const handleEditClick = (config) => {
+    setEditingConfigId(config.id);
+    setConfigName(config.name);
+    setSelectedDevice(config.device_id);
+    setSelectedJourneys(config.journey_ids || []);
+    setCycleCount(config.cycles === 0 ? 0 : config.cycles);
+    setInterval(config.interval);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSaveConfig = async () => {
+    if (!configName.trim()) {
+      toast.error('Masukkan nama config.');
+      return;
+    }
+    if (!selectedDevice) {
+      toast.error('Pilih device terlebih dahulu.');
+      return;
+    }
+    if (selectedJourneys.length === 0) {
+      toast.error('Pilih minimal satu journey.');
+      return;
+    }
+    try {
+      const payload = {
+        name: configName.trim(),
+        device_id: selectedDevice,
+        journey_ids: selectedJourneys,
+        cycles: parseInt(cycleCount, 10) >= 0 ? parseInt(cycleCount, 10) : 1,
+        interval: parseInt(interval) || 0,
+      };
+
+      if (editingConfigId) {
+        const res = await api.put(`/execution-configs/${editingConfigId}`, payload);
+        setSavedConfigs(prev => prev.map(c => c.id === editingConfigId ? res.data : c));
+        toast.success('Config updated!');
+      } else {
+        const res = await api.post('/execution-configs', payload);
+        setSavedConfigs(prev => [res.data, ...prev]);
+        toast.success('Config saved!');
+      }
+      resetForm();
+    } catch (err) {
+      toast.error(`Gagal simpan: ${err?.response?.data?.error || err.message}`);
+    }
+  };
+
+  const handleRunConfig = async (configId) => {
+    const config = savedConfigs.find(c => c.id === configId);
+    if (config) {
+      const device = devices.find(d => d.id === config.device_id);
+      if (device && device.status !== 'online') {
+        toast.error('Device sedang offline, tidak dapat menjalankan config.');
+        return;
+      }
+    }
+
+    try {
+      await api.post(`/execution-configs/${configId}/run`);
+      toast.success('Execution started!');
+      // Immediate refresh
+      const res = await api.get('/execution-configs');
+      setSavedConfigs(res.data || []);
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Gagal menjalankan config.');
+    }
+  };
+
+  const handleStopConfig = async (configId) => {
+    try {
+      await api.post(`/execution-configs/${configId}/stop`);
+      toast.success('Execution stopped.');
+      const res = await api.get('/execution-configs');
+      setSavedConfigs(res.data || []);
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Gagal stop.');
+    }
+  };
+
+  const handleDeleteConfig = async (configId) => {
+    try {
+      await api.delete(`/execution-configs/${configId}`);
+      setSavedConfigs(prev => prev.filter(c => c.id !== configId));
+      toast.success('Config deleted.');
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Gagal hapus.');
+    }
+  };
+
+  return (
+    <>
+    <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in flex flex-col h-full">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-surface-strong text-primary rounded-full">
+            <Settings2 size={24} />
+          </div>
+          <div>
+            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Saved Configs</h1>
+            <p className="text-body text-base">Manage and run automation configurations</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={fetchData}
+            className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
+            title="Refresh Devices and Journeys"
+          >
+            <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
+        
+        {/* CREATE CONFIG FORM */}
+        <div className="lg:col-span-1 min-h-0">
+          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-hairline bg-surface-soft/50">
+              <h2 className="font-semibold text-ink">Create Configuration</h2>
+              <p className="text-xs text-muted mt-1">Define device, journeys, and cycles to save</p>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              {error && (
+                <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-start gap-3">
+                  <AlertCircle className="text-rose-500 shrink-0 mt-0.5" size={18} />
+                  <p className="text-sm text-rose-600">{error}</p>
+                </div>
+              )}
+
+              {/* Device Selection */}
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-2">
+                  Target Device
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                    <Smartphone size={18} />
+                  </div>
+                  <select 
+                    value={selectedDevice}
+                    onChange={(e) => setSelectedDevice(e.target.value)}
+                    disabled={isLoading}
+                    className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
+                  >
+                    <option value="">Choose a device...</option>
+                    {devices.filter(device => device.status === 'online').map(device => (
+                      <option key={device.id} value={device.id}>
+                        {device.name} ({device.status || 'Offline'})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Journey Selection */}
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-2">
+                  Select Journeys
+                </label>
+                
+                <div className="space-y-3">
+                  {/* Add Journey Dropdown */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      disabled={isLoading}
+                      className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm font-semibold text-muted hover:border-primary/40 hover:bg-canvas transition-all outline-none disabled:opacity-50"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Plus size={16} />
+                        Add Journey
+                      </span>
+                      <ChevronDown size={16} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {dropdownOpen && (
+                      <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-canvas border border-hairline rounded-xl shadow-lg max-h-[200px] overflow-auto">
+                        {journeys.filter(j => !selectedJourneys.includes(j.id)).length === 0 ? (
+                          <div className="px-4 py-3 text-sm text-muted text-center">Semua journey sudah dipilih</div>
+                        ) : (
+                          journeys.filter(j => !selectedJourneys.includes(j.id)).map(journey => (
+                            <button
+                              key={journey.id}
+                              type="button"
+                              onClick={() => {
+                                handleAddJourney(journey.id);
+                                setDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-soft transition-colors flex items-center gap-2"
+                            >
+                              <Map size={14} className="text-muted shrink-0" />
+                              {journey.name}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Ordered Journey List */}
+                  {selectedJourneys.length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Execution Order</p>
+                      <div className="space-y-1">
+                        {selectedJourneys.map((jId, index) => {
+                          const journey = journeys.find(j => j.id === jId);
+                          if (!journey) return null;
+                          return (
+                            <div
+                              key={jId}
+                              draggable
+                              onDragStart={() => handleDragStart(index)}
+                              onDragEnter={() => handleDragEnter(index)}
+                              onDragEnd={handleDragEnd}
+                              onDragOver={(e) => e.preventDefault()}
+                              className="group flex items-center gap-3 p-2 bg-canvas border border-hairline rounded-xl hover:border-primary/30 transition-all cursor-grab active:cursor-grabbing"
+                            >
+                              <div className="text-muted group-hover:text-ink cursor-grab px-1">
+                                <GripVertical size={14} />
+                              </div>
+                              <div className="w-5 h-5 rounded bg-surface-soft flex items-center justify-center text-[10px] font-bold text-muted shrink-0">
+                                {index + 1}
+                              </div>
+                              <span className="flex-1 text-sm font-semibold text-ink truncate">
+                                {journey.name}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveJourney(jId)}
+                                className="p-1 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Cycle Specific Fields */}
+              <div className="grid grid-cols-2 gap-4 animate-fade-in">
+                <div>
+                  <label className="block text-xs font-semibold text-ink mb-2">
+                    Cycles
+                  </label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                      <Repeat size={16} />
+                    </div>
+                    <input 
+                      type="number" 
+                      min="0"
+                      value={cycleCount}
+                      onChange={(e) => setCycleCount(e.target.value)}
+                      placeholder="Ex: 10 (0 for infinite)"
+                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink mb-2">
+                    Interval (s)
+                  </label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                      <Clock size={16} />
+                    </div>
+                    <input 
+                      type="number" 
+                      min="0"
+                      value={interval}
+                      onChange={(e) => setInterval(e.target.value)}
+                      placeholder="Ex: 60"
+                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="p-6 border-t border-hairline bg-surface-soft/30 space-y-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={configName}
+                  onChange={(e) => setConfigName(e.target.value)}
+                  placeholder="Config name..."
+                  className="flex-1 px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                />
+                <button 
+                  onClick={handleSaveConfig}
+                  className="flex-1 bg-primary hover:bg-primary-active text-on-primary py-3 px-4 rounded-xl font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <Save size={18} />
+                  {editingConfigId ? 'Update Config' : 'Save Config'}
+                </button>
+                {editingConfigId && (
+                  <button 
+                    onClick={resetForm}
+                    className="flex-none bg-surface-soft hover:bg-surface-strong text-muted hover:text-ink py-3 px-4 rounded-xl font-semibold transition-all active:scale-95 border border-hairline"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SAVED CONFIGS TABLE */}
+        <div className="lg:col-span-2 min-h-0 flex flex-col">
+          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-hairline flex items-center gap-2">
+              <Activity size={18} className="text-primary" />
+              <h2 className="font-semibold text-ink">Saved Configurations ({savedConfigs.length})</h2>
+            </div>
+            
+            <div className="flex-1 overflow-auto bg-surface-soft/20">
+              {savedConfigs.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-muted p-8 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-surface-soft flex items-center justify-center">
+                    <Save size={24} />
+                  </div>
+                  <p className="text-sm">Belum ada config yang tersimpan.<br/>Buat konfigurasi baru di panel sebelah kiri.</p>
+                </div>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead className="sticky top-0 bg-surface-soft border-b border-hairline z-10">
+                    <tr>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Name</th>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Device</th>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Journeys</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Cycles</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Interval</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Status</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-hairline">
+                    {savedConfigs.map(cfg => {
+                      const isActive = cfg.execution_status === 'running' || cfg.execution_status === 'queued';
+                      const isRunning = cfg.execution_status === 'running';
+                      return (
+                        <tr key={cfg.id} className={`transition-colors hover:bg-surface-soft/50 ${isActive ? 'bg-emerald-50/20' : ''}`}>
+                          <td className="px-6 py-4 font-semibold text-ink whitespace-nowrap">{cfg.name}</td>
+                          <td className="px-6 py-4 text-body whitespace-nowrap">
+                            <span className="flex items-center gap-1.5">
+                              <Smartphone size={14} className="text-muted" />
+                              {cfg.device_name || 'Unknown'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-wrap gap-1.5 max-w-[280px]">
+                              {(cfg.journey_names || []).map((name, i) => (
+                                <span key={i} className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 bg-surface-strong border border-hairline rounded-lg text-ink">
+                                  <span className="text-[10px] text-muted font-bold">{i + 1}.</span>
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-center font-mono font-semibold text-ink">
+                            {cfg.cycles === 0 ? '∞' : cfg.cycles}
+                          </td>
+                          <td className="px-6 py-4 text-center font-mono text-body">
+                            {cfg.interval}s
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {isActive ? (
+                              <span className="inline-flex items-center gap-1.5">
+                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                                  isRunning
+                                    ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                    : 'bg-amber-50 text-amber-600 border border-amber-100'
+                                }`}>
+                                  {isRunning && <Loader size={10} className="inline animate-spin mr-1" />}
+                                  {cfg.execution_status}
+                                </span>
+                                {isRunning && cfg.execution_started_at && (
+                                  <span className="text-[10px] text-muted font-mono whitespace-nowrap">
+                                    {getElapsedTime(cfg.execution_started_at)}
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-surface-soft text-muted border border-hairline">
+                                Idle
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center justify-center gap-2">
+                              {isActive ? (
+                                <>
+                                  <button
+                                    onClick={() => openLogModal(cfg)}
+                                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="View Logs"
+                                  >
+                                    <Terminal size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStopConfig(cfg.id)}
+                                    className="p-2 text-semantic-down hover:bg-rose-50 rounded-lg transition-colors"
+                                    title="Stop"
+                                  >
+                                    <StopCircle size={18} />
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() => handleRunConfig(cfg.id)}
+                                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                    title="Run"
+                                  >
+                                    <Play size={18} fill="currentColor" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleEditClick(cfg)}
+                                    className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                    title="Edit"
+                                  >
+                                    <Edit2 size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteConfig(cfg.id)}
+                                    className="p-2 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors"
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      {/* Log Modal */}
+      {logModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+          onClick={(e) => { if (e.target === e.currentTarget) closeLogModal(); }}
+        >
+          <div className="w-full max-w-3xl flex flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-[#0a0b0d]" style={{ maxHeight: '80vh' }}>
+            {/* Terminal Header */}
+            <div className="bg-[#111214] px-6 py-4 flex items-center justify-between border-b border-white/5 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                </div>
+                <div className="flex items-center gap-2 text-white/40 ml-2">
+                  <Terminal size={14} />
+                  <span className="text-xs font-mono truncate max-w-[200px]">{logModal.configName}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                {isStreaming ? (
+                  <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono bg-emerald-500/10 px-3 py-1 rounded-full">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                    </span>
+                    LIVE
+                  </div>
+                ) : modalLogs.length > 0 ? (
+                  <div className="flex items-center gap-1.5 text-white/40 text-xs font-mono">
+                    <CheckCircle2 size={14} />
+                    SELESAI
+                  </div>
+                ) : null}
+                <button
+                  onClick={closeLogModal}
+                  className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Terminal Content */}
+            <div className="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed custom-scrollbar">
+              {modalLogs.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-white/20 space-y-3 py-12">
+                  <Loader size={32} className="animate-spin opacity-30" />
+                  <p>Menghubungkan ke log stream...</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {modalLogs.map((log, i) => (
+                    <div
+                      key={i}
+                      className={`flex gap-3 hover:bg-white/[0.02] px-2 py-1 -mx-2 rounded transition-colors ${
+                        log.type === 'error' ? 'text-rose-400' :
+                        log.type === 'success' ? 'text-emerald-400' :
+                        log.type === 'system' ? 'text-blue-400 font-semibold' :
+                        'text-slate-300'
+                      }`}
+                    >
+                      <span className="text-white/30 shrink-0 w-20">{log.timestamp}</span>
+                      <span className="text-white/30 shrink-0"><ChevronRight size={14} /></span>
+                      <span className="flex-1 break-words whitespace-pre-wrap">{log.message}</span>
+                    </div>
+                  ))}
+                  {isStreaming && (
+                    <div className="flex gap-3 px-2 py-1 -mx-2 animate-pulse">
+                      <span className="text-white/30 shrink-0 w-20">{new Date().toLocaleTimeString()}</span>
+                      <span className="text-white/30 shrink-0"><ChevronRight size={14} /></span>
+                      <span className="flex-1 text-slate-300 flex items-center gap-2">
+                        <span className="w-1.5 h-3 bg-white/40 animate-ping" />
+                      </span>
+                    </div>
+                  )}
+                  <div ref={modalLogEndRef} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default SavedConfigsPage;

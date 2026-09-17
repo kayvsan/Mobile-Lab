@@ -4,29 +4,37 @@ from flask import request, jsonify, g, current_app
 from . import auth_service
 
 def auth_required(f):
-    """Decorator to require a valid JWT access token"""
+    """Decorator to require a valid JWT access token.
+
+    Accepts the token via the Authorization header (preferred) or via the
+    ``?token=`` query parameter (needed for SSE / EventSource which cannot
+    send custom headers).
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
+        # 1. Try Authorization header (normal API calls)
         auth_header = request.headers.get('Authorization')
-        if not auth_header or not auth_header.startswith('Bearer '):
-            return jsonify({"error": "Missing or invalid authorization header"}), 401
-            
-        token = auth_header.split(" ")[1]
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(" ")[1]
+        else:
+            # 2. Fallback: token in query string (used by SSE / EventSource)
+            token = request.args.get('token')
+            if not token:
+                return jsonify({"error": "Missing or invalid authorization header"}), 401
+
         user = auth_service.get_user_from_token(token)
-        
+
         if not user:
-            # Check if it was an expired token error to provide better feedback
             payload = auth_service.decode_token(token)
             error_msg = payload.get("error", "Unauthorized")
             return jsonify({"error": error_msg}), 401
-            
+
         if not user.is_active:
             return jsonify({"error": "User account is disabled"}), 403
-            
-        # Store user in flask context
+
         g.current_user = user
         return f(*args, **kwargs)
-        
+
     return decorated
 
 def webhook_auth_required(f):

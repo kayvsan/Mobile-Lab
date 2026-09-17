@@ -11,6 +11,7 @@ import AvailabilityPage from './pages/AvailabilityPage';
 import NvtPage from './pages/NvtPage';
 import CreateJourneyPage from './pages/CreateJourneyPage';
 import EditJourneyPage from './pages/EditJourneyPage';
+import SavedConfigsPage from './pages/SavedConfigsPage';
 import MainLayout from './components/layout/MainLayout';
 
 import { useAuth } from './context/AuthContext';
@@ -59,6 +60,10 @@ function App() {
           <Route 
             path="/Execution" 
             element={isAuthenticated ? <ExecutionPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/Configs" 
+            element={isAuthenticated ? <SavedConfigsPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/Agents" 
