@@ -31,17 +31,17 @@ class SelfHealingEngine:
 
         # Phase 0: Scroll Healing
         if self._find_with_scroll(content):
-            logger.info("[HEAL-SCROLL] ✅ Element found after scrolling!")
+            logger.info("[HEAL-SCROLL] Element found after scrolling!")
             return {"success": True, "new_xpath": content, "method": "scroll"}
             
         # Phase 1a: Local Popup Close
         if self._try_local_popup_fallbacks(task, content):
-            logger.info("[HEAL-POPUP] ✅ Element found after closing popup locally!")
+            logger.info("[HEAL-POPUP] Element found after closing popup locally!")
             return {"success": True, "new_xpath": content, "method": "local_popup"}
             
         # Phase 1b: AI Popup Healing
         if self._try_ai_popup_healing(task, content):
-            logger.info("[HEAL-POPUP-AI] ✅ Element found after closing popup via AI!")
+            logger.info("[HEAL-POPUP-AI] Element found after closing popup via AI!")
             return {"success": True, "new_xpath": content, "method": "ai_popup"}
 
         logger.warning("[HEAL] Element not found after Phase 1. Further phases not yet implemented.")
