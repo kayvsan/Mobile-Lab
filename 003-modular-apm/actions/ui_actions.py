@@ -27,8 +27,25 @@ class UITaskHandler(BaseHandler):
         
         if selector:
             return self._perform_action(task, selector)
-        else:
-            return self._get_result(False, "Element not found")
+            
+        # Element not found → invoke self-healing
+        if find_by == 'xpath':
+            try:
+                from core.self_healing import SelfHealingEngine
+                healer = SelfHealingEngine(self.device)
+                healed_result = healer.execute_with_healing(task)
+                
+                if healed_result.get('success'):
+                    new_content = healed_result.get('new_xpath', content)
+                    selector = self.device.find_element(find_by, new_content, 3)
+                    if selector:
+                        return self._perform_action(task, selector)
+            except ImportError:
+                self.logger.debug("SelfHealingEngine not available")
+            except Exception as e:
+                self.logger.error(f"Healing error: {e}")
+                
+        return self._get_result(False, "Element not found")
 
     def _handle_within_ui(self, task: Dict[str, Any]) -> Dict[str, Any]:
         find_by = task.get('find_by', 'xpath')

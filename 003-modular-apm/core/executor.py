@@ -206,8 +206,8 @@ class JourneyExecutor:
             
             # Start screen recording
             timestamp = generate_timestamp("%Y%m%d_%H%M%S")
-            # Use exec_id if available, otherwise fallback to journey_id + timestamp
-            recording_id = exec_id if exec_id else f"{journey.id}_{timestamp}"
+            # Use exec_id + journey_id + timestamp to ensure uniqueness per run within a cycle
+            recording_id = f"{exec_id}_{journey.id}_{timestamp}" if exec_id else f"{journey.id}_{timestamp}"
             recording_filename = f"record_{recording_id}.mp4"
             local_recording_path = str(Path("logs") / recording_filename)
             self.device.start_recording()

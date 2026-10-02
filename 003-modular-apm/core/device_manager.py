@@ -217,6 +217,29 @@ class DeviceManager:
         except:
             return False
             
+    def press_key(self, key: str) -> bool:
+        """Press a device key (back, home, etc)"""
+        try:
+            self.d.press(key)
+            return True
+        except:
+            return False
+
+    def get_current_package(self) -> str:
+        """Get package name of currently focused app"""
+        try:
+            return self.d.app_current().get('package', '')
+        except:
+            return ''
+
+    def dump_hierarchy(self) -> str:
+        """Get current UI XML hierarchy dump"""
+        try:
+            return self.d.dump_hierarchy()
+        except Exception as e:
+            logger.warning(f"Failed to dump hierarchy: {e}")
+            return ""
+            
     def screenshot(self, filepath: str) -> bool:
         """Take screenshot and save to file"""
         try:
