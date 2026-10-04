@@ -284,6 +284,17 @@ class JourneyExecutor:
             
             journey_result['end_time'] = datetime.now().isoformat()
             
+            # Push healing updates back to backend (if loaded from API)
+            if api_url:
+                has_healing = any(
+                    "expected" in getattr(t, "extra", {}) or 
+                    "learned_xpaths" in getattr(t, "extra", {}) or 
+                    "xpath_history" in getattr(t, "extra", {})
+                    for d in journey.details for t in d.tasks
+                )
+                if has_healing:
+                    self._push_healing_to_backend(api_url, api_key, journey)
+            
             # Post-run metrics
             total_rt = 0.0
             for d in journey_result['details']:
@@ -318,3 +329,30 @@ class JourneyExecutor:
         from .utils import save_json_file
         save_json_file(filepath, result)
         return str(filepath)
+
+    def _push_healing_to_backend(self, api_url: str, api_key: str, journey: Journey):
+        import requests
+        from urllib.parse import urlparse
+        
+        parsed = urlparse(api_url)
+        base_url = f"{parsed.scheme}://{parsed.netloc}"
+        webhook_url = f"{base_url}/webhook/healing-sync"
+        
+        headers = {}
+        if api_key:
+            headers['X-API-Key'] = api_key
+            
+        payload = {
+            "journey_id": journey.id,
+            "details": [d.to_dict() for d in journey.details]
+        }
+        
+        try:
+            logger.info(f"Pushing healing updates to backend: {webhook_url}")
+            response = requests.post(webhook_url, json=payload, headers=headers, timeout=10)
+            if response.status_code == 200:
+                logger.info("Healing data successfully synced to backend")
+            else:
+                logger.warning(f"Failed to sync healing data: {response.status_code} - {response.text}")
+        except Exception as e:
+            logger.error(f"Error pushing healing data: {e}")
