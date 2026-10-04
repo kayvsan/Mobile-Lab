@@ -125,3 +125,31 @@ def receive_report():
         "success": report.success,
         "total_response_time": report.total_response_time,
     }), 201
+
+
+@webhook_bp.route('/webhook/healing-sync', methods=['POST'])
+@webhook_auth_required
+def receive_healing_sync():
+    """
+    Receive healing updates (learned_xpaths, healed_xpaths, fingerprint, etc.)
+    from APM and merge them into the journey details so all agents benefit.
+    """
+    data = request.json
+    if not data:
+        return jsonify({"error": "No JSON payload"}), 400
+
+    journey_id_key = data.get('journey_id')
+    updated_details = data.get('details')
+    
+    if not journey_id_key or not updated_details:
+        return jsonify({"error": "Missing journey_id or details"}), 400
+
+    journey = Journey.query.filter_by(journey_key=journey_id_key).first()
+    if not journey:
+        return jsonify({"error": f"Journey '{journey_id_key}' not found"}), 404
+
+    # APM script sends the completely rebuilt details array
+    journey.details = updated_details
+    db.session.commit()
+
+    return jsonify({"message": "Healing data synced successfully", "journey_id": journey.id}), 200
