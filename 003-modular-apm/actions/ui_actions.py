@@ -26,6 +26,12 @@ class UITaskHandler(BaseHandler):
         selector = self.device.find_element(find_by, content, timeout)
         
         if selector:
+            if find_by == 'xpath':
+                try:
+                    from core.self_healing import SelfHealingEngine
+                    SelfHealingEngine(self.device).record_success(task, selector)
+                except Exception as e:
+                    self.logger.debug(f"Failed to record baseline: {e}")
             return self._perform_action(task, selector)
             
         # Element not found → invoke self-healing
