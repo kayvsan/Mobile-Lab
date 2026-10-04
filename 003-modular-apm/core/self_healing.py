@@ -44,8 +44,28 @@ class SelfHealingEngine:
             logger.info("[HEAL-POPUP-AI] Element found after closing popup via AI!")
             return {"success": True, "new_xpath": content, "method": "ai_popup"}
 
-        logger.warning("[HEAL] Element not found after Phase 1. Further phases not yet implemented.")
-        return {"success": False, "error": "Element not found after popup healing"}
+        # Phase 2a: Local Pattern Match
+        healed_xpath = self._try_local_xpath_variants(task, content)
+        if healed_xpath:
+            logger.info("[HEAL-XPATH] Element found using local fingerprint variants!")
+            self._persist_healed_xpath(task, content, healed_xpath)
+            return {"success": True, "new_xpath": healed_xpath, "method": "local_xpath"}
+            
+        # Phase 2b: Cached XPath Check
+        healed_xpath = self._try_cached_healed_xpaths(task)
+        if healed_xpath:
+            logger.info("[HEAL-XPATH] Element found using cached healed xpath!")
+            return {"success": True, "new_xpath": healed_xpath, "method": "cached_xpath"}
+            
+        # Phase 2c: AI XPath Healing
+        healed_xpath = self._heal_stale_xpath(task, content)
+        if healed_xpath:
+            logger.info("[HEAL-XPATH-AI] Element healed successfully via AI!")
+            self._persist_healed_xpath(task, content, healed_xpath)
+            return {"success": True, "new_xpath": healed_xpath, "method": "ai_xpath"}
+
+        logger.warning("[HEAL] All healing phases failed.")
+        return {"success": False, "error": "All healing phases failed"}
 
     def _find_with_scroll(self, xpath: str) -> bool:
         """Phase 0: Scroll up/down to find element off-viewport"""
@@ -145,3 +165,155 @@ class SelfHealingEngine:
             # Mark for backend sync later
             self._healing_dirty = True
             logger.debug(f"[HEAL-POPUP] Saved learned closer: {xpath}")
+
+    def record_success(self, task: Dict[str, Any], selector: Any):
+        """Called when an element is found successfully. Used to refresh baseline/fingerprint."""
+        if not self.config.get("enabled", True) or task.get("find_by") != "xpath":
+            return
+            
+        # Refresh baseline based on interval
+        interval = self.config.get("baseline_refresh_interval", 5)
+        run_count = task.get("extra", {}).get("_success_count", 0) + 1
+        
+        if "extra" not in task:
+            task["extra"] = {}
+        task["extra"]["_success_count"] = run_count
+        
+        if run_count == 1 or run_count % interval == 0:
+            logger.debug(f"[HEAL-BASE] Recording baseline for {task.get('element_name', task.get('content'))[:30]}")
+            self._extract_fingerprint(task, selector)
+
+    def _extract_fingerprint(self, task: Dict[str, Any], selector: Any):
+        """Extract properties from found element for future local healing"""
+        try:
+            info = selector.info
+            fingerprint = {
+                "text": info.get("text", ""),
+                "resource-id": info.get("resourceName", ""),
+                "content-desc": info.get("contentDescription", ""),
+                "class": info.get("className", ""),
+                "package": info.get("packageName", "")
+            }
+            # Only keep non-empty values
+            fingerprint = {k: v for k, v in fingerprint.items() if v}
+            
+            if "extra" not in task:
+                task["extra"] = {}
+            task["extra"]["expected"] = fingerprint
+            self._healing_dirty = True
+        except Exception as e:
+            logger.debug(f"[HEAL-BASE] Failed to extract fingerprint: {e}")
+
+    def _try_local_xpath_variants(self, task: Dict[str, Any], main_xpath: str) -> Optional[str]:
+        """Phase 2a: Try finding element using fingerprint variants without AI"""
+        expected = task.get("extra", {}).get("expected", {})
+        if not expected:
+            return None
+            
+        logger.info("[HEAL-XPATH] Attempting local pattern matching from fingerprint...")
+        variants = []
+        
+        # Exact matches
+        if expected.get("text"):
+            variants.append(f"//*[@text='{expected['text']}']")
+        if expected.get("content-desc"):
+            variants.append(f"//*[@content-desc='{expected['content-desc']}']")
+        if expected.get("resource-id"):
+            variants.append(f"//*[@resource-id='{expected['resource-id']}']")
+            
+        # Partial matches
+        if expected.get("resource-id"):
+            id_part = expected["resource-id"].split("/")[-1] if "/" in expected["resource-id"] else expected["resource-id"]
+            variants.append(f"//*[contains(@resource-id, '{id_part}')]")
+            
+        # Combinations
+        if expected.get("class") and expected.get("text"):
+            variants.append(f"//{expected['class']}[@text='{expected['text']}']")
+            
+        # Deduplicate while preserving order
+        seen = set()
+        variants = [x for x in variants if not (x in seen or seen.add(x))]
+        
+        for variant in variants:
+            if variant == main_xpath:
+                continue
+            logger.debug(f"[HEAL-XPATH] Trying variant: {variant}")
+            if self.device.find_element('xpath', variant, timeout=2):
+                return variant
+                
+        return None
+
+    def _try_cached_healed_xpaths(self, task: Dict[str, Any]) -> Optional[str]:
+        """Phase 2b: Try previously successful AI-healed xpaths"""
+        healed_xpaths = task.get("extra", {}).get("learned_healed_xpaths", [])
+        if not healed_xpaths:
+            return None
+            
+        logger.info("[HEAL-XPATH] Checking previously healed xpaths...")
+        for xpath in healed_xpaths:
+            logger.debug(f"[HEAL-XPATH] Trying cached xpath: {xpath}")
+            if self.device.find_element('xpath', xpath, timeout=2):
+                return xpath
+        return None
+
+    def _heal_stale_xpath(self, task: Dict[str, Any], main_xpath: str) -> Optional[str]:
+        """Phase 2c: Ask AI to find replacement xpath"""
+        expected = task.get("extra", {}).get("expected", {})
+        if not expected:
+            logger.warning("[HEAL-XPATH-AI] No fingerprint ('expected' data) available for AI healing.")
+            return None
+            
+        from core.ai_helper import get_healed_xpath
+        
+        logger.info("[HEAL-XPATH-AI] Asking LLM for replacement xpath...")
+        xml_dump = self.device.dump_hierarchy()
+        app_package = self.device.get_current_package()
+        
+        max_retries = self.config.get("max_ai_retries", 3)
+        result = get_healed_xpath(xml_dump, expected, app_package, max_retries)
+        
+        if not result or not result.get("new_xpath"):
+            logger.info("[HEAL-XPATH-AI] AI failed to suggest a replacement xpath.")
+            return None
+            
+        new_xpath = result["new_xpath"]
+        confidence = float(result.get("confidence", 0.0))
+        reason = result.get("reason", "")
+        
+        threshold = self.config.get("ai_confidence_threshold", 0.85)
+        logger.info(f"[HEAL-XPATH-AI] AI suggested: {new_xpath} (Confidence: {confidence}) - {reason}")
+        
+        if confidence < threshold:
+            logger.warning(f"[HEAL-XPATH-AI] Confidence {confidence} below threshold {threshold}. Rejecting.")
+            return None
+            
+        if self.device.find_element('xpath', new_xpath, timeout=3):
+            return new_xpath
+            
+        logger.info("[HEAL-XPATH-AI] AI suggested xpath not found on screen.")
+        return None
+
+    def _persist_healed_xpath(self, task: Dict[str, Any], old_xpath: str, new_xpath: str):
+        """Save successfully healed xpath to task data"""
+        if "extra" not in task:
+            task["extra"] = {}
+            
+        # Save to history
+        if "xpath_history" not in task["extra"]:
+            task["extra"]["xpath_history"] = []
+        task["extra"]["xpath_history"].append({
+            "from": old_xpath,
+            "to": new_xpath,
+            "timestamp": time.time()
+        })
+        
+        # Save to cached healed
+        if "learned_healed_xpaths" not in task["extra"]:
+            task["extra"]["learned_healed_xpaths"] = []
+        if new_xpath not in task["extra"]["learned_healed_xpaths"]:
+            task["extra"]["learned_healed_xpaths"].append(new_xpath)
+            
+        # Update actual task content so future executions in this run use it
+        task["content"] = new_xpath
+        self._healing_dirty = True
+        logger.info(f"[HEAL-XPATH] Successfully persisted new xpath: {new_xpath}")
