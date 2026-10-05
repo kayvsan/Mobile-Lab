@@ -30,9 +30,9 @@ class SelfHealingEngine:
         logger.info(f"[HEAL] Starting healing pipeline for: {task.get('element_name', content[:30])}")
 
         # Phase 0: Scroll Healing
-        if self._find_with_scroll(content):
-            logger.info("[HEAL-SCROLL] Element found after scrolling!")
-            return {"success": True, "new_xpath": content, "method": "scroll"}
+        # if self._find_with_scroll(content):
+        #     logger.info("[HEAL-SCROLL] Element found after scrolling!")
+        #     return {"success": True, "new_xpath": content, "method": "scroll"}
             
         # Phase 1a: Local Popup Close
         if self._try_local_popup_fallbacks(task, content):
