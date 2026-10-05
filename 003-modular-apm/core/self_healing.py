@@ -315,5 +315,6 @@ class SelfHealingEngine:
             
         # Update actual task content so future executions in this run use it
         task["content"] = new_xpath
+        task["_healed_xpath"] = new_xpath
         self._healing_dirty = True
         logger.info(f"[HEAL-XPATH] Successfully persisted new xpath: {new_xpath}")

@@ -77,8 +77,7 @@ class Task:
             'id', 'name', 'type', 'action', 'find_by', 'content', 
             'element_name', 'input', 'x', 'y', 'timeout', 'wait', 
             'handler', 'condition', 'critical', 'measure_response_time', 
-            'max_presses', 'record_param', 'record_param_when',
-            'verify_xpath', 'expected'
+            'max_presses', 'record_param', 'record_param_when'
         }
         
         task_data = {k: v for k, v in data.items() if k in known_fields}

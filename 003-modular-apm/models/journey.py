@@ -27,6 +27,17 @@ class JourneyDetail:
             measure_response_time=data.get('measure_response_time', True),
             condition=data.get('condition')
         )
+        
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary"""
+        result = {
+            "id": self.id,
+            "name": self.name,
+            "tasks": [t.to_dict() for t in self.tasks],
+            "measure_response_time": self.measure_response_time,
+            "condition": self.condition
+        }
+        return {k: v for k, v in result.items() if v is not None}
 
 
 @dataclass

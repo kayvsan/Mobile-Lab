@@ -148,8 +148,10 @@ def receive_healing_sync():
     if not journey:
         return jsonify({"error": f"Journey '{journey_id_key}' not found"}), 404
 
+    from sqlalchemy.orm.attributes import flag_modified
     # APM script sends the completely rebuilt details array
     journey.details = updated_details
+    flag_modified(journey, "details")
     db.session.commit()
 
     return jsonify({"message": "Healing data synced successfully", "journey_id": journey.id}), 200

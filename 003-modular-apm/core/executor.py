@@ -110,6 +110,12 @@ class JourneyExecutor:
             result = handler.execute(task_dict, self.context)
             duration = time.time() - start_time
             
+            # Sync back healing updates to original task object
+            if "extra" in task_dict:
+                task.extra.update(task_dict["extra"])
+            if "_healed_xpath" in task_dict:
+                task.content = task_dict["_healed_xpath"]
+            
             # Response time logic
             response_time = None
             if result.get('success'):
@@ -336,7 +342,7 @@ class JourneyExecutor:
         
         parsed = urlparse(api_url)
         base_url = f"{parsed.scheme}://{parsed.netloc}"
-        webhook_url = f"{base_url}/webhook/healing-sync"
+        webhook_url = f"{base_url}/api/webhook/healing-sync"
         
         headers = {}
         if api_key:
