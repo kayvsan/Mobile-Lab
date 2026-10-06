@@ -4,10 +4,107 @@ import {
   AlertCircle, CheckCircle2, ChevronRight, Square,
   Repeat, Clock, Settings2, Monitor,
   GripVertical, X, Plus, ChevronDown,
-  Activity, Loader, StopCircle
+  Activity, Loader, StopCircle, Copy
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import api, { API_BASE_URL } from '../services/api';
+
+const LogEntry = ({ log }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(log.message);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const renderMessage = (message) => {
+    // structured regex: "2026-10-06 20:37:13 | INFO | apm.main | message"
+    const structuredRegex = /^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s+\|\s+([A-Z]+)\s*\|\s+([^|]+)\s+\|\s+(.*)$/s;
+    const match = message.match(structuredRegex);
+    
+    if (match) {
+      const [, timestamp, level, module, text] = match;
+      const lvl = level.trim();
+      const levelColor = {
+        'INFO': 'text-sky-400 bg-sky-400/10 border-sky-400/20',
+        'WARNING': 'text-amber-400 bg-amber-400/10 border-amber-400/20',
+        'ERROR': 'text-rose-400 bg-rose-400/10 border-rose-400/20',
+        'DEBUG': 'text-purple-400 bg-purple-400/10 border-purple-400/20',
+        'SUCCESS': 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
+      }[lvl] || 'text-slate-300 bg-slate-300/10 border-slate-300/20';
+
+      return (
+        <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 w-full">
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="text-white/40 w-[140px] shrink-0 font-mono text-[11px]">{timestamp}</span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border w-[68px] text-center ${levelColor}`}>{lvl}</span>
+          </div>
+          <div className="flex gap-3 min-w-0">
+            <span className="text-white/50 w-28 shrink-0 truncate text-[11px] font-mono mt-0.5" title={module.trim()}>[{module.trim()}]</span>
+            <span className="text-slate-300 break-words whitespace-pre-wrap flex-1">{text}</span>
+          </div>
+        </div>
+      );
+    }
+
+    if (message.trim().startsWith('{') && message.trim().endsWith('}')) {
+      try {
+        const obj = JSON.parse(message);
+        const jsonStr = JSON.stringify(obj, null, 2);
+        const highlighted = jsonStr.replace(
+          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+          (match) => {
+            let color = 'text-[#7fb4ca]'; // number
+            if (/^"/.test(match)) {
+              if (/:$/.test(match)) {
+                color = 'text-[#e6b450]'; // key
+              } else {
+                color = 'text-[#9ece6a]'; // string
+              }
+            } else if (/true|false/.test(match)) {
+              color = 'text-[#ff9e64]'; // boolean
+            } else if (/null/.test(match)) {
+              color = 'text-[#565f89]'; // null
+            }
+            return `<span class="${color}">${match}</span>`;
+          }
+        );
+        return (
+          <div className="w-full mt-1 mb-2">
+            <pre 
+              className="text-[12px] font-mono bg-[#0f1115]/50 p-4 rounded-xl border border-white/5 overflow-x-auto w-full inline-block shadow-inner"
+              dangerouslySetInnerHTML={{ __html: highlighted }}
+            />
+          </div>
+        );
+      } catch(e) {}
+    }
+
+    return <span className="text-slate-300 break-words whitespace-pre-wrap flex-1">{message}</span>;
+  };
+
+  return (
+    <div className={`group flex gap-3 hover:bg-white/[0.04] px-4 py-2.5 -mx-4 rounded-xl transition-all duration-200 relative border border-transparent hover:border-white/5
+      ${log.type === 'error' ? 'border-l-rose-500/50 bg-rose-500/5' : 
+        log.type === 'success' ? 'border-l-emerald-500/50 bg-emerald-500/5' : 
+        log.type === 'system' ? 'border-l-blue-500/50 bg-blue-500/5' : 'hover:shadow-lg'}`}
+    >
+      <span className="text-white/30 shrink-0 w-[70px] text-[11px] font-mono mt-1 opacity-50">{log.timestamp}</span>
+      <span className="text-white/20 shrink-0 mt-1"><ChevronRight size={14} /></span>
+      <div className="flex-1 min-w-0 flex items-start">
+        {renderMessage(log.message)}
+      </div>
+      <button 
+        onClick={handleCopy}
+        className="absolute right-3 top-3 p-2 rounded-lg bg-white/5 hover:bg-white/15 text-white/70 opacity-0 group-hover:opacity-100 transition-all border border-white/10 backdrop-blur-sm shadow-xl"
+        title="Copy log"
+      >
+        {copied ? <CheckCircle2 size={14} className="text-emerald-400" /> : <Copy size={14} />}
+      </button>
+    </div>
+  );
+};
 
 const ExecutionPage = () => {
   const [devices, setDevices] = useState([]);
@@ -617,66 +714,67 @@ const ExecutionPage = () => {
         </div>
 
         {/* Log Viewer */}
-        <div className="lg:col-span-2 min-h-0 flex flex-col">
-          <div className="bg-[#0a0b0d] rounded-3xl overflow-hidden flex flex-col flex-1 border border-border shadow-2xl">
+        <div className="lg:col-span-2 min-h-0 flex flex-col relative z-10">
+          <div className="bg-[#0f1115] rounded-3xl overflow-hidden flex flex-col flex-1 border border-[#2b2d31] shadow-2xl backdrop-blur-xl">
             {/* Terminal Header */}
-            <div className="bg-[#111214] px-6 py-4 flex items-center justify-between border-b border-white/5 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+            <div className="bg-[#181a1f] px-6 py-4 flex items-center justify-between border-b border-white/5 shrink-0 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-50 pointer-events-none"></div>
+              
+              <div className="flex items-center gap-3 relative z-10">
+                <div className="flex gap-2 group cursor-pointer">
+                  <div className="w-3.5 h-3.5 rounded-full bg-rose-500/90 shadow-[0_0_10px_rgba(244,63,94,0.3)] group-hover:opacity-80 transition-opacity"></div>
+                  <div className="w-3.5 h-3.5 rounded-full bg-amber-500/90 shadow-[0_0_10px_rgba(245,158,11,0.3)] group-hover:opacity-80 transition-opacity"></div>
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-500/90 shadow-[0_0_10px_rgba(16,185,129,0.3)] group-hover:opacity-80 transition-opacity"></div>
                 </div>
-                <div className="flex items-center gap-2 text-white/40 ml-2">
-                  <Terminal size={14} />
-                  <span className="text-xs font-mono">execution_log.sh</span>
+                <div className="flex items-center gap-2 text-white/50 ml-3">
+                  <Terminal size={14} className="text-white/40" />
+                  <span className="text-xs font-mono font-medium tracking-wide">&gt;_ TEST AI</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+
+              <div className="flex items-center gap-3 relative z-10">
                 {isExecuting && (
-                  <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono bg-emerald-500/10 px-3 py-1 rounded-full">
+                  <div className="flex items-center gap-2 text-emerald-400 text-[11px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    RUNNING
+                    LIVE
                   </div>
                 )}
                 {!isExecuting && logs.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-white/40 text-xs font-mono">
+                  <div className="flex items-center gap-1.5 text-white/40 text-[11px] font-mono px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
                     <CheckCircle2 size={14} />
                     COMPLETED
                   </div>
                 )}
+                <button className="text-white/30 hover:text-white/80 transition-colors ml-2" title="Close">
+                  <X size={16} />
+                </button>
               </div>
             </div>
 
             {/* Terminal Content */}
-            <div className="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed custom-scrollbar bg-[#0a0c10]">
               {logs.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-white/20 space-y-4">
-                  <Terminal size={48} className="opacity-20" />
-                  <p>Menunggu eksekusi dimulai...</p>
+                <div className="h-full flex flex-col items-center justify-center text-white/20 space-y-6 animate-pulse">
+                  <div className="p-6 bg-white/5 rounded-full shadow-inner shadow-white/5">
+                    <Terminal size={48} className="opacity-30" />
+                  </div>
+                  <p className="font-mono text-sm opacity-60">Menunggu eksekusi dimulai...</p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1 pb-4">
                   {logs.map((log, index) => (
-                    <div key={index} className={`flex gap-3 hover:bg-white/[0.02] px-2 py-1 -mx-2 rounded transition-colors
-                      ${log.type === 'error' ? 'text-rose-400' : 
-                        log.type === 'success' ? 'text-emerald-400' : 
-                        log.type === 'system' ? 'text-blue-400 font-semibold' : 'text-slate-300'}`}
-                    >
-                      <span className="text-white/30 shrink-0 w-20">{log.timestamp}</span>
-                      <span className="text-white/30 shrink-0"><ChevronRight size={14} /></span>
-                      <span className="flex-1 break-words whitespace-pre-wrap">{log.message}</span>
-                    </div>
+                    <LogEntry key={index} log={log} />
                   ))}
+                  
                   {isExecuting && (
-                    <div className="flex gap-3 px-2 py-1 -mx-2 animate-pulse">
-                      <span className="text-white/30 shrink-0 w-20">{new Date().toLocaleTimeString()}</span>
-                      <span className="text-white/30 shrink-0"><ChevronRight size={14} /></span>
-                      <span className="flex-1 text-slate-300 flex items-center gap-2">
-                        <span className="w-1.5 h-3 bg-white/40 animate-ping"></span>
+                    <div className="flex gap-3 px-4 py-2.5 -mx-4 animate-pulse opacity-70">
+                      <span className="text-white/30 shrink-0 w-[70px] text-[11px] font-mono mt-1 opacity-50">{new Date().toLocaleTimeString()}</span>
+                      <span className="text-white/20 shrink-0 mt-1"><ChevronRight size={14} /></span>
+                      <span className="flex-1 text-slate-300 flex items-center gap-2 mt-1">
+                        <span className="w-1.5 h-3.5 bg-white/40 animate-ping rounded-sm"></span>
                       </span>
                     </div>
                   )}
