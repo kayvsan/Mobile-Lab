@@ -330,23 +330,23 @@ const SavedConfigsPage = () => {
 
   return (
     <>
-    <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in flex flex-col h-full">
+    <div className="max-w-[1200px] mx-auto py-6 md:py-8 px-2 md:px-6 space-y-6 animate-fade-in flex flex-col h-[calc(100vh-6rem)] min-h-[700px]">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-surface-strong text-primary rounded-full">
+          <div className="p-3 bg-secondary text-primary rounded-full">
             <Settings2 size={24} />
           </div>
           <div>
-            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Saved Configs</h1>
-            <p className="text-body text-base">Manage and run automation configurations</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-foreground leading-none mb-2">Saved Configs</h1>
+            <p className="text-muted-foreground text-base">Manage and run automation configurations</p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
           <button 
             onClick={fetchData}
-            className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
+            className="p-3 bg-secondary text-foreground rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
             title="Refresh Devices and Journeys"
           >
             <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
@@ -354,14 +354,14 @@ const SavedConfigsPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
         
         {/* CREATE CONFIG FORM */}
         <div className="lg:col-span-1 min-h-0">
-          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-hairline bg-surface-soft/50">
-              <h2 className="font-semibold text-ink">Create Configuration</h2>
-              <p className="text-xs text-muted mt-1">Define device, journeys, and cycles to save</p>
+          <div className="bg-background rounded-3xl border border-border flex flex-col h-full overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-border bg-muted/50">
+              <h2 className="font-semibold text-foreground">Create Configuration</h2>
+              <p className="text-xs text-muted-foreground mt-1">Define device, journeys, and cycles to save</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
@@ -374,18 +374,18 @@ const SavedConfigsPage = () => {
 
               {/* Device Selection */}
               <div>
-                <label className="block text-xs font-semibold text-ink mb-2">
+                <label className="block text-xs font-semibold text-foreground mb-2">
                   Target Device
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                     <Smartphone size={18} />
                   </div>
                   <select 
                     value={selectedDevice}
                     onChange={(e) => setSelectedDevice(e.target.value)}
                     disabled={isLoading}
-                    className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
+                    className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-foreground"
                   >
                     <option value="">Choose a device...</option>
                     {devices.filter(device => device.status === 'online').map(device => (
@@ -399,7 +399,7 @@ const SavedConfigsPage = () => {
 
               {/* Journey Selection */}
               <div>
-                <label className="block text-xs font-semibold text-ink mb-2">
+                <label className="block text-xs font-semibold text-foreground mb-2">
                   Select Journeys
                 </label>
                 
@@ -410,7 +410,7 @@ const SavedConfigsPage = () => {
                       type="button"
                       onClick={() => setDropdownOpen(!dropdownOpen)}
                       disabled={isLoading}
-                      className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm font-semibold text-muted hover:border-primary/40 hover:bg-canvas transition-all outline-none disabled:opacity-50"
+                      className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-muted border border-border rounded-xl text-sm font-semibold text-muted-foreground hover:border-primary/40 hover:bg-background transition-all outline-none disabled:opacity-50"
                     >
                       <span className="flex items-center gap-2">
                         <Plus size={16} />
@@ -419,9 +419,9 @@ const SavedConfigsPage = () => {
                       <ChevronDown size={16} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {dropdownOpen && (
-                      <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-canvas border border-hairline rounded-xl shadow-lg max-h-[200px] overflow-auto">
+                      <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg max-h-[200px] overflow-auto">
                         {journeys.filter(j => !selectedJourneys.includes(j.id)).length === 0 ? (
-                          <div className="px-4 py-3 text-sm text-muted text-center">Semua journey sudah dipilih</div>
+                          <div className="px-4 py-3 text-sm text-muted-foreground text-center">Semua journey sudah dipilih</div>
                         ) : (
                           journeys.filter(j => !selectedJourneys.includes(j.id)).map(journey => (
                             <button
@@ -431,9 +431,9 @@ const SavedConfigsPage = () => {
                                 handleAddJourney(journey.id);
                                 setDropdownOpen(false);
                               }}
-                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-soft transition-colors flex items-center gap-2"
+                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
                             >
-                              <Map size={14} className="text-muted shrink-0" />
+                              <Map size={14} className="text-muted-foreground shrink-0" />
                               {journey.name}
                             </button>
                           ))
@@ -445,7 +445,7 @@ const SavedConfigsPage = () => {
                   {/* Ordered Journey List */}
                   {selectedJourneys.length > 0 && (
                     <div className="space-y-1.5">
-                      <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Execution Order</p>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Execution Order</p>
                       <div className="space-y-1">
                         {selectedJourneys.map((jId, index) => {
                           const journey = journeys.find(j => j.id === jId);
@@ -458,21 +458,21 @@ const SavedConfigsPage = () => {
                               onDragEnter={() => handleDragEnter(index)}
                               onDragEnd={handleDragEnd}
                               onDragOver={(e) => e.preventDefault()}
-                              className="group flex items-center gap-3 p-2 bg-canvas border border-hairline rounded-xl hover:border-primary/30 transition-all cursor-grab active:cursor-grabbing"
+                              className="group flex items-center gap-3 p-2 bg-background border border-border rounded-xl hover:border-primary/30 transition-all cursor-grab active:cursor-grabbing"
                             >
-                              <div className="text-muted group-hover:text-ink cursor-grab px-1">
+                              <div className="text-muted-foreground group-hover:text-foreground cursor-grab px-1">
                                 <GripVertical size={14} />
                               </div>
-                              <div className="w-5 h-5 rounded bg-surface-soft flex items-center justify-center text-[10px] font-bold text-muted shrink-0">
+                              <div className="w-5 h-5 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground shrink-0">
                                 {index + 1}
                               </div>
-                              <span className="flex-1 text-sm font-semibold text-ink truncate">
+                              <span className="flex-1 text-sm font-semibold text-foreground truncate">
                                 {journey.name}
                               </span>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveJourney(jId)}
-                                className="p-1 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                className="p-1 text-muted-foreground hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                               >
                                 <X size={14} />
                               </button>
@@ -488,11 +488,11 @@ const SavedConfigsPage = () => {
               {/* Cycle Specific Fields */}
               <div className="grid grid-cols-2 gap-4 animate-fade-in">
                 <div>
-                  <label className="block text-xs font-semibold text-ink mb-2">
+                  <label className="block text-xs font-semibold text-foreground mb-2">
                     Cycles
                   </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                       <Repeat size={16} />
                     </div>
                     <input 
@@ -501,16 +501,16 @@ const SavedConfigsPage = () => {
                       value={cycleCount}
                       onChange={(e) => setCycleCount(e.target.value)}
                       placeholder="Ex: 10 (0 for infinite)"
-                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                      className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-foreground"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-ink mb-2">
+                  <label className="block text-xs font-semibold text-foreground mb-2">
                     Interval (s)
                   </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                       <Clock size={16} />
                     </div>
                     <input 
@@ -519,7 +519,7 @@ const SavedConfigsPage = () => {
                       value={interval}
                       onChange={(e) => setInterval(e.target.value)}
                       placeholder="Ex: 60"
-                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                      className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-foreground"
                     />
                   </div>
                 </div>
@@ -527,18 +527,18 @@ const SavedConfigsPage = () => {
 
             </div>
 
-            <div className="p-6 border-t border-hairline bg-surface-soft/30 space-y-4">
+            <div className="p-6 border-t border-border bg-muted/30 space-y-3">
+              <input
+                type="text"
+                value={configName}
+                onChange={(e) => setConfigName(e.target.value)}
+                placeholder="Config name..."
+                className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-foreground"
+              />
               <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={configName}
-                  onChange={(e) => setConfigName(e.target.value)}
-                  placeholder="Config name..."
-                  className="flex-1 px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
-                />
                 <button 
                   onClick={handleSaveConfig}
-                  className="flex-1 bg-primary hover:bg-primary-active text-on-primary py-3 px-4 rounded-xl font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
+                  className="flex-1 bg-primary hover:bg-primary-active text-on-primary py-3 px-4 rounded-xl font-semibold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                   <Save size={18} />
                   {editingConfigId ? 'Update Config' : 'Save Config'}
@@ -546,7 +546,7 @@ const SavedConfigsPage = () => {
                 {editingConfigId && (
                   <button 
                     onClick={resetForm}
-                    className="flex-none bg-surface-soft hover:bg-surface-strong text-muted hover:text-ink py-3 px-4 rounded-xl font-semibold transition-all active:scale-95 border border-hairline"
+                    className="flex-none bg-muted hover:bg-secondary text-muted-foreground hover:text-foreground py-3 px-4 rounded-xl font-semibold transition-all active:scale-95 border border-border whitespace-nowrap"
                   >
                     Cancel
                   </button>
@@ -558,31 +558,31 @@ const SavedConfigsPage = () => {
 
         {/* SAVED CONFIGS TABLE */}
         <div className="lg:col-span-2 min-h-0 flex flex-col">
-          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-hairline flex items-center gap-2">
+          <div className="bg-background rounded-3xl border border-border flex flex-col h-full overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-border flex items-center gap-2">
               <Activity size={18} className="text-primary" />
-              <h2 className="font-semibold text-ink">Saved Configurations ({savedConfigs.length})</h2>
+              <h2 className="font-semibold text-foreground">Saved Configurations ({savedConfigs.length})</h2>
             </div>
             
-            <div className="flex-1 overflow-auto bg-surface-soft/20">
+            <div className="flex-1 overflow-auto bg-muted/20">
               {savedConfigs.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-muted p-8 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-surface-soft flex items-center justify-center">
+                <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                     <Save size={24} />
                   </div>
                   <p className="text-sm">Belum ada config yang tersimpan.<br/>Buat konfigurasi baru di panel sebelah kiri.</p>
                 </div>
               ) : (
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-surface-soft border-b border-hairline z-10">
+                <table className="w-full text-sm min-w-[800px]">
+                  <thead className="sticky top-0 bg-muted border-b border-border z-10">
                     <tr>
-                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Name</th>
-                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Device</th>
-                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Journeys</th>
-                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Cycles</th>
-                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Interval</th>
-                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Status</th>
-                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Actions</th>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Name</th>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Device</th>
+                      <th className="text-left px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Journeys</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Cycles</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Interval</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Status</th>
+                      <th className="text-center px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap w-[1%]">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-hairline">
@@ -590,28 +590,28 @@ const SavedConfigsPage = () => {
                       const isActive = cfg.execution_status === 'running' || cfg.execution_status === 'queued';
                       const isRunning = cfg.execution_status === 'running';
                       return (
-                        <tr key={cfg.id} className={`transition-colors hover:bg-surface-soft/50 ${isActive ? 'bg-emerald-50/20' : ''}`}>
-                          <td className="px-6 py-4 font-semibold text-ink whitespace-nowrap">{cfg.name}</td>
-                          <td className="px-6 py-4 text-body whitespace-nowrap">
+                        <tr key={cfg.id} className={`transition-colors hover:bg-muted/50 ${isActive ? 'bg-emerald-50/20' : ''}`}>
+                          <td className="px-6 py-4 font-semibold text-foreground whitespace-nowrap">{cfg.name}</td>
+                          <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
                             <span className="flex items-center gap-1.5">
-                              <Smartphone size={14} className="text-muted" />
+                              <Smartphone size={14} className="text-muted-foreground" />
                               {cfg.device_name || 'Unknown'}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex flex-wrap gap-1.5 max-w-[280px]">
                               {(cfg.journey_names || []).map((name, i) => (
-                                <span key={i} className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 bg-surface-strong border border-hairline rounded-lg text-ink">
-                                  <span className="text-[10px] text-muted font-bold">{i + 1}.</span>
+                                <span key={i} className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 bg-secondary border border-border rounded-lg text-foreground">
+                                  <span className="text-[10px] text-muted-foreground font-bold">{i + 1}.</span>
                                   {name}
                                 </span>
                               ))}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-center font-mono font-semibold text-ink">
+                          <td className="px-6 py-4 text-center font-mono font-semibold text-foreground">
                             {cfg.cycles === 0 ? '∞' : cfg.cycles}
                           </td>
-                          <td className="px-6 py-4 text-center font-mono text-body">
+                          <td className="px-6 py-4 text-center font-mono text-muted-foreground">
                             {cfg.interval}s
                           </td>
                           <td className="px-6 py-4 text-center">
@@ -626,18 +626,18 @@ const SavedConfigsPage = () => {
                                   {cfg.execution_status}
                                 </span>
                                 {isRunning && cfg.execution_started_at && (
-                                  <span className="text-[10px] text-muted font-mono whitespace-nowrap">
+                                  <span className="text-[10px] text-muted-foreground font-mono whitespace-nowrap">
                                     {getElapsedTime(cfg.execution_started_at)}
                                   </span>
                                 )}
                               </span>
                             ) : (
-                              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-surface-soft text-muted border border-hairline">
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">
                                 Idle
                               </span>
                             )}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center whitespace-nowrap w-[1%]">
                             <div className="flex items-center justify-center gap-2">
                               {isActive ? (
                                 <>
@@ -674,7 +674,7 @@ const SavedConfigsPage = () => {
                                   </button>
                                   <button
                                     onClick={() => handleDeleteConfig(cfg.id)}
-                                    className="p-2 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors"
+                                    className="p-2 text-muted-foreground hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors"
                                     title="Delete"
                                   >
                                     <Trash2 size={16} />

@@ -271,21 +271,21 @@ const ExecutionPage = () => {
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-surface-strong text-primary rounded-full">
+          <div className="p-3 bg-secondary text-primary rounded-full">
             <Terminal size={24} />
           </div>
           <div>
-            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Execution</h1>
-            <p className="text-body text-base">Real-time automation monitoring</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-foreground leading-none mb-2">Execution</h1>
+            <p className="text-muted-foreground text-base">Real-time automation monitoring</p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
           <button 
             onClick={fetchData}
-            className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
+            className="p-3 bg-secondary text-foreground rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
             title="Refresh Options"
           >
             <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
@@ -298,7 +298,7 @@ const ExecutionPage = () => {
         <div className="shrink-0 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
             <Activity size={14} className="text-primary" />
-            <h3 className="text-[10px] font-bold text-muted uppercase tracking-widest">
+            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
               Active Executions ({activeExecutions.length})
             </h3>
           </div>
@@ -310,7 +310,7 @@ const ExecutionPage = () => {
               return (
                 <div
                   key={exec.id}
-                  className="bg-canvas border border-hairline rounded-2xl p-4 flex items-start gap-3 group hover:border-primary/20 transition-all"
+                  className="bg-background border border-border rounded-2xl p-4 flex items-start gap-3 group hover:border-primary/20 transition-all"
                 >
                   <div className={`mt-0.5 shrink-0 ${ isRunning ? 'text-emerald-500' : 'text-amber-500'}`}>
                     {isRunning ? (
@@ -334,24 +334,24 @@ const ExecutionPage = () => {
                         </span>
                       )}
                     </div>
-                    <p className="text-sm font-semibold text-ink truncate">
+                    <p className="text-sm font-semibold text-foreground truncate">
                       {device?.name || exec.device_id?.slice(0, 8)}
                     </p>
-                    <p className="text-xs text-muted truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       {exec.is_cycle
                         ? `${exec.cycle_params?.journey_ids?.length || '?'} journeys · ${exec.cycle_params?.cycles || '∞'} cycles`
                         : (journey?.name || 'Unknown journey')
                       }
                     </p>
                     {isRunning && (
-                      <p className="text-[10px] text-muted mt-1 font-mono">
+                      <p className="text-[10px] text-muted-foreground mt-1 font-mono">
                         ⏱ {getElapsedTime(exec.started_at)}
                       </p>
                     )}
                   </div>
                   <button
                     onClick={() => handleStopExecution(exec.id)}
-                    className="p-1.5 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                    className="p-1.5 text-muted-foreground hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100 shrink-0"
                     title="Stop execution"
                   >
                     <StopCircle size={16} />
@@ -366,20 +366,20 @@ const ExecutionPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
         {/* Control Panel */}
         <div className="lg:col-span-1 min-h-0">
-          <div className="bg-canvas rounded-3xl border border-hairline flex flex-col h-full overflow-hidden shadow-sm">
+          <div className="bg-background rounded-3xl border border-border flex flex-col h-full overflow-hidden shadow-sm">
             {/* Tabs Navigation */}
-            <div className="flex border-b border-hairline p-2 bg-surface-soft/50">
+            <div className="flex border-b border-border p-2 bg-muted/50">
               <button 
                 onClick={() => setActiveTab('single')}
                 disabled={isExecuting}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'single' ? 'bg-canvas text-primary shadow-sm' : 'text-muted hover:text-ink'}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'single' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Single
               </button>
               <button 
                 onClick={() => setActiveTab('cycle')}
                 disabled={isExecuting}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'cycle' ? 'bg-canvas text-primary shadow-sm' : 'text-muted hover:text-ink'}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all rounded-2xl ${activeTab === 'cycle' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Cycle
               </button>
@@ -396,18 +396,18 @@ const ExecutionPage = () => {
               <div className="space-y-6">
                 {/* Device Selection */}
                 <div>
-                  <label className="block text-xs font-semibold text-ink mb-2">
+                  <label className="block text-xs font-semibold text-foreground mb-2">
                     Target Device
                   </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                       <Smartphone size={18} />
                     </div>
                     <select 
                       value={selectedDevice}
                       onChange={(e) => setSelectedDevice(e.target.value)}
                       disabled={isExecuting || isLoading}
-                      className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
+                      className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-foreground"
                     >
                       <option value="">Choose a device...</option>
                       {devices.filter(device => device.status === 'online').map(device => (
@@ -421,20 +421,20 @@ const ExecutionPage = () => {
 
                 {/* Journey Selection */}
                 <div>
-                  <label className="block text-xs font-semibold text-ink mb-2">
+                  <label className="block text-xs font-semibold text-foreground mb-2">
                     Select Journey{activeTab === 'cycle' && 's'}
                   </label>
                   
                   {activeTab === 'single' ? (
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                         <Map size={18} />
                       </div>
                       <select 
                         value={selectedJourney}
                         onChange={(e) => setSelectedJourney(e.target.value)}
                         disabled={isExecuting || isLoading}
-                        className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-ink"
+                        className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none appearance-none font-semibold text-foreground"
                       >
                         <option value="">Choose a journey...</option>
                         {journeys.map(journey => (
@@ -452,7 +452,7 @@ const ExecutionPage = () => {
                           type="button"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
                           disabled={isExecuting || isLoading}
-                          className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm font-semibold text-muted hover:border-primary/40 hover:bg-canvas transition-all outline-none disabled:opacity-50"
+                          className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-muted border border-border rounded-xl text-sm font-semibold text-muted-foreground hover:border-primary/40 hover:bg-background transition-all outline-none disabled:opacity-50"
                         >
                           <span className="flex items-center gap-2">
                             <Plus size={16} />
@@ -461,9 +461,9 @@ const ExecutionPage = () => {
                           <ChevronDown size={16} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                         </button>
                         {dropdownOpen && (
-                          <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-canvas border border-hairline rounded-xl shadow-lg max-h-[200px] overflow-auto">
+                          <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg max-h-[200px] overflow-auto">
                             {journeys.filter(j => !selectedJourneys.includes(j.id)).length === 0 ? (
-                              <div className="px-4 py-3 text-sm text-muted text-center">Semua journey sudah dipilih</div>
+                              <div className="px-4 py-3 text-sm text-muted-foreground text-center">Semua journey sudah dipilih</div>
                             ) : (
                               journeys.filter(j => !selectedJourneys.includes(j.id)).map(journey => (
                                 <button
@@ -473,9 +473,9 @@ const ExecutionPage = () => {
                                     handleAddJourney(journey.id);
                                     setDropdownOpen(false);
                                   }}
-                                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-soft transition-colors flex items-center gap-2"
+                                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
                                 >
-                                  <Map size={14} className="text-muted shrink-0" />
+                                  <Map size={14} className="text-muted-foreground shrink-0" />
                                   {journey.name}
                                 </button>
                               ))
@@ -487,7 +487,7 @@ const ExecutionPage = () => {
                       {/* Ordered Journey List */}
                       {selectedJourneys.length > 0 && (
                         <div className="space-y-1.5">
-                          <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Execution Order</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Execution Order</p>
                           <div className="space-y-1">
                             {selectedJourneys.map((jId, index) => {
                               const journey = journeys.find(j => j.id === jId);
@@ -500,22 +500,22 @@ const ExecutionPage = () => {
                                   onDragEnter={() => handleDragEnter(index)}
                                   onDragEnd={handleDragEnd}
                                   onDragOver={(e) => e.preventDefault()}
-                                  className={`group flex items-center gap-3 p-2 bg-canvas border border-hairline rounded-xl transition-all ${isExecuting ? 'opacity-70' : 'hover:border-primary/30 cursor-grab active:cursor-grabbing'}`}
+                                  className={`group flex items-center gap-3 p-2 bg-background border border-border rounded-xl transition-all ${isExecuting ? 'opacity-70' : 'hover:border-primary/30 cursor-grab active:cursor-grabbing'}`}
                                 >
-                                  <div className={`text-muted px-1 ${isExecuting ? '' : 'group-hover:text-ink cursor-grab'}`}>
+                                  <div className={`text-muted-foreground px-1 ${isExecuting ? '' : 'group-hover:text-foreground cursor-grab'}`}>
                                     <GripVertical size={14} />
                                   </div>
-                                  <div className="w-5 h-5 rounded bg-surface-soft flex items-center justify-center text-[10px] font-bold text-muted shrink-0">
+                                  <div className="w-5 h-5 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground shrink-0">
                                     {index + 1}
                                   </div>
-                                  <span className="flex-1 text-sm font-semibold text-ink truncate">
+                                  <span className="flex-1 text-sm font-semibold text-foreground truncate">
                                     {journey.name}
                                   </span>
                                   {!isExecuting && (
                                     <button
                                       type="button"
                                       onClick={() => handleRemoveJourney(jId)}
-                                      className="p-1 text-muted hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                      className="p-1 text-muted-foreground hover:text-semantic-down hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                                     >
                                       <X size={14} />
                                     </button>
@@ -534,11 +534,11 @@ const ExecutionPage = () => {
                 {activeTab === 'cycle' && (
                   <div className="grid grid-cols-2 gap-4 animate-fade-in">
                     <div>
-                      <label className="block text-xs font-semibold text-ink mb-2">
+                      <label className="block text-xs font-semibold text-foreground mb-2">
                         Cycles
                       </label>
                       <div className="relative group">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                           <Repeat size={16} />
                         </div>
                         <input 
@@ -548,16 +548,16 @@ const ExecutionPage = () => {
                           onChange={(e) => setCycleCount(e.target.value)}
                           disabled={isExecuting}
                           placeholder="Ex: 10 (0 for infinite)"
-                          className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                          className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-foreground"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-ink mb-2">
+                      <label className="block text-xs font-semibold text-foreground mb-2">
                         Interval (s)
                       </label>
                       <div className="relative group">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted transition-colors">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground transition-colors">
                           <Clock size={16} />
                         </div>
                         <input 
@@ -567,7 +567,7 @@ const ExecutionPage = () => {
                           onChange={(e) => setInterval(e.target.value)}
                           disabled={isExecuting}
                           placeholder="Ex: 60"
-                          className="w-full pl-11 pr-4 py-3 bg-surface-soft border border-hairline rounded-xl text-sm focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-ink"
+                          className="w-full pl-11 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none font-semibold text-foreground"
                         />
                       </div>
                     </div>
@@ -576,7 +576,7 @@ const ExecutionPage = () => {
               </div>
             </div>
 
-            <div className="p-8 border-t border-hairline bg-surface-soft/30 space-y-4">
+            <div className="p-8 border-t border-border bg-muted/30 space-y-4">
               {selectedDevice && (
                 <button 
                   onClick={() => {
@@ -618,7 +618,7 @@ const ExecutionPage = () => {
 
         {/* Log Viewer */}
         <div className="lg:col-span-2 min-h-0 flex flex-col">
-          <div className="bg-[#0a0b0d] rounded-3xl overflow-hidden flex flex-col flex-1 border border-hairline shadow-2xl">
+          <div className="bg-[#0a0b0d] rounded-3xl overflow-hidden flex flex-col flex-1 border border-border shadow-2xl">
             {/* Terminal Header */}
             <div className="bg-[#111214] px-6 py-4 flex items-center justify-between border-b border-white/5 shrink-0">
               <div className="flex items-center gap-3">

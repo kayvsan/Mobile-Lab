@@ -43,31 +43,31 @@ const DashboardPage = () => {
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border">
         <div>
-          <h1 className="text-[52px] font-normal tracking-tight text-ink flex items-center gap-2 leading-none mb-4">
+          <h1 className="text-[52px] font-normal tracking-tight text-foreground flex items-center gap-2 leading-none mb-4">
             Device Dashboard
           </h1>
-          <p className="text-body text-base">Manage and monitor connected devices</p>
+          <p className="text-muted-foreground text-base">Manage and monitor connected devices</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center bg-surface-soft p-1.5 rounded-full border border-hairline">
+          <div className="flex items-center bg-muted p-1.5 rounded-full border border-border">
             <button 
               onClick={() => setFilter('all')}
-              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'all' ? 'bg-canvas text-ink shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-strong'}`}
+              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'all' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
             >
               All ({devices.length})
             </button>
             <button 
               onClick={() => setFilter('online')}
-              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'online' ? 'bg-canvas text-emerald-600 shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-strong'}`}
+              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'online' ? 'bg-background text-emerald-600 shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
             >
               Online ({onlineCount})
             </button>
             <button 
               onClick={() => setFilter('offline')}
-              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'offline' ? 'bg-canvas text-rose-600 shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-strong'}`}
+              className={`px-5 py-2.5 text-sm font-semibold rounded-full transition-all ${filter === 'offline' ? 'bg-background text-rose-600 shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
             >
               Offline ({devices.length - onlineCount})
             </button>
@@ -75,7 +75,7 @@ const DashboardPage = () => {
           
           <button 
             onClick={handleRefresh}
-            className="p-3.5 rounded-full text-ink bg-surface-strong hover:bg-hairline-soft transition-all focus:outline-none focus:ring-2 focus:ring-primary group shadow-sm active:scale-95"
+            className="p-3.5 rounded-full text-foreground bg-secondary hover:bg-hairline-soft transition-all focus:outline-none focus:ring-2 focus:ring-primary group shadow-sm active:scale-95"
             title="Refresh Devices"
           >
             <RefreshCw size={20} className={isLoading ? 'animate-spin text-primary' : 'group-hover:rotate-180 transition-transform duration-500'} />
@@ -104,7 +104,7 @@ const DashboardPage = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-canvas rounded-3xl p-6 border border-hairline shadow-sm h-[220px] animate-pulse"></div>
+            <div key={i} className="bg-background rounded-3xl p-6 border border-border shadow-sm h-[220px] animate-pulse"></div>
           ))}
         </div>
       ) : (
@@ -112,9 +112,9 @@ const DashboardPage = () => {
           {/* Local Devices */}
           {devices.filter(d => !d.agent_id).length > 0 && (
             <section>
-              <div className="flex items-center gap-3 mb-6 text-muted">
-                <div className="w-8 h-8 rounded-full bg-surface-strong text-ink flex items-center justify-center"><Monitor size={16} /></div>
-                <h2 className="text-base font-semibold tracking-wide text-ink">Server (Local Devices)</h2>
+              <div className="flex items-center gap-3 mb-6 text-muted-foreground">
+                <div className="w-8 h-8 rounded-full bg-secondary text-foreground flex items-center justify-center"><Monitor size={16} /></div>
+                <h2 className="text-base font-semibold tracking-wide text-foreground">Server (Local Devices)</h2>
                 <div className="h-px bg-hairline flex-1 ml-4"></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -134,9 +134,9 @@ const DashboardPage = () => {
 
             return (
               <section key={agentId}>
-                <div className="flex items-center gap-3 mb-6 text-muted">
-                  <div className="w-8 h-8 rounded-full bg-surface-strong text-primary flex items-center justify-center"><Smartphone size={16} /></div>
-                  <h2 className="text-base font-semibold tracking-wide text-ink">{agentName || 'Remote Agent'}</h2>
+                <div className="flex items-center gap-3 mb-6 text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-secondary text-primary flex items-center justify-center"><Smartphone size={16} /></div>
+                  <h2 className="text-base font-semibold tracking-wide text-foreground">{agentName || 'Remote Agent'}</h2>
                   <div className="h-px bg-hairline flex-1 ml-4"></div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -149,12 +149,12 @@ const DashboardPage = () => {
           })}
 
           {devices.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-16 bg-canvas rounded-3xl border border-hairline border-dashed text-center">
-              <div className="w-20 h-20 bg-surface-soft rounded-full flex items-center justify-center text-muted mb-6">
+            <div className="flex flex-col items-center justify-center p-16 bg-background rounded-3xl border border-border border-dashed text-center">
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center text-muted-foreground mb-6">
                 <Smartphone size={40} />
               </div>
-              <h3 className="text-xl font-normal tracking-tight text-ink mb-2">Tidak ada device</h3>
-              <p className="text-muted max-w-sm font-medium text-base">Belum ada device yang terhubung ke server atau agent.</p>
+              <h3 className="text-xl font-normal tracking-tight text-foreground mb-2">Tidak ada device</h3>
+              <p className="text-muted-foreground max-w-sm font-medium text-base">Belum ada device yang terhubung ke server atau agent.</p>
             </div>
           )}
         </div>

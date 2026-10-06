@@ -32,19 +32,19 @@ const CreateJourneyPage = () => {
       <div className="flex items-center gap-4 mb-12">
         <button
           onClick={() => navigate('/Journeys')}
-          className="p-3 -ml-3 text-muted hover:text-ink hover:bg-surface-soft rounded-full transition-colors"
+          className="p-3 -ml-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
           title="Back to Journeys"
         >
           <ChevronLeft size={24} />
         </button>
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-muted mb-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-2">
             <Map size={14} />
             <span>Journeys</span>
             <span className="text-hairline-soft">/</span>
             <span className="text-primary">Create New</span>
           </div>
-          <h1 className="text-[44px] font-normal tracking-tight text-ink leading-none">Create Automation Journey</h1>
+          <h1 className="text-[44px] font-normal tracking-tight text-foreground leading-none">Create Automation Journey</h1>
         </div>
       </div>
 

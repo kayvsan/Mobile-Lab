@@ -91,20 +91,20 @@ const JourneysPage = () => {
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 animate-fade-in">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-surface-strong text-primary rounded-full">
+          <div className="p-3 bg-secondary text-primary rounded-full">
             <Map size={24} />
           </div>
           <div>
-            <h1 className="text-[52px] font-normal tracking-tight text-ink flex items-center gap-2 leading-none mb-2">Journeys</h1>
-            <p className="text-body text-base">Manage and view automation journeys</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-foreground flex items-center gap-2 leading-none mb-2">Journeys</h1>
+            <p className="text-muted-foreground text-base">Manage and view automation journeys</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
               <Search size={16} />
             </div>
             <input 
@@ -112,7 +112,7 @@ const JourneysPage = () => {
               placeholder="Search journeys..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 pr-4 py-3 w-full sm:w-64 border border-hairline bg-surface-soft focus:bg-canvas focus:border-primary rounded-xl text-sm transition-all outline-none text-ink"
+              className="pl-11 pr-4 py-3 w-full sm:w-64 border border-border bg-muted focus:bg-background focus:border-primary rounded-xl text-sm transition-all outline-none text-foreground"
             />
           </div>
           <button 
@@ -126,24 +126,24 @@ const JourneysPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="bg-canvas rounded-3xl border border-hairline overflow-hidden">
+      <div className="bg-background rounded-3xl border border-border overflow-hidden">
         {isLoading ? (
           <div className="p-20 flex flex-col items-center justify-center space-y-4">
-            <div className="w-12 h-12 border-4 border-hairline border-t-primary rounded-full animate-spin"></div>
-            <p className="text-body animate-pulse">Loading journey data...</p>
+            <div className="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
+            <p className="text-muted-foreground animate-pulse">Loading journey data...</p>
           </div>
         ) : error ? (
           <div className="p-20 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="p-4 bg-surface-strong text-semantic-down rounded-full">
+            <div className="p-4 bg-secondary text-semantic-down rounded-full">
               <AlertCircle size={40} />
             </div>
             <div>
-              <h3 className="text-xl font-normal tracking-tight text-ink">Oops! Something went wrong</h3>
-              <p className="text-body max-w-xs mx-auto">{error}</p>
+              <h3 className="text-xl font-normal tracking-tight text-foreground">Oops! Something went wrong</h3>
+              <p className="text-muted-foreground max-w-xs mx-auto">{error}</p>
             </div>
             <button 
               onClick={fetchJourneys}
-              className="inline-flex items-center gap-2 px-5 py-3 bg-surface-strong text-ink rounded-full font-semibold hover:bg-hairline transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-secondary text-foreground rounded-full font-semibold hover:bg-hairline transition-colors"
             >
               <RefreshCcw size={16} />
               Try Again
@@ -151,12 +151,12 @@ const JourneysPage = () => {
           </div>
         ) : filteredJourneys.length === 0 ? (
           <div className="p-20 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="p-4 bg-surface-strong text-muted rounded-full">
+            <div className="p-4 bg-secondary text-muted-foreground rounded-full">
               <Search size={40} />
             </div>
             <div>
-              <h3 className="text-xl font-normal tracking-tight text-ink">No Journeys Found</h3>
-              <p className="text-body">
+              <h3 className="text-xl font-normal tracking-tight text-foreground">No Journeys Found</h3>
+              <p className="text-muted-foreground">
                 {searchTerm ? `No results for "${searchTerm}"` : "You haven't created any automation journeys yet."}
               </p>
             </div>
@@ -172,7 +172,7 @@ const JourneysPage = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-surface-soft text-muted font-bold border-b border-hairline text-[10px] uppercase tracking-widest">
+              <thead className="bg-muted text-muted-foreground font-bold border-b border-border text-[10px] uppercase tracking-widest">
                 <tr>
                   <th className="py-5 px-8">Name & ID</th>
                   <th className="py-5 px-8">Created At</th>
@@ -181,16 +181,16 @@ const JourneysPage = () => {
               </thead>
               <tbody className="divide-y divide-hairline">
                 {filteredJourneys.map((journey) => (
-                  <tr key={journey.id} className="hover:bg-surface-soft/50 transition-colors group">
+                  <tr key={journey.id} className="hover:bg-muted/50 transition-colors group">
                     <td className="py-5 px-8">
-                      <div className="font-semibold text-ink">{journey.name}</div>
-                      <div className="text-[12px] font-mono text-muted mt-1 uppercase tracking-widest">
+                      <div className="font-semibold text-foreground">{journey.name}</div>
+                      <div className="text-[12px] font-mono text-muted-foreground mt-1 uppercase tracking-widest">
                         {journey.id}
                       </div>
                     </td>
-                    <td className="py-5 px-8 text-body">
-                      <div className="flex items-center gap-2 text-sm font-mono text-muted">
-                        <Clock size={16} className="text-muted" />
+                    <td className="py-5 px-8 text-muted-foreground">
+                      <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
+                        <Clock size={16} className="text-muted-foreground" />
                         {formatDate(journey.created_at)}
                       </div>
                     </td>
@@ -199,7 +199,7 @@ const JourneysPage = () => {
                         <button 
                           onClick={() => navigate(`/journeys/edit/${journey.id}`)}
                           title="Edit Journey"
-                          className="p-3 bg-canvas border border-hairline text-ink rounded-full hover:bg-surface-strong transition-all"
+                          className="p-3 bg-background border border-border text-foreground rounded-full hover:bg-secondary transition-all"
                         >
                           <Edit size={16} />
                         </button>
@@ -208,7 +208,7 @@ const JourneysPage = () => {
                           onClick={() => handleDeleteClick(journey)}
                           disabled={isDeleting === journey.id}
                           title="Delete Journey"
-                          className="p-3 bg-canvas border border-hairline text-ink rounded-full hover:bg-surface-strong hover:text-semantic-down transition-all"
+                          className="p-3 bg-background border border-border text-foreground rounded-full hover:bg-secondary hover:text-semantic-down transition-all"
                         >
                           {isDeleting === journey.id ? (
                             <RefreshCcw size={16} className="animate-spin" />

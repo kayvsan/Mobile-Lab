@@ -26,11 +26,11 @@ const ConfirmModal = ({
         return {
           iconBg: 'bg-amber-50',
           iconColor: 'text-accent-yellow',
-          buttonBg: 'bg-accent-yellow text-ink hover:opacity-90',
+          buttonBg: 'bg-accent-yellow text-foreground hover:opacity-90',
         };
       default:
         return {
-          iconBg: 'bg-surface-strong',
+          iconBg: 'bg-secondary',
           iconColor: 'text-primary',
           buttonBg: 'bg-primary text-on-primary hover:bg-primary-active',
         };
@@ -48,7 +48,7 @@ const ConfirmModal = ({
       />
       
       {/* Modal Content */}
-      <div className="relative bg-canvas rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200 border border-hairline">
+      <div className="relative bg-background rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200 border border-border">
         <div className="p-8">
           <div className="flex items-start gap-4">
             <div className={`p-4 rounded-full ${styles.iconBg} ${styles.iconColor} shrink-0`}>
@@ -57,15 +57,15 @@ const ConfirmModal = ({
             
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-normal tracking-tight text-ink">{title}</h3>
+                <h3 className="text-xl font-normal tracking-tight text-foreground">{title}</h3>
                 <button 
                   onClick={onClose}
-                  className="p-1 hover:bg-surface-soft rounded-full text-muted transition-colors"
+                  className="p-1 hover:bg-muted rounded-full text-muted-foreground transition-colors"
                 >
                   <X size={20} />
                 </button>
               </div>
-              <p className="text-body text-sm leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {message}
               </p>
             </div>
@@ -74,7 +74,7 @@ const ConfirmModal = ({
           <div className="mt-8 flex items-center justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 text-ink bg-surface-strong hover:bg-hairline-soft rounded-full font-semibold transition-colors text-sm"
+              className="px-6 py-3 text-foreground bg-secondary hover:bg-hairline-soft rounded-full font-semibold transition-colors text-sm"
             >
               {cancelText}
             </button>

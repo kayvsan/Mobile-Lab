@@ -71,9 +71,9 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
   };
 
   return (
-    <div className="bg-canvas rounded-3xl border border-hairline shadow-sm overflow-hidden mb-6 transition-all hover:border-hairline-soft">
+    <div className="bg-background rounded-3xl border border-border shadow-sm overflow-hidden mb-6 transition-all hover:border-border">
       {/* Detail Header */}
-      <div className="px-6 py-5 bg-surface-soft border-b border-hairline flex items-center justify-between">
+      <div className="px-6 py-5 bg-muted border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-5 flex-1">
           {/* Step Number & Drag Handle Area */}
           <div className="flex flex-col gap-1 text-slate-400">
@@ -101,15 +101,15 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
             className="flex-1 cursor-pointer flex items-center gap-4"
             onClick={() => setIsExpanded(!isExpanded)}
           >
-            <div className="h-12 w-12 rounded-full bg-surface-strong text-primary flex items-center justify-center font-bold shrink-0 border border-hairline">
+            <div className="h-12 w-12 rounded-full bg-secondary text-primary flex items-center justify-center font-bold shrink-0 border border-border">
               <Layers size={20} />
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold text-primary bg-surface-strong px-2 py-1 rounded border border-hairline uppercase tracking-wider">Journey Detail {index + 1}</span>
-                {/* <h3 className="font-semibold text-ink text-lg">{detail.name || `Journey Detail ${index + 1}`}</h3> */}
+                <span className="text-[10px] font-bold text-primary bg-secondary px-2 py-1 rounded border border-border uppercase tracking-wider">Journey Detail {index + 1}</span>
+                {/* <h3 className="font-semibold text-foreground text-lg">{detail.name || `Journey Detail ${index + 1}`}</h3> */}
               </div>
-              <p className="text-[11px] text-muted font-mono mt-1 tracking-wider">ID: {detail.id}</p>
+              <p className="text-[11px] text-muted-foreground font-mono mt-1 tracking-wider">ID: {detail.id}</p>
             </div>
           </div>
         </div>
@@ -121,9 +121,9 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
               id={`measure-${detail.id}`}
               checked={detail.measure_response_time || false}
               onChange={(e) => handleFieldChange('measure_response_time', e.target.checked)}
-              className="h-4 w-4 text-primary focus:ring-primary border-hairline rounded"
+              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
-            <label htmlFor={`measure-${detail.id}`} className="ml-2 block text-xs font-semibold text-muted whitespace-nowrap">
+            <label htmlFor={`measure-${detail.id}`} className="ml-2 block text-xs font-semibold text-muted-foreground whitespace-nowrap">
               Measure Time
             </label>
           </div>
@@ -133,7 +133,7 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 text-muted hover:text-primary hover:bg-surface-strong rounded-full transition-colors"
+            className="p-2 text-muted-foreground hover:text-primary hover:bg-secondary rounded-full transition-colors"
           >
             <span className="text-sm font-semibold px-2">{isExpanded ? 'Collapse' : 'Expand'}</span>
           </button>
@@ -141,7 +141,7 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
           <button
             type="button"
             onClick={onDelete}
-            className="p-2 text-muted hover:text-semantic-down hover:bg-surface-strong rounded-full transition-colors"
+            className="p-2 text-muted-foreground hover:text-semantic-down hover:bg-secondary rounded-full transition-colors"
             title="Delete Sub Journey"
           >
             <Trash2 size={18} />
@@ -155,23 +155,23 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
           {/* Detail Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
-              <label className="block text-sm font-semibold text-ink mb-2">Journey Detail Name</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">Journey Detail Name</label>
               <input
                 type="text"
                 value={detail.name || ''}
                 onChange={(e) => handleFieldChange('name', e.target.value)}
                 placeholder="e.g., Launch Application"
-                className="w-full px-4 py-3 bg-surface-soft border border-hairline rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-ink transition-all"
+                className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-foreground transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-ink mb-2">Journey Detail ID</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">Journey Detail ID</label>
               <input
                 type="text"
                 value={detail.id || ''}
                 onChange={(e) => handleFieldChange('id', e.target.value)}
                 placeholder="e.g., launch_app"
-                className="w-full px-4 py-3 bg-surface-soft border border-hairline rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-mono text-ink transition-all"
+                className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-mono text-foreground transition-all"
               />
             </div>
             <div className="sm:hidden flex items-center md:col-span-2">
@@ -180,31 +180,31 @@ const DetailCard = ({ detail, index, onUpdate, onDelete, onMoveUp, onMoveDown, i
                 id={`measure-mobile-${detail.id}`}
                 checked={detail.measure_response_time || false}
                 onChange={(e) => handleFieldChange('measure_response_time', e.target.checked)}
-                className="h-4 w-4 text-primary focus:ring-primary border-hairline rounded"
+                className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
               />
-              <label htmlFor={`measure-mobile-${detail.id}`} className="ml-2 block text-sm font-semibold text-ink">
+              <label htmlFor={`measure-mobile-${detail.id}`} className="ml-2 block text-sm font-semibold text-foreground">
                 Measure Response Time for this Journey detail
               </label>
             </div>
           </div>
 
           {/* Tasks Section */}
-          <div className="bg-surface-soft/50 p-6 rounded-2xl border border-hairline">
+          <div className="bg-muted/50 p-6 rounded-2xl border border-border">
             <div className="flex items-center justify-between mb-6">
-              <h4 className="text-base font-semibold text-ink tracking-tight">Tasks ({detail.tasks?.length || 0})</h4>
+              <h4 className="text-base font-semibold text-foreground tracking-tight">Tasks ({detail.tasks?.length || 0})</h4>
               <button
                 type="button"
                 onClick={handleAddTaskClick}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-surface-strong text-primary hover:bg-hairline-soft rounded-full text-sm font-semibold transition-colors border border-hairline"
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-secondary text-primary hover:bg-hairline-soft rounded-full text-sm font-semibold transition-colors border border-border"
               >
                 <Plus size={16} />
                 Add Task
               </button>
             </div>
 
-            <div className="space-y-4 pl-2 sm:pl-6 border-l-2 border-hairline">
+            <div className="space-y-4 pl-2 sm:pl-6 border-l-2 border-border">
               {(!detail.tasks || detail.tasks.length === 0) ? (
-                <div className="text-center py-10 text-muted bg-canvas rounded-2xl border border-hairline border-dashed">
+                <div className="text-center py-10 text-muted-foreground bg-background rounded-2xl border border-border border-dashed">
                   <p className="text-sm font-medium">No tasks added yet.</p>
                   <button 
                     type="button"

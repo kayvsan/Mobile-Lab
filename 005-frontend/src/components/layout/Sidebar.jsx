@@ -37,21 +37,21 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
       {/* Sidebar */}
       <div 
-        className={`fixed md:static inset-y-0 left-0 z-30 w-64 bg-canvas border-r border-hairline transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20 lg:w-64'}`}
+        className={`fixed md:static inset-y-0 left-0 z-30 w-64 bg-background border-r border-border transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20 lg:w-64'}`}
       >
         {/* Logo Area */}
-        <div className="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-hairline">
+        <div className="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-border">
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
               <Smartphone size={18} />
             </div>
-            <span className={`font-normal tracking-tight text-xl text-ink whitespace-nowrap transition-opacity duration-300 ${!isOpen ? 'md:hidden lg:block' : 'block'}`}>
+            <span className={`font-normal tracking-tight text-xl text-foreground whitespace-nowrap transition-opacity duration-300 ${!isOpen ? 'md:hidden lg:block' : 'block'}`}>
               Mobile Lab
             </span>
           </div>
           {/* Mobile Close Button */}
           <button 
-            className="md:hidden text-muted hover:text-ink"
+            className="md:hidden text-muted-foreground hover:text-foreground"
             onClick={() => setIsOpen(false)}
           >
             <X size={20} />
@@ -68,13 +68,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 `flex items-center gap-3 px-4 py-3 rounded-full transition-colors group ${
                   isActive 
                     ? 'text-primary font-medium' 
-                    : 'text-body hover:bg-surface-soft hover:text-ink'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`${isActive ? 'text-primary' : 'text-muted group-hover:text-ink'}`}>
+                  <div className={`${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
                     {item.icon}
                   </div>
                   <span className={`whitespace-nowrap transition-opacity duration-300 ${!isOpen ? 'md:hidden lg:block' : 'block'}`}>
@@ -87,22 +87,22 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </nav>
 
         {/* Footer Area */}
-        <div className="p-4 border-t border-hairline mt-auto">
-          <div className={`p-3 rounded-3xl bg-surface-soft border border-hairline transition-all duration-300 ${!isOpen ? 'md:p-2 lg:p-3' : ''}`}>
+        <div className="p-4 border-t border-border mt-auto">
+          <div className={`p-3 rounded-3xl bg-muted border border-border transition-all duration-300 ${!isOpen ? 'md:p-2 lg:p-3' : ''}`}>
             <div className={`flex items-center gap-3 ${!isOpen ? 'md:justify-center lg:justify-start' : ''}`}>
-              <div className="w-10 h-10 rounded-full bg-surface-strong text-ink flex-shrink-0 flex items-center justify-center font-bold text-sm border border-hairline">
+              <div className="w-10 h-10 rounded-full bg-secondary text-foreground flex-shrink-0 flex items-center justify-center font-bold text-sm border border-border">
                 {initials}
               </div>
               <div className={`flex-1 overflow-hidden transition-all duration-300 ${!isOpen ? 'md:hidden lg:block' : 'block'}`}>
-                <p className="text-sm font-bold text-ink truncate leading-tight">{user?.username || 'User'}</p>
-                <p className="text-[10px] font-semibold text-muted uppercase tracking-wider mt-0.5">{user?.role || 'Administrator'}</p>
+                <p className="text-sm font-bold text-foreground truncate leading-tight">{user?.username || 'User'}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{user?.role || 'Administrator'}</p>
               </div>
             </div>
             
             <div className={`mt-3 transition-all duration-300 ${!isOpen ? 'md:hidden lg:block' : 'block'}`}>
               <button 
                 onClick={() => setShowLogoutModal(true)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-canvas text-ink border border-hairline hover:bg-surface-strong rounded-full text-xs font-bold transition-all shadow-sm group"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-background text-foreground border border-border hover:bg-secondary rounded-full text-xs font-bold transition-all shadow-sm group"
               >
                 <LogOut size={14} className="group-hover:-translate-x-0.5 transition-transform" />
                 Sign Out
@@ -114,7 +114,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               <div className="mt-2 hidden md:flex lg:hidden justify-center">
                  <button 
                   onClick={() => setShowLogoutModal(true)}
-                  className="p-2 text-ink hover:bg-surface-strong rounded-full transition-colors"
+                  className="p-2 text-foreground hover:bg-secondary rounded-full transition-colors"
                   title="Sign Out"
                 >
                   <LogOut size={18} />
@@ -134,20 +134,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             />
             
             {/* Modal Content */}
-            <div className="relative bg-canvas w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-hairline">
+            <div className="relative bg-background w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-border">
               <div className="p-8 text-center">
-                <div className="mx-auto w-16 h-16 bg-surface-soft text-ink rounded-full flex items-center justify-center mb-6">
+                <div className="mx-auto w-16 h-16 bg-muted text-foreground rounded-full flex items-center justify-center mb-6">
                   <AlertCircle size={32} />
                 </div>
-                <h3 className="text-2xl font-normal tracking-tight text-ink mb-2">Sign Out</h3>
-                <p className="text-body text-sm mb-8">
+                <h3 className="text-2xl font-normal tracking-tight text-foreground mb-2">Sign Out</h3>
+                <p className="text-muted-foreground text-sm mb-8">
                   Are you sure you want to end this session? You will need to sign in again to access the dashboard.
                 </p>
                 
                 <div className="flex gap-3 flex-col sm:flex-row">
                   <button 
                     onClick={() => setShowLogoutModal(false)}
-                    className="flex-1 px-5 py-3 bg-surface-strong text-ink font-semibold rounded-full hover:bg-hairline-soft transition-colors text-sm"
+                    className="flex-1 px-5 py-3 bg-secondary text-foreground font-semibold rounded-full hover:bg-hairline-soft transition-colors text-sm"
                   >
                     Cancel
                   </button>
@@ -160,8 +160,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 </div>
               </div>
               
-              <div className="bg-surface-soft px-6 py-4 border-t border-hairline flex justify-center">
-                <p className="text-xs text-muted font-medium uppercase tracking-widest">Mobile Lab Automation</p>
+              <div className="bg-muted px-6 py-4 border-t border-border flex justify-center">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Mobile Lab Automation</p>
               </div>
             </div>
           </div>,

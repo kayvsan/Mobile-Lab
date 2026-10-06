@@ -205,15 +205,15 @@ const ReportsPage = () => {
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-2 md:px-6 space-y-12 h-full flex flex-col animate-fade-in">
       {/* Header Section */}
-      <div className="flex flex-col gap-6 pb-6 border-b border-hairline shrink-0">
+      <div className="flex flex-col gap-6 pb-6 border-b border-border shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-surface-strong text-primary rounded-full">
+            <div className="p-3 bg-secondary text-primary rounded-full">
               <FileText size={24} />
             </div>
             <div>
-              <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Reports</h1>
-              <p className="text-body text-base">View automation execution results</p>
+              <h1 className="text-[52px] font-normal tracking-tight text-foreground leading-none mb-2">Reports</h1>
+              <p className="text-muted-foreground text-base">View automation execution results</p>
             </div>
           </div>
           
@@ -230,16 +230,16 @@ const ReportsPage = () => {
         </div>
         
         {/* Filter Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 p-2 bg-surface-soft/50 border border-hairline rounded-2xl">
+        <div className="flex flex-wrap items-center gap-2 p-2 bg-muted/50 border border-border rounded-2xl">
           {/* Journey Filter */}
           <div className="relative group flex-1 min-w-[160px]">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Filter size={16} />
             </div>
             <select
               value={selectedJourney}
               onChange={(e) => setSelectedJourney(e.target.value)}
-              className="pl-9 pr-8 py-2.5 w-full border-none bg-canvas focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink shadow-sm"
+              className="pl-9 pr-8 py-2.5 w-full border-none bg-background focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground shadow-sm"
             >
               <option value="">All Journeys</option>
               {journeys.map(j => (
@@ -250,13 +250,13 @@ const ReportsPage = () => {
 
           {/* Status Filter */}
           <div className="relative group flex-1 min-w-[130px]">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <CheckCircle2 size={16} />
             </div>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="pl-9 pr-8 py-2.5 w-full border-none bg-canvas focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink shadow-sm"
+              className="pl-9 pr-8 py-2.5 w-full border-none bg-background focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground shadow-sm"
             >
               <option value="">All Status</option>
               <option value="true">Success</option>
@@ -266,13 +266,13 @@ const ReportsPage = () => {
 
           {/* Network Type Filter */}
           <div className="relative group flex-1 min-w-[130px]">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Wifi size={16} />
             </div>
             <select
               value={selectedNetwork}
               onChange={(e) => setSelectedNetwork(e.target.value)}
-              className="pl-9 pr-8 py-2.5 w-full border-none bg-canvas focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink shadow-sm"
+              className="pl-9 pr-8 py-2.5 w-full border-none bg-background focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground shadow-sm"
             >
               <option value="">All Network</option>
               <option value="4G">4G</option>
@@ -283,7 +283,7 @@ const ReportsPage = () => {
 
           {/* Search */}
           <div className="relative group flex-[2] min-w-[200px]">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Search size={16} />
             </div>
             <input 
@@ -291,14 +291,14 @@ const ReportsPage = () => {
               placeholder="Search reports..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2.5 w-full border-none bg-canvas focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none text-ink font-semibold shadow-sm"
+              className="pl-9 pr-4 py-2.5 w-full border-none bg-background focus:ring-1 focus:ring-primary rounded-xl text-sm transition-all outline-none text-foreground font-semibold shadow-sm"
             />
           </div>
           
           {/* Refresh Button */}
           <button 
             onClick={fetchReports}
-            className="p-2.5 bg-canvas text-ink rounded-xl hover:bg-surface-strong transition-colors active:scale-95 shadow-sm shrink-0"
+            className="p-2.5 bg-background text-foreground rounded-xl hover:bg-secondary transition-colors active:scale-95 shadow-sm shrink-0"
             title="Refresh Data"
           >
             <RefreshCcw size={18} className={isLoading ? 'animate-spin' : ''} />
@@ -307,11 +307,11 @@ const ReportsPage = () => {
       </div>
 
       {/* Main Content Card */}
-      <div className="bg-canvas rounded-3xl border border-hairline shadow-sm overflow-hidden flex-1 flex flex-col min-h-[400px]">
+      <div className="bg-background rounded-3xl border border-border shadow-sm overflow-hidden flex-1 flex flex-col min-h-[400px]">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center space-y-4">
             <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <p className="text-muted animate-pulse font-semibold">Memuat data laporan...</p>
+            <p className="text-muted-foreground animate-pulse font-semibold">Memuat data laporan...</p>
           </div>
         ) : error ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-4">
@@ -319,8 +319,8 @@ const ReportsPage = () => {
               <AlertCircle size={40} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-ink">Ups! Gagal Memuat Data</h3>
-              <p className="text-muted max-w-xs mx-auto text-sm">{error}</p>
+              <h3 className="text-lg font-semibold text-foreground">Ups! Gagal Memuat Data</h3>
+              <p className="text-muted-foreground max-w-xs mx-auto text-sm">{error}</p>
             </div>
             <button 
               onClick={fetchReports}
@@ -332,12 +332,12 @@ const ReportsPage = () => {
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-4">
-            <div className="p-4 bg-surface-strong text-muted rounded-full">
+            <div className="p-4 bg-secondary text-muted-foreground rounded-full">
               <FileText size={40} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-ink">Laporan Tidak Ditemukan</h3>
-              <p className="text-muted text-sm font-medium">
+              <h3 className="text-lg font-semibold text-foreground">Laporan Tidak Ditemukan</h3>
+              <p className="text-muted-foreground text-sm font-medium">
                 {searchTerm ? `Tidak ada hasil untuk "${searchTerm}"` : "Belum ada riwayat eksekusi."}
               </p>
             </div>
@@ -346,7 +346,7 @@ const ReportsPage = () => {
           <>
             <div className="flex-1 overflow-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-surface-soft text-muted font-bold tracking-widest uppercase border-b border-hairline sticky top-0 z-10 backdrop-blur-sm text-[10px]">
+                <thead className="bg-muted text-muted-foreground font-bold tracking-widest uppercase border-b border-border sticky top-0 z-10 backdrop-blur-sm text-[10px]">
                   <tr>
                     <th className="py-5 px-8">Journey & Device</th>
                     <th className="py-5 px-8">Response Time</th>
@@ -358,20 +358,20 @@ const ReportsPage = () => {
                 </thead>
                 <tbody className="divide-y divide-hairline">
                   {filteredReports.map((report) => (
-                    <tr key={report.id} className="hover:bg-surface-soft/50 transition-colors group">
+                    <tr key={report.id} className="hover:bg-muted/50 transition-colors group">
                       <td className="py-5 px-8">
-                        <div className="font-semibold text-ink">{report.journey || report.journey_id}</div>
-                        <div className="flex items-center gap-2 text-[11px] text-muted mt-1.5 font-medium">
-                          <Monitor size={14} className="text-muted" />
+                        <div className="font-semibold text-foreground">{report.journey || report.journey_id}</div>
+                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-1.5 font-medium">
+                          <Monitor size={14} className="text-muted-foreground" />
                           <span>{report.device}</span>
                         </div>
                       </td>
                       <td className="py-5 px-8">
-                        <div className="flex items-center gap-2 text-ink font-semibold">
-                          <Clock size={16} className="text-muted" />
+                        <div className="flex items-center gap-2 text-foreground font-semibold">
+                          <Clock size={16} className="text-muted-foreground" />
                           <span>{report.total_response_time !== null ? `${report.total_response_time}s` : '-'}</span>
                         </div>
-                        <div className="text-[10px] font-mono text-muted mt-1.5 tracking-widest">
+                        <div className="text-[10px] font-mono text-muted-foreground mt-1.5 tracking-widest">
                           EXEC: {report.execution_id.substring(0, 8)}
                         </div>
                       </td>
@@ -379,42 +379,42 @@ const ReportsPage = () => {
                         <div className="flex flex-col gap-3">
                           {/* Ping Section */}
                           <div>
-                            <div className="flex items-center gap-2 text-ink">
+                            <div className="flex items-center gap-2 text-foreground">
                               <Activity size={16} className="text-primary shrink-0" />
                               <span className="font-semibold">{report.ping_latency}ms</span>
-                              <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Ping</span>
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ping</span>
                             </div>
                             <div className="text-xs font-medium mt-1 pl-6">
-                              <span className="text-muted">Loss: <span className={report.packet_loss > 0 ? 'text-semantic-down font-bold' : 'text-ink'}>{report.packet_loss}%</span></span>
+                              <span className="text-muted-foreground">Loss: <span className={report.packet_loss > 0 ? 'text-semantic-down font-bold' : 'text-foreground'}>{report.packet_loss}%</span></span>
                             </div>
                           </div>
                           
                           {/* API Section */}
                           {report.nvt_measurements?.test_api && (
-                            <div className="pt-3 border-t border-hairline border-dashed">
-                              <div className="flex items-center gap-2 text-ink">
+                            <div className="pt-3 border-t border-border border-dashed">
+                              <div className="flex items-center gap-2 text-foreground">
                                 <Globe size={16} className="text-sky-500 shrink-0" />
                                 <span className="font-semibold">
                                   {report.nvt_measurements.test_api.response_time !== undefined && report.nvt_measurements.test_api.response_time !== "-1"
                                     ? `${report.nvt_measurements.test_api.response_time}s` 
                                     : '-'}
                                 </span>
-                                <span className="text-[10px] font-bold text-muted uppercase tracking-widest">API</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">API</span>
                               </div>
                               <div className="text-xs font-medium mt-1 pl-6">
-                                <span className="text-muted">Status: <span className={String(report.nvt_measurements.test_api.status) === "200" ? 'text-emerald-600 font-bold' : 'text-semantic-down font-bold'}>{report.nvt_measurements.test_api.status}</span></span>
+                                <span className="text-muted-foreground">Status: <span className={String(report.nvt_measurements.test_api.status) === "200" ? 'text-emerald-600 font-bold' : 'text-semantic-down font-bold'}>{report.nvt_measurements.test_api.status}</span></span>
                               </div>
                             </div>
                           )}
                         </div>
                       </td>
                       <td className="py-5 px-8">
-                        <div className="flex items-center gap-2 text-ink font-semibold">
+                        <div className="flex items-center gap-2 text-foreground font-semibold">
                           <Wifi size={16} className="text-primary" />
                           <span>{report.network_type}</span>
                         </div>
-                        <div className="text-xs font-medium text-muted mt-1.5">
-                          Signal: <span className="text-ink">{report.signal_level}</span>
+                        <div className="text-xs font-medium text-muted-foreground mt-1.5">
+                          Signal: <span className="text-foreground">{report.signal_level}</span>
                         </div>
                       </td>
                       <td className="py-5 px-8">
@@ -429,7 +429,7 @@ const ReportsPage = () => {
                             <span className="font-bold text-[10px] uppercase tracking-widest">Failed</span>
                           </div>
                         )}
-                        <div className="text-xs font-medium text-muted mt-2">
+                        <div className="text-xs font-medium text-muted-foreground mt-2">
                           {formatDate(report.created_at)}
                         </div>
                       </td>
@@ -446,7 +446,7 @@ const ReportsPage = () => {
                           )}
                           <button 
                             onClick={() => openDetail(report.id)}
-                            className="p-2.5 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-all shadow-sm active:scale-95"
+                            className="p-2.5 bg-secondary text-foreground rounded-full hover:bg-hairline-soft transition-all shadow-sm active:scale-95"
                             title="View Details"
                           >
                             <Eye size={20} />
@@ -460,15 +460,15 @@ const ReportsPage = () => {
             </div>
 
             {/* Pagination Controls - Fixed at bottom of card */}
-            <div className="p-6 border-t border-hairline bg-surface-soft/30 flex items-center justify-between shrink-0">
-              <p className="text-sm text-muted font-medium">
-                Showing <span className="text-ink font-semibold">{Math.min(offset + 1, total)}</span> to <span className="text-ink font-semibold">{Math.min(offset + limit, total)}</span> of <span className="text-ink font-semibold">{total}</span> reports
+            <div className="p-6 border-t border-border bg-muted/30 flex items-center justify-between shrink-0">
+              <p className="text-sm text-muted-foreground font-medium">
+                Showing <span className="text-foreground font-semibold">{Math.min(offset + 1, total)}</span> to <span className="text-foreground font-semibold">{Math.min(offset + limit, total)}</span> of <span className="text-foreground font-semibold">{total}</span> reports
               </p>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={handlePrevPage}
                   disabled={offset === 0 || isLoading}
-                  className="p-2 rounded-full border border-hairline bg-canvas text-ink hover:bg-surface-strong disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                  className="p-2 rounded-full border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -480,7 +480,7 @@ const ReportsPage = () => {
                 <button 
                   onClick={handleNextPage}
                   disabled={offset + limit >= total || isLoading}
-                  className="p-2 rounded-full border border-hairline bg-canvas text-ink hover:bg-surface-strong disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                  className="p-2 rounded-full border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                 >
                   <ChevronRight size={20} />
                 </button>

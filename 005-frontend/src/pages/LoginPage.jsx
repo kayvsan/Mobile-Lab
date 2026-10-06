@@ -36,13 +36,13 @@ const LoginPage = () => {
       <div className="absolute top-[10%] right-[-10%] w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       <div className="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
 
-      <div className={`z-10 w-full max-w-md p-10 bg-canvas/80 backdrop-blur-xl rounded-3xl shadow-xl border border-hairline transition-all ${isShaking ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}>
+      <div className={`z-10 w-full max-w-md p-10 bg-background/80 backdrop-blur-xl rounded-3xl shadow-xl border border-border transition-all ${isShaking ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}>
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-strong text-primary mb-5 shadow-sm border border-hairline">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary text-primary mb-5 shadow-sm border border-border">
             <Smartphone size={32} />
           </div>
-          <h1 className="text-3xl font-normal tracking-tight text-ink">Device Dashboard</h1>
-          <p className="text-muted mt-2 font-medium">Mobile Lab Control Center</p>
+          <h1 className="text-3xl font-normal tracking-tight text-foreground">Device Dashboard</h1>
+          <p className="text-muted-foreground mt-2 font-medium">Mobile Lab Control Center</p>
         </div>
 
         {error && (
@@ -54,16 +54,16 @@ const LoginPage = () => {
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Username</label>
+            <label className="block text-sm font-semibold text-foreground mb-2">Username</label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
                 <User size={18} />
               </div>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="block w-full pl-11 pr-4 py-3.5 border border-hairline rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-surface-soft focus:bg-canvas text-ink"
+                className="block w-full pl-11 pr-4 py-3.5 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-muted focus:bg-background text-foreground"
                 placeholder="Masukkan username"
                 required
               />
@@ -71,16 +71,16 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Password</label>
+            <label className="block text-sm font-semibold text-foreground mb-2">Password</label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
                 <Lock size={18} />
               </div>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-11 pr-4 py-3.5 border border-hairline rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-surface-soft focus:bg-canvas text-ink"
+                className="block w-full pl-11 pr-4 py-3.5 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-muted focus:bg-background text-foreground"
                 placeholder="••••••••"
                 required
               />
@@ -103,8 +103,8 @@ const LoginPage = () => {
           </button>
         </form>
         
-        <div className="mt-8 text-center text-xs text-muted font-medium">
-          Gunakan <span className="font-bold text-ink">admin</span> / <span className="font-bold text-ink">admin123</span> untuk login
+        <div className="mt-8 text-center text-xs text-muted-foreground font-medium">
+          Gunakan <span className="font-bold text-foreground">admin</span> / <span className="font-bold text-foreground">admin123</span> untuk login
         </div>
       </div>
       

@@ -90,14 +90,14 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-canvas w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border border-hairline overflow-hidden flex flex-col relative animate-scale-up"
+        className="bg-background w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-hairline flex items-center justify-between bg-surface-soft/50 shrink-0">
+        <div className="p-6 border-b border-border flex items-center justify-between bg-muted/50 shrink-0">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-normal tracking-tight text-ink">
+              <h2 className="text-2xl font-normal tracking-tight text-foreground">
                 {data ? `Report: ${data.journey_id}` : 'Loading Report...'}
               </h2>
               {data && (
@@ -109,7 +109,7 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               )}
             </div>
             {data && (
-              <p className="text-xs text-muted mt-1 font-mono uppercase tracking-widest font-semibold">
+              <p className="text-xs text-muted-foreground mt-1 font-mono uppercase tracking-widest font-semibold">
                 Execution ID: {data.execution_id}
               </p>
             )}
@@ -127,7 +127,7 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
             )}
             <button 
               onClick={onClose}
-              className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
+              className="p-2 hover:bg-secondary rounded-full text-muted-foreground hover:text-foreground transition-colors"
             >
               <X size={20} />
             </button>
@@ -139,62 +139,62 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center space-y-4">
               <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-              <p className="text-muted animate-pulse font-semibold">Menarik data detail...</p>
+              <p className="text-muted-foreground animate-pulse font-semibold">Menarik data detail...</p>
             </div>
           ) : error ? (
             <div className="py-20 text-center space-y-4">
               <div className="p-4 bg-rose-50 text-semantic-down rounded-full inline-block">
                 <XCircle size={40} />
               </div>
-              <p className="text-ink font-semibold">{error}</p>
+              <p className="text-foreground font-semibold">{error}</p>
               <button onClick={fetchDetail} className="text-primary font-bold hover:underline">Coba lagi</button>
             </div>
           ) : data && (
             <>
               {/* Summary Grid */}
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
-                  <div className="text-muted mb-2 flex items-center gap-2">
+                <div className="bg-muted p-5 rounded-2xl border border-border">
+                  <div className="text-muted-foreground mb-2 flex items-center gap-2">
                     <Smartphone size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Device</span>
                   </div>
-                  <div className="text-sm font-semibold text-ink truncate" title={data.device}>
+                  <div className="text-sm font-semibold text-foreground truncate" title={data.device}>
                     {data.device}
                   </div>
                 </div>
-                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
-                  <div className="text-muted mb-2 flex items-center gap-2">
+                <div className="bg-muted p-5 rounded-2xl border border-border">
+                  <div className="text-muted-foreground mb-2 flex items-center gap-2">
                     <Wifi size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Network</span>
                   </div>
-                  <div className="text-sm font-semibold text-ink">
-                    {data.network_type} <span className="text-xs text-muted font-medium ml-1">({data.signal_level})</span>
+                  <div className="text-sm font-semibold text-foreground">
+                    {data.network_type} <span className="text-xs text-muted-foreground font-medium ml-1">({data.signal_level})</span>
                   </div>
                 </div>
-                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
-                  <div className="text-muted mb-2 flex items-center gap-2">
+                <div className="bg-muted p-5 rounded-2xl border border-border">
+                  <div className="text-muted-foreground mb-2 flex items-center gap-2">
                     <Activity size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Performance</span>
                   </div>
-                  <div className="text-sm font-semibold text-ink">
-                    {data.ping_latency}ms <span className="text-xs text-muted font-medium ml-1">({data.packet_loss}%)</span>
+                  <div className="text-sm font-semibold text-foreground">
+                    {data.ping_latency}ms <span className="text-xs text-muted-foreground font-medium ml-1">({data.packet_loss}%)</span>
                   </div>
                 </div>
-                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
-                  <div className="text-muted mb-2 flex items-center gap-2">
+                <div className="bg-muted p-5 rounded-2xl border border-border">
+                  <div className="text-muted-foreground mb-2 flex items-center gap-2">
                     <Clock size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Time</span>
                   </div>
-                  <div className="text-sm font-semibold text-ink">
-                    {data.total_response_time}s <span className="text-xs text-muted font-medium ml-1">Total</span>
+                  <div className="text-sm font-semibold text-foreground">
+                    {data.total_response_time}s <span className="text-xs text-muted-foreground font-medium ml-1">Total</span>
                   </div>
                 </div>
-                <div className="bg-surface-soft p-5 rounded-2xl border border-hairline">
-                  <div className="text-muted mb-2 flex items-center gap-2">
+                <div className="bg-muted p-5 rounded-2xl border border-border">
+                  <div className="text-muted-foreground mb-2 flex items-center gap-2">
                     <Globe size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-widest">API Test</span>
                   </div>
-                  <div className="text-sm font-semibold text-ink">
+                  <div className="text-sm font-semibold text-foreground">
                     {data.nvt_measurements?.test_api?.response_time !== undefined && data.nvt_measurements?.test_api?.response_time !== "-1" ? `${data.nvt_measurements.test_api.response_time}s` : '-'} 
                     <span className="text-xs font-medium ml-1 flex items-center gap-1 inline-flex">
                       Status: <span className={String(data.nvt_measurements?.test_api?.status) === "200" || data.nvt_measurements?.test_api?.status === 200 ? 'text-emerald-500' : 'text-rose-500'}>{data.nvt_measurements?.test_api?.status || '-'}</span>
@@ -206,11 +206,11 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               {/* Screenshots Gallery */}
               {data.screenshots && data.screenshots.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-muted uppercase tracking-widest px-1">Failure Screenshots</h3>
+                  <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest px-1">Failure Screenshots</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {data.screenshots.map((filename, idx) => (
-                      <div key={idx} className="border border-hairline rounded-2xl overflow-hidden bg-canvas shadow-sm hover:shadow-md transition-shadow group relative">
-                        <div className="aspect-[9/16] bg-surface-soft relative">
+                      <div key={idx} className="border border-border rounded-2xl overflow-hidden bg-background shadow-sm hover:shadow-md transition-shadow group relative">
+                        <div className="aspect-[9/16] bg-muted relative">
                           <img 
                             src={`http://localhost:5000/api/reports/${data.id}/screenshots/${filename}`}
                             alt="Screenshot"
@@ -229,15 +229,15 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
               
               {/* Breakdown Timeline */}
               <div className="space-y-4">
-                <h3 className="text-sm font-bold text-muted uppercase tracking-widest px-1">Execution Breakdown</h3>
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest px-1">Execution Breakdown</h3>
                 <div className="space-y-3">
                   {data.breakdown.map((step, idx) => (
                     <div 
                       key={step.id || idx} 
-                      className="border border-hairline rounded-2xl overflow-hidden bg-canvas hover:border-primary/50 transition-colors"
+                      className="border border-border rounded-2xl overflow-hidden bg-background hover:border-primary/50 transition-colors"
                     >
                       <div 
-                        className="p-5 flex items-center justify-between cursor-pointer group hover:bg-surface-soft/50"
+                        className="p-5 flex items-center justify-between cursor-pointer group hover:bg-muted/50"
                         onClick={() => toggleStep(step.id || idx)}
                       >
                         <div className="flex items-center gap-4">
@@ -245,10 +245,10 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
                             {step.success ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-ink transition-colors">
+                            <div className="text-sm font-bold text-foreground transition-colors">
                               {step.name}
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-muted mt-1 font-medium">
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 font-medium">
                               <span className="flex items-center gap-1.5"><Wifi size={12} /> {step.network_type}</span>
                               <span className="flex items-center gap-1.5"><Activity size={12} /> {step.ping_latency}ms</span>
                             </div>
@@ -256,10 +256,10 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
                         </div>
                         <div className="flex items-center gap-6">
                           <div className="text-right">
-                            <div className="text-sm font-mono font-bold text-ink">{step.response_time}s</div>
-                            <div className="text-[10px] text-muted uppercase font-bold tracking-widest mt-0.5">Response Time</div>
+                            <div className="text-sm font-mono font-bold text-foreground">{step.response_time}s</div>
+                            <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5">Response Time</div>
                           </div>
-                          <div className={`p-1.5 rounded-full transition-transform duration-200 ${expandedSteps[step.id || idx] ? 'rotate-180 bg-surface-strong' : 'bg-transparent text-muted group-hover:text-ink group-hover:bg-hairline-soft'}`}>
+                          <div className={`p-1.5 rounded-full transition-transform duration-200 ${expandedSteps[step.id || idx] ? 'rotate-180 bg-secondary' : 'bg-transparent text-muted-foreground group-hover:text-foreground group-hover:bg-hairline-soft'}`}>
                             <ChevronDown size={20} />
                           </div>
                         </div>
@@ -267,19 +267,19 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
 
                       {/* Tasks List (Expanded) */}
                       {expandedSteps[step.id || idx] && step.tasks && (
-                        <div className="bg-surface-soft/30 border-t border-hairline px-6 py-4 divide-y divide-hairline">
+                        <div className="bg-muted/30 border-t border-border px-6 py-4 divide-y divide-hairline">
                           {step.tasks.map((task, tidx) => (
                             <div key={tidx} className="py-3 flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <div className={`w-2 h-2 rounded-full ${task.success ? 'bg-emerald-400' : 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.4)]'}`} />
-                                <span className="text-sm font-semibold text-ink">{task.task_name}</span>
+                                <span className="text-sm font-semibold text-foreground">{task.task_name}</span>
                               </div>
                               <div className="flex items-center gap-6 text-xs font-mono font-medium">
-                                <div className="text-muted">
-                                  Dur: <span className="text-ink font-bold">{task.duration_seconds}s</span>
+                                <div className="text-muted-foreground">
+                                  Dur: <span className="text-foreground font-bold">{task.duration_seconds}s</span>
                                 </div>
                                 {task.measured && (
-                                  <div className="text-muted">
+                                  <div className="text-muted-foreground">
                                     Resp: <span className="text-primary font-bold">{task.response_time}s</span>
                                   </div>
                                 )}
@@ -298,7 +298,7 @@ const ReportDetailModal = ({ isOpen, onClose, reportId }) => {
 
         {/* Footer Info */}
         {data && (
-          <div className="p-5 bg-surface-soft/50 border-t border-hairline flex items-center justify-between text-[11px] font-semibold text-muted px-8 shrink-0">
+          <div className="p-5 bg-muted/50 border-t border-border flex items-center justify-between text-[11px] font-semibold text-muted-foreground px-8 shrink-0">
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2"><Calendar size={14} /> Created: {new Date(data.created_at).toLocaleString()}</span>
               <span className="flex items-center gap-2"><MapPin size={14} /> {data.location?.lat || '-'}, {data.location?.long || '-'}</span>

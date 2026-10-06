@@ -27,7 +27,7 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
             id={field.key}
             value={value || ''}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-ink transition-all"
+            className="w-full px-4 py-2 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-foreground transition-all"
           />
         );
       case 'number':
@@ -38,7 +38,7 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
             value={value !== undefined ? value : ''}
             onChange={handleChange}
             step={field.key === 'scale' ? "0.1" : "1"}
-            className="w-full px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-ink transition-all"
+            className="w-full px-4 py-2 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm text-foreground transition-all"
           />
         );
       case 'textarea':
@@ -48,7 +48,7 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
             value={value || ''}
             onChange={handleChange}
             rows={3}
-            className="w-full px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-mono text-xs text-ink transition-all"
+            className="w-full px-4 py-2 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-mono text-xs text-foreground transition-all"
           />
         );
       case 'select':
@@ -57,7 +57,7 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
             id={field.key}
             value={value || ''}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-semibold text-ink transition-all appearance-none"
+            className="w-full px-4 py-2 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm font-semibold text-foreground transition-all appearance-none"
           >
             {field.options.map(opt => (
               <option key={opt} value={opt}>{opt}</option>
@@ -72,9 +72,9 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
               id={field.key}
               checked={!!value}
               onChange={handleChange}
-              className="h-4 w-4 text-primary focus:ring-primary border-hairline rounded"
+              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
-            <label htmlFor={field.key} className="ml-2 block text-sm font-semibold text-ink">
+            <label htmlFor={field.key} className="ml-2 block text-sm font-semibold text-foreground">
               {field.label}
             </label>
           </div>
@@ -87,7 +87,7 @@ const TaskFieldRenderer = ({ field, value, onChange, allValues }) => {
   return (
     <div className={`mb-3 ${field.type === 'checkbox' ? 'flex items-center' : ''}`}>
       {field.type !== 'checkbox' && (
-        <label htmlFor={field.key} className="block text-xs font-semibold text-ink mb-1">
+        <label htmlFor={field.key} className="block text-xs font-semibold text-foreground mb-1">
           {field.label}
         </label>
       )}

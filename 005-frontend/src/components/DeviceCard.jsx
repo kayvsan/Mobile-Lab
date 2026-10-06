@@ -7,17 +7,17 @@ const DeviceCard = ({ device }) => {
   const statusDot = isOnline ? 'bg-emerald-500' : 'bg-rose-500';
 
   return (
-    <div className="bg-canvas rounded-3xl p-8 border border-hairline hover:shadow-sm transition-all duration-300 group flex flex-col h-full">
+    <div className="bg-background rounded-3xl p-8 border border-border hover:shadow-sm transition-all duration-300 group flex flex-col h-full">
       {/* Header */}
       <div className="flex justify-between items-start mb-4 gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <Smartphone size={16} className="text-muted flex-shrink-0" />
-            <h3 className="font-normal text-ink text-xl truncate tracking-tight" title={device.brand}>
+            <Smartphone size={16} className="text-muted-foreground flex-shrink-0" />
+            <h3 className="font-normal text-foreground text-xl truncate tracking-tight" title={device.brand}>
               {device.brand}
             </h3>
           </div>
-          <div className="text-sm text-body font-mono truncate">{device.udid}</div>
+          <div className="text-sm text-muted-foreground font-mono truncate">{device.udid}</div>
         </div>
           <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium uppercase tracking-wider flex-shrink-0 ${statusColor}`}>
             <div className={`w-1.5 h-1.5 rounded-full ${statusDot} ${isOnline ? 'animate-pulse' : ''}`}></div>
@@ -31,27 +31,27 @@ const DeviceCard = ({ device }) => {
         )}
 
       {/* Info Body */}
-      <div className="flex-1 mb-6 bg-surface-soft rounded-2xl p-4 border border-hairline">
+      <div className="flex-1 mb-6 bg-muted rounded-2xl p-4 border border-border">
         <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm">
           <div>
-            <span className="block text-muted text-xs mb-1">OS Version</span>
-            <span className="font-medium text-ink capitalize">
+            <span className="block text-muted-foreground text-xs mb-1">OS Version</span>
+            <span className="font-medium text-foreground capitalize">
               {device.type_os} {device.platform_version}
             </span>
           </div>
           <div>
-            <span className="block text-muted text-xs mb-1">Brand</span>
-            <span className="font-medium text-ink">{device.manufacturer}</span>
+            <span className="block text-muted-foreground text-xs mb-1">Brand</span>
+            <span className="font-medium text-foreground">{device.manufacturer}</span>
           </div>
           <div>
-            <span className="block text-muted text-xs mb-1">Model</span>
-            <span className="font-medium text-ink truncate block" title={device.model}>
+            <span className="block text-muted-foreground text-xs mb-1">Model</span>
+            <span className="font-medium text-foreground truncate block" title={device.model}>
               {device.model}
             </span>
           </div>
           <div>
-            <span className="block text-muted text-xs mb-1">Status Detail</span>
-            <span className="font-medium text-ink capitalize">{device.status}</span>
+            <span className="block text-muted-foreground text-xs mb-1">Status Detail</span>
+            <span className="font-medium text-foreground capitalize">{device.status}</span>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ const DeviceCard = ({ device }) => {
             <span>Stream</span>
           </a>
         ) : (
-          <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold bg-surface-strong text-muted cursor-not-allowed">
+          <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold bg-secondary text-muted-foreground cursor-not-allowed">
             <span>Stream</span>
           </div>
         )}
@@ -78,12 +78,12 @@ const DeviceCard = ({ device }) => {
             href={device.inspect_url} 
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold transition-all bg-surface-strong text-ink hover:bg-hairline-soft"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold transition-all bg-secondary text-foreground hover:bg-hairline-soft"
           >
             <span>Inspect</span>
           </a>
         ) : (
-          <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold bg-surface-strong text-muted cursor-not-allowed border border-hairline">
+          <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-semibold bg-secondary text-muted-foreground cursor-not-allowed border border-border">
             <span>Inspect</span>
           </div>
         )}

@@ -51,8 +51,8 @@ const EditJourneyPage = () => {
   if (isLoading) {
     return (
       <div className="max-w-[1000px] mx-auto p-20 flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 border-4 border-hairline border-t-primary rounded-full animate-spin"></div>
-        <p className="text-body animate-pulse">Loading journey data...</p>
+        <div className="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
+        <p className="text-muted-foreground animate-pulse">Loading journey data...</p>
       </div>
     );
   }
@@ -60,16 +60,16 @@ const EditJourneyPage = () => {
   if (error) {
     return (
       <div className="max-w-[1000px] mx-auto p-20 flex flex-col items-center justify-center text-center space-y-4">
-        <div className="p-4 bg-surface-strong text-semantic-down rounded-full">
+        <div className="p-4 bg-secondary text-semantic-down rounded-full">
           <AlertCircle size={40} />
         </div>
         <div>
-          <h3 className="text-xl font-normal tracking-tight text-ink">Oops! Something went wrong</h3>
-          <p className="text-body max-w-xs mx-auto">{error}</p>
+          <h3 className="text-xl font-normal tracking-tight text-foreground">Oops! Something went wrong</h3>
+          <p className="text-muted-foreground max-w-xs mx-auto">{error}</p>
         </div>
         <button 
           onClick={() => navigate('/Journeys')}
-          className="inline-flex items-center gap-2 px-5 py-3 bg-surface-strong text-ink rounded-full font-semibold hover:bg-hairline transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-secondary text-foreground rounded-full font-semibold hover:bg-hairline transition-colors"
         >
           <ChevronLeft size={16} />
           Back to Journeys
@@ -84,19 +84,19 @@ const EditJourneyPage = () => {
       <div className="flex items-center gap-4 mb-12">
         <button
           onClick={() => navigate('/Journeys')}
-          className="p-3 -ml-3 text-muted hover:text-ink hover:bg-surface-soft rounded-full transition-colors"
+          className="p-3 -ml-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
           title="Back to Journeys"
         >
           <ChevronLeft size={24} />
         </button>
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-muted mb-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-2">
             <Map size={14} />
             <span>Journeys</span>
             <span className="text-hairline-soft">/</span>
             <span className="text-primary">Edit Journey</span>
           </div>
-          <h1 className="text-[44px] font-normal tracking-tight text-ink leading-none">Edit Automation Journey</h1>
+          <h1 className="text-[44px] font-normal tracking-tight text-foreground leading-none">Edit Automation Journey</h1>
         </div>
       </div>
 

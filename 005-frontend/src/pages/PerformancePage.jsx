@@ -65,8 +65,8 @@ const PerformancePage = () => {
   const CustomTooltip = ({ active, payload, label, unit = "secs" }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-canvas p-4 border border-hairline rounded-2xl shadow-sm">
-          <p className="font-semibold text-ink mb-1">{label}</p>
+        <div className="bg-background p-4 border border-border rounded-2xl shadow-sm">
+          <p className="font-semibold text-foreground mb-1">{label}</p>
           <p className="text-primary font-bold">
             {payload[0].value} {unit}
           </p>
@@ -98,47 +98,47 @@ const PerformancePage = () => {
   return (
     <div className="max-w-[1400px] mx-auto py-12 px-2 md:px-6 space-y-12 h-full flex flex-col animate-fade-in pb-8">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-surface-strong text-primary rounded-full">
+          <div className="p-3 bg-secondary text-primary rounded-full">
             <TrendingUp size={24} />
           </div>
           <div>
-            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">Performance Analysis</h1>
-            <p className="text-body text-base">Response time distribution and trends</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-foreground leading-none mb-2">Performance Analysis</h1>
+            <p className="text-muted-foreground text-base">Response time distribution and trends</p>
           </div>
         </div>
       </div>
 
       {/* Filter Section */}
-      <div className="bg-canvas p-6 rounded-3xl border border-hairline shadow-sm flex flex-wrap items-center gap-6">
+      <div className="bg-background p-6 rounded-3xl border border-border shadow-sm flex flex-wrap items-center gap-6">
         {/* Date Range */}
-        <div className="flex items-center gap-3 bg-surface-soft border border-hairline rounded-xl px-4 py-3">
-          <Calendar size={18} className="text-muted" />
+        <div className="flex items-center gap-3 bg-muted border border-border rounded-xl px-4 py-3">
+          <Calendar size={18} className="text-muted-foreground" />
           <input 
             type="date" 
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="bg-transparent text-sm font-semibold text-ink outline-none"
+            className="bg-transparent text-sm font-semibold text-foreground outline-none"
           />
-          <span className="text-muted text-sm font-medium mx-1">to</span>
+          <span className="text-muted-foreground text-sm font-medium mx-1">to</span>
           <input 
             type="date" 
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="bg-transparent text-sm font-semibold text-ink outline-none"
+            className="bg-transparent text-sm font-semibold text-foreground outline-none"
           />
         </div>
 
         {/* Journey Filter */}
         <div className="relative group flex items-center min-w-[240px]">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
             <Filter size={18} />
           </div>
           <select 
             value={selectedJourney}
             onChange={(e) => setSelectedJourney(e.target.value)}
-            className="pl-11 pr-10 py-3 w-full border border-hairline bg-surface-soft focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink"
+            className="pl-11 pr-10 py-3 w-full border border-border bg-muted focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground"
           >
             <option value="">All Journeys</option>
             {journeys.map(j => (
@@ -149,7 +149,7 @@ const PerformancePage = () => {
 
         <button 
           onClick={fetchPerformanceData}
-          className="p-3 ml-auto bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
+          className="p-3 ml-auto bg-secondary text-foreground rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
           title="Refresh Data"
         >
           <RefreshCcw size={20} className={isLoading ? 'animate-spin' : ''} />
@@ -165,7 +165,7 @@ const PerformancePage = () => {
 
       {/* Charts Section */}
       {!error && (
-        <div className="space-y-12 flex-1 bg-canvas p-8 rounded-3xl border border-hairline shadow-sm">
+        <div className="space-y-12 flex-1 bg-background p-8 rounded-3xl border border-border shadow-sm">
           
           {isLoading ? (
             <div className="h-64 flex items-center justify-center">
@@ -176,7 +176,7 @@ const PerformancePage = () => {
               
               {/* Chart 1: Response Times - Daily */}
               <div className="h-[340px] w-full pt-4">
-                <h3 className="text-center font-normal tracking-tight text-ink mb-8 text-xl">Response Times - Daily</h3>
+                <h3 className="text-center font-normal tracking-tight text-foreground mb-8 text-xl">Response Times - Daily</h3>
                 {data.daily_rt.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data.daily_rt} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -210,13 +210,13 @@ const PerformancePage = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-muted font-medium">No data available for selected filters</div>
+                  <div className="h-full flex items-center justify-center text-muted-foreground font-medium">No data available for selected filters</div>
                 )}
               </div>
 
               {/* Chart 2: Frequency Distribution */}
               <div className="h-[340px] w-full pt-10">
-                <h3 className="text-center font-normal tracking-tight text-ink mb-8 text-xl">Frequency Distribution - Response Times</h3>
+                <h3 className="text-center font-normal tracking-tight text-foreground mb-8 text-xl">Frequency Distribution - Response Times</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.frequency_dist} margin={{ top: 30, right: 30, left: 20, bottom: 40 }} barSize={12}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7ea" />
@@ -245,7 +245,7 @@ const PerformancePage = () => {
 
               {/* Chart 3: Average Response Time - Hourly */}
               <div className="h-[340px] w-full pt-10">
-                <h3 className="text-center font-normal tracking-tight text-ink mb-8 text-xl">Average Response Time - Hourly</h3>
+                <h3 className="text-center font-normal tracking-tight text-foreground mb-8 text-xl">Average Response Time - Hourly</h3>
                 {data.hourly_rt.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data.hourly_rt} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -277,7 +277,7 @@ const PerformancePage = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-muted font-medium">No data available for selected filters</div>
+                  <div className="h-full flex items-center justify-center text-muted-foreground font-medium">No data available for selected filters</div>
                 )}
               </div>
 

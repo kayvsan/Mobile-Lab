@@ -91,28 +91,28 @@ const NvtPage = () => {
   };
 
   const getSignalColor = (val) => {
-    if (val === null || val === undefined) return 'text-muted';
+    if (val === null || val === undefined) return 'text-muted-foreground';
     if (val >= -85 || val >= 50) return 'text-emerald-600';
     if (val >= -100) return 'text-amber-600';
     return 'text-rose-600';
   };
 
   const getSignalBg = (val) => {
-    if (val === null || val === undefined) return 'bg-surface-soft text-muted';
+    if (val === null || val === undefined) return 'bg-muted text-muted-foreground';
     if (val >= -85 || val >= 50) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
     if (val >= -100) return 'bg-amber-50 text-amber-700 border-amber-100';
     return 'bg-rose-50 text-rose-700 border-rose-100';
   };
 
   const getPingColor = (val) => {
-    if (val === null || val === undefined) return 'text-muted';
+    if (val === null || val === undefined) return 'text-muted-foreground';
     if (val < 50) return 'text-emerald-600';
     if (val <= 100) return 'text-amber-600';
     return 'text-rose-600';
   };
 
   const getPingBg = (val) => {
-    if (val === null || val === undefined) return 'bg-surface-soft text-muted';
+    if (val === null || val === undefined) return 'bg-muted text-muted-foreground';
     if (val < 50) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
     if (val <= 100) return 'bg-amber-50 text-amber-700 border-amber-100';
     return 'bg-rose-50 text-rose-700 border-rose-100';
@@ -166,27 +166,27 @@ const NvtPage = () => {
   return (
     <div className="max-w-[1400px] mx-auto py-12 px-2 md:px-6 space-y-10 h-full flex flex-col animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-hairline shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-surface-strong text-primary rounded-full">
+          <div className="p-3 bg-secondary text-primary rounded-full">
             <Radio size={24} />
           </div>
           <div>
-            <h1 className="text-[52px] font-normal tracking-tight text-ink leading-none mb-2">NVT</h1>
-            <p className="text-body text-base">Network Verification Test per Sub Journey</p>
+            <h1 className="text-[52px] font-normal tracking-tight text-foreground leading-none mb-2">NVT</h1>
+            <p className="text-muted-foreground text-base">Network Verification Test per Sub Journey</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
           {/* Journey Filter */}
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Filter size={16} />
             </div>
             <select
               value={selectedJourney}
               onChange={(e) => setSelectedJourney(e.target.value)}
-              className="pl-9 pr-8 py-3 w-44 border border-hairline bg-surface-soft focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink"
+              className="pl-9 pr-8 py-3 w-44 border border-border bg-muted focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground"
             >
               <option value="">All Journeys</option>
               {journeys.map(j => (
@@ -197,13 +197,13 @@ const NvtPage = () => {
 
           {/* Network Type Filter */}
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Wifi size={16} />
             </div>
             <select
               value={selectedNetwork}
               onChange={(e) => setSelectedNetwork(e.target.value)}
-              className="pl-9 pr-8 py-3 w-36 border border-hairline bg-surface-soft focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-ink"
+              className="pl-9 pr-8 py-3 w-36 border border-border bg-muted focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none appearance-none font-semibold text-foreground"
             >
               <option value="">All Network</option>
               <option value="4G">4G</option>
@@ -214,7 +214,7 @@ const NvtPage = () => {
 
           {/* Search */}
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
               <Search size={16} />
             </div>
             <input
@@ -222,13 +222,13 @@ const NvtPage = () => {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-3 w-44 border border-hairline bg-surface-soft focus:bg-canvas focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none text-ink font-semibold"
+              className="pl-9 pr-4 py-3 w-44 border border-border bg-muted focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary rounded-xl text-sm transition-all outline-none text-foreground font-semibold"
             />
           </div>
 
           <button
             onClick={fetchNvtData}
-            className="p-3 bg-surface-strong text-ink rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
+            className="p-3 bg-secondary text-foreground rounded-full hover:bg-hairline-soft transition-colors active:scale-95"
             title="Refresh Data"
           >
             <RefreshCcw size={20} className={isLoading ? 'animate-spin' : ''} />
@@ -240,16 +240,16 @@ const NvtPage = () => {
       {!error && !isLoading && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
           {statCards.map((card, idx) => (
-            <div key={idx} className="bg-canvas rounded-2xl border border-hairline p-5 space-y-3 shadow-sm hover:shadow-md transition-shadow">
+            <div key={idx} className="bg-background rounded-2xl border border-border p-5 space-y-3 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-muted uppercase tracking-widest">{card.label}</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{card.label}</span>
                 <div className={`p-2 rounded-full ${card.bg} ${card.color}`}>
                   {card.icon}
                 </div>
               </div>
               <p className={`text-2xl font-bold tracking-tight ${card.color}`}>{card.value}</p>
               {card.sub && (
-                <p className="text-[11px] text-muted font-medium">{card.sub}</p>
+                <p className="text-[11px] text-muted-foreground font-medium">{card.sub}</p>
               )}
             </div>
           ))}
@@ -257,11 +257,11 @@ const NvtPage = () => {
       )}
 
       {/* Data Table Card */}
-      <div className="bg-canvas rounded-3xl border border-hairline shadow-sm overflow-hidden flex-1 flex flex-col min-h-[400px]">
+      <div className="bg-background rounded-3xl border border-border shadow-sm overflow-hidden flex-1 flex flex-col min-h-[400px]">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center space-y-4">
             <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <p className="text-muted animate-pulse font-semibold">Memuat data NVT...</p>
+            <p className="text-muted-foreground animate-pulse font-semibold">Memuat data NVT...</p>
           </div>
         ) : error ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-4">
@@ -269,8 +269,8 @@ const NvtPage = () => {
               <AlertCircle size={40} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-ink">Gagal Memuat Data</h3>
-              <p className="text-muted max-w-xs mx-auto text-sm">{error}</p>
+              <h3 className="text-lg font-semibold text-foreground">Gagal Memuat Data</h3>
+              <p className="text-muted-foreground max-w-xs mx-auto text-sm">{error}</p>
             </div>
             <button
               onClick={fetchNvtData}
@@ -282,12 +282,12 @@ const NvtPage = () => {
           </div>
         ) : filteredData.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-4">
-            <div className="p-4 bg-surface-strong text-muted rounded-full">
+            <div className="p-4 bg-secondary text-muted-foreground rounded-full">
               <Radio size={40} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-ink">Data NVT Tidak Ditemukan</h3>
-              <p className="text-muted text-sm font-medium">
+              <h3 className="text-lg font-semibold text-foreground">Data NVT Tidak Ditemukan</h3>
+              <p className="text-muted-foreground text-sm font-medium">
                 {searchTerm ? `Tidak ada hasil untuk "${searchTerm}"` : "Belum ada data NVT yang tersedia."}
               </p>
             </div>
@@ -296,21 +296,21 @@ const NvtPage = () => {
           <>
             <div className="flex-1 overflow-auto">
               <table className="w-full text-left text-sm whitespace-nowrap min-w-[1200px]">
-                <thead className="bg-surface-soft text-muted font-bold tracking-widest uppercase border-b border-hairline sticky top-0 z-10 backdrop-blur-sm text-[10px]">
+                <thead className="bg-muted text-muted-foreground font-bold tracking-widest uppercase border-b border-border sticky top-0 z-10 backdrop-blur-sm text-[10px]">
                   <tr>
-                    <th className="py-4 px-5 border-r border-hairline">Journey & Device</th>
-                    <th className="py-4 px-5 border-r border-hairline">Sub Journey</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Network</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Signal<br/>(dBm)</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Signal<br/>Quality</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">BER</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Cell ID</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Ping<br/>(ms)</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Packet<br/>Loss (%)</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">API<br/>Status</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">API RT<br/>(sec)</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">API<br/>Result</th>
-                    <th className="py-4 px-5 border-r border-hairline text-center">Status</th>
+                    <th className="py-4 px-5 border-r border-border">Journey & Device</th>
+                    <th className="py-4 px-5 border-r border-border">Sub Journey</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Network</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Signal<br/>(dBm)</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Signal<br/>Quality</th>
+                    <th className="py-4 px-5 border-r border-border text-center">BER</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Cell ID</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Ping<br/>(ms)</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Packet<br/>Loss (%)</th>
+                    <th className="py-4 px-5 border-r border-border text-center">API<br/>Status</th>
+                    <th className="py-4 px-5 border-r border-border text-center">API RT<br/>(sec)</th>
+                    <th className="py-4 px-5 border-r border-border text-center">API<br/>Result</th>
+                    <th className="py-4 px-5 border-r border-border text-center">Status</th>
                     <th className="py-4 px-5 text-center">Time</th>
                   </tr>
                 </thead>
@@ -318,20 +318,20 @@ const NvtPage = () => {
                   {filteredData.map((row) => {
                     const apiBadge = getApiResultBadge(row.api_result, row.api_response_time);
                     return (
-                      <tr key={row.report_id} className="hover:bg-surface-soft/50 transition-colors group">
+                      <tr key={row.report_id} className="hover:bg-muted/50 transition-colors group">
                         {/* Journey & Device */}
-                        <td className="py-4 px-5 border-r border-hairline">
-                          <div className="font-semibold text-ink text-xs">{row.journey}</div>
-                          <div className="text-[11px] text-muted mt-1 font-medium">{row.device}</div>
+                        <td className="py-4 px-5 border-r border-border">
+                          <div className="font-semibold text-foreground text-xs">{row.journey}</div>
+                          <div className="text-[11px] text-muted-foreground mt-1 font-medium">{row.device}</div>
                         </td>
 
                         {/* Sub Journey */}
-                        <td className="py-4 px-5 border-r border-hairline">
-                          <div className="font-semibold text-ink text-xs">{row.sub_journey_name || '-'}</div>
+                        <td className="py-4 px-5 border-r border-border">
+                          <div className="font-semibold text-foreground text-xs">{row.sub_journey_name || '-'}</div>
                         </td>
 
                         {/* Network Type Badge */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold border ${
                             row.network_type === '4G' ? 'bg-blue-50 text-blue-700 border-blue-100' :
                             row.network_type === '5G' ? 'bg-violet-50 text-violet-700 border-violet-100' :
@@ -343,46 +343,46 @@ const NvtPage = () => {
                         </td>
 
                         {/* Signal Level */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           <span className={`px-2.5 py-1 rounded-md text-xs font-bold border ${getSignalBg(row.signal_level)}`}>
                             {row.signal_level !== null ? row.signal_level : '-'}
                           </span>
                         </td>
 
                         {/* Signal Quality */}
-                        <td className="py-4 px-5 border-r border-hairline text-center font-semibold text-ink">
+                        <td className="py-4 px-5 border-r border-border text-center font-semibold text-foreground">
                           {row.signal_quality !== null ? row.signal_quality : '-'}
                         </td>
 
                         {/* BER */}
-                        <td className="py-4 px-5 border-r border-hairline text-center font-medium text-muted">
+                        <td className="py-4 px-5 border-r border-border text-center font-medium text-muted-foreground">
                           {row.ber !== null ? row.ber : '-'}
                         </td>
 
                         {/* Cell ID */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
-                          <span className="font-mono text-xs text-ink">{row.cell_id !== null ? row.cell_id : '-'}</span>
+                        <td className="py-4 px-5 border-r border-border text-center">
+                          <span className="font-mono text-xs text-foreground">{row.cell_id !== null ? row.cell_id : '-'}</span>
                           {row.cell_network_type && (
-                            <div className="text-[10px] text-muted mt-0.5">{row.cell_network_type}</div>
+                            <div className="text-[10px] text-muted-foreground mt-0.5">{row.cell_network_type}</div>
                           )}
                         </td>
 
                         {/* Ping Latency */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           <span className={`px-2.5 py-1 rounded-md text-xs font-bold border ${getPingBg(row.ping_latency)}`}>
                             {row.ping_latency !== null ? row.ping_latency.toFixed(1) : '-'}
                           </span>
                         </td>
 
                         {/* Packet Loss */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           <span className={`font-bold text-xs ${row.packet_loss > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                             {row.packet_loss !== null ? row.packet_loss : '-'}
                           </span>
                         </td>
 
                         {/* API Status */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           {row.api_status !== null ? (
                             <span className={`font-bold text-xs ${String(row.api_status) === '1' ? 'text-emerald-600' : 'text-rose-600'}`}>
                               {String(row.api_status) === '1' ? 'OK' : 'Fail'}
@@ -391,7 +391,7 @@ const NvtPage = () => {
                         </td>
 
                         {/* API Response Time */}
-                        <td className="py-4 px-5 border-r border-hairline text-center font-semibold text-ink text-xs">
+                        <td className="py-4 px-5 border-r border-border text-center font-semibold text-foreground text-xs">
                           {row.api_response_time !== null ? (
                             row.api_response_time < 0
                               ? <span className="text-rose-500 font-bold">timeout</span>
@@ -400,14 +400,14 @@ const NvtPage = () => {
                         </td>
 
                         {/* API Result */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border uppercase tracking-wider ${apiBadge.bg}`}>
                             {apiBadge.label}
                           </span>
                         </td>
 
                         {/* Report Success */}
-                        <td className="py-4 px-5 border-r border-hairline text-center">
+                        <td className="py-4 px-5 border-r border-border text-center">
                           {row.success ? (
                             <div className="flex items-center justify-center gap-1 text-emerald-600">
                               <CheckCircle2 size={14} />
@@ -423,7 +423,7 @@ const NvtPage = () => {
 
                         {/* Timestamp */}
                         <td className="py-4 px-5 text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-muted">
+                          <div className="flex items-center justify-center gap-1.5 text-muted-foreground">
                             <Clock size={13} />
                             <span className="text-[11px] font-medium">{formatDate(row.created_at)}</span>
                           </div>
@@ -436,15 +436,15 @@ const NvtPage = () => {
             </div>
 
             {/* Pagination */}
-            <div className="p-6 border-t border-hairline bg-surface-soft/30 flex items-center justify-between shrink-0">
-              <p className="text-sm text-muted font-medium">
-                Showing <span className="text-ink font-semibold">{Math.min(offset + 1, total)}</span> to <span className="text-ink font-semibold">{Math.min(offset + limit, total)}</span> of <span className="text-ink font-semibold">{total}</span> records
+            <div className="p-6 border-t border-border bg-muted/30 flex items-center justify-between shrink-0">
+              <p className="text-sm text-muted-foreground font-medium">
+                Showing <span className="text-foreground font-semibold">{Math.min(offset + 1, total)}</span> to <span className="text-foreground font-semibold">{Math.min(offset + limit, total)}</span> of <span className="text-foreground font-semibold">{total}</span> records
               </p>
               <div className="flex items-center gap-3">
                 <button
                   onClick={handlePrevPage}
                   disabled={offset === 0 || isLoading}
-                  className="p-2 rounded-full border border-hairline bg-canvas text-ink hover:bg-surface-strong disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                  className="p-2 rounded-full border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -456,7 +456,7 @@ const NvtPage = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={offset + limit >= total || isLoading}
-                  className="p-2 rounded-full border border-hairline bg-canvas text-ink hover:bg-surface-strong disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                  className="p-2 rounded-full border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                 >
                   <ChevronRight size={20} />
                 </button>

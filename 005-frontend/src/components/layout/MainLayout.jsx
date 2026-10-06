@@ -11,7 +11,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-canvas font-sans text-ink overflow-hidden">
+    <div className="flex h-screen bg-background font-sans text-foreground overflow-hidden">
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 

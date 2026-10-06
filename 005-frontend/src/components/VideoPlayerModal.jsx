@@ -10,12 +10,12 @@ const VideoPlayerModal = ({ isOpen, onClose, reportId, journeyName }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-canvas w-full max-w-4xl rounded-3xl shadow-2xl border border-hairline overflow-hidden flex flex-col relative animate-scale-up"
+        className="bg-background w-full max-w-4xl rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-hairline flex items-center justify-between bg-surface-soft/50 shrink-0">
-          <div className="flex items-center gap-3 text-ink">
+        <div className="p-5 border-b border-border flex items-center justify-between bg-muted/50 shrink-0">
+          <div className="flex items-center gap-3 text-foreground">
             <PlayCircle size={20} className="text-primary" />
             <h2 className="font-semibold text-sm truncate max-w-[600px]">
               Recording: {journeyName || reportId}
@@ -23,7 +23,7 @@ const VideoPlayerModal = ({ isOpen, onClose, reportId, journeyName }) => {
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-surface-strong rounded-full text-muted hover:text-ink transition-colors"
+            className="p-2 hover:bg-secondary rounded-full text-muted-foreground hover:text-foreground transition-colors"
           >
             <X size={20} />
           </button>
@@ -42,8 +42,8 @@ const VideoPlayerModal = ({ isOpen, onClose, reportId, journeyName }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-surface-soft/50 border-t border-hairline text-center">
-          <p className="text-[11px] text-muted font-semibold tracking-widest uppercase">
+        <div className="p-4 bg-muted/50 border-t border-border text-center">
+          <p className="text-[11px] text-muted-foreground font-semibold tracking-widest uppercase">
             HTML5 Video Player • {reportId}
           </p>
         </div>

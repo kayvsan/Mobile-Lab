@@ -156,14 +156,14 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
   return (
     <div className="space-y-8">
       {/* Journey Info Form */}
-      <div className="bg-canvas rounded-3xl border border-hairline shadow-sm">
-        <div className="px-8 py-5 border-b border-hairline bg-surface-soft rounded-t-3xl">
-          <h2 className="text-xl font-normal tracking-tight text-ink">Journey Information</h2>
+      <div className="bg-background rounded-3xl border border-border shadow-sm">
+        <div className="px-8 py-5 border-b border-border bg-muted rounded-t-3xl">
+          <h2 className="text-xl font-normal tracking-tight text-foreground">Journey Information</h2>
         </div>
         <div className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-ink mb-2">
+              <label htmlFor="name" className="block text-sm font-semibold text-foreground mb-2">
                 Journey Name <span className="text-semantic-down">*</span>
               </label>
               <input
@@ -173,13 +173,13 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
                 value={journey.name}
                 onChange={handleChange}
                 placeholder="e.g., Generic App Journey"
-                className="w-full px-4 py-3 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-ink"
+                className="w-full px-4 py-3 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-foreground"
                 required
               />
             </div>
             
             <div>
-              <label htmlFor="journey_key" className="block text-sm font-semibold text-ink mb-2">
+              <label htmlFor="journey_key" className="block text-sm font-semibold text-foreground mb-2">
                 Journey Key <span className="text-semantic-down">*</span>
               </label>
               <input
@@ -190,13 +190,13 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
                 onChange={handleChange}
                 placeholder="e.g., example_journey"
                 disabled={isEditMode}
-                className={`w-full px-4 py-3 border border-hairline rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm transition-all ${isEditMode ? 'bg-surface-strong cursor-not-allowed text-muted' : 'bg-surface-soft focus:bg-canvas text-ink'}`}
+                className={`w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm transition-all ${isEditMode ? 'bg-secondary cursor-not-allowed text-muted-foreground' : 'bg-muted focus:bg-background text-foreground'}`}
                 required
               />
             </div>
             
             <div className="">
-              <label htmlFor="package" className="block text-sm font-semibold text-ink mb-2">
+              <label htmlFor="package" className="block text-sm font-semibold text-foreground mb-2">
                 Package Name <span className="text-semantic-down">*</span>
               </label>
               <div className="flex gap-2">
@@ -207,14 +207,14 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
                   value={journey.package}
                   onChange={handleChange}
                   placeholder="e.g., com.whatsapp"
-                  className="flex-1 px-4 py-3 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm transition-all text-ink"
+                  className="flex-1 px-4 py-3 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm transition-all text-foreground"
                   required
                   autoComplete="off"
                 />
                 <button
                   type="button"
                   onClick={() => setIsPackageModalOpen(true)}
-                  className="px-5 py-3 bg-surface-strong hover:bg-hairline-soft text-ink rounded-xl transition-colors flex items-center gap-2 text-sm font-semibold border border-hairline"
+                  className="px-5 py-3 bg-secondary hover:bg-hairline-soft text-foreground rounded-xl transition-colors flex items-center gap-2 text-sm font-semibold border border-border"
                   title="Browse Packages"
                 >
                   <Search size={16} />
@@ -224,7 +224,7 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
             </div>
             
             <div>
-              <label htmlFor="platform" className="block text-sm font-semibold text-ink mb-2">
+              <label htmlFor="platform" className="block text-sm font-semibold text-foreground mb-2">
                 Platform
               </label>
               <select
@@ -232,7 +232,7 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
                 name="platform"
                 value={journey.platform}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-hairline bg-surface-soft rounded-xl focus:bg-canvas focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-ink appearance-none"
+                className="w-full px-4 py-3 border border-border bg-muted rounded-xl focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-foreground appearance-none"
               >
                 <option value="android">Android</option>
                 <option value="ios">iOS</option>
@@ -245,11 +245,11 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
       {/* Steps/Details Builder */}
       <div>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-normal tracking-tight text-ink">Journey Details ({journey.details.length})</h2>
+          <h2 className="text-2xl font-normal tracking-tight text-foreground">Journey Details ({journey.details.length})</h2>
           <button
             type="button"
             onClick={handleAddStep}
-            className="inline-flex items-center gap-2 px-5 py-3 bg-surface-strong hover:bg-hairline-soft text-ink rounded-full text-sm font-semibold transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-secondary hover:bg-hairline-soft text-foreground rounded-full text-sm font-semibold transition-colors"
           >
             <Plus size={16} />
             Add Journey Detail
@@ -257,12 +257,12 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
         </div>
 
         {journey.details.length === 0 ? (
-          <div className="bg-canvas border border-hairline rounded-3xl p-16 text-center flex flex-col items-center shadow-sm">
-            <div className="h-20 w-20 bg-surface-strong rounded-full flex items-center justify-center text-muted mb-6">
+          <div className="bg-background border border-border rounded-3xl p-16 text-center flex flex-col items-center shadow-sm">
+            <div className="h-20 w-20 bg-secondary rounded-full flex items-center justify-center text-muted-foreground mb-6">
               <AlertCircle size={32} />
             </div>
-            <h3 className="text-2xl font-normal tracking-tight text-ink mb-3">No Journey Details Added</h3>
-            <p className="text-body max-w-md mb-8">
+            <h3 className="text-2xl font-normal tracking-tight text-foreground mb-3">No Journey Details Added</h3>
+            <p className="text-muted-foreground max-w-md mb-8">
               A journey consists of multiple sub journeys, each containing one or more automation tasks. Add your first step to start building.
             </p>
             <button
@@ -294,11 +294,11 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
       </div>
 
       {/* Form Actions */}
-      <div className="flex items-center justify-between pt-8 border-t border-hairline mt-12">
+      <div className="flex items-center justify-between pt-8 border-t border-border mt-12">
         <button
           type="button"
           onClick={() => setIsPreviewOpen(true)}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-canvas border border-hairline hover:bg-surface-soft text-ink rounded-full font-semibold transition-all"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-background border border-border hover:bg-muted text-foreground rounded-full font-semibold transition-all"
         >
           <Code size={18} />
           Preview JSON
@@ -308,7 +308,7 @@ const JourneyForm = ({ initialData, onSubmit, onCancel, isEditMode = false }) =>
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 text-ink hover:bg-surface-strong rounded-full font-semibold transition-colors"
+            className="px-6 py-3 text-foreground hover:bg-secondary rounded-full font-semibold transition-colors"
           >
             Cancel
           </button>
