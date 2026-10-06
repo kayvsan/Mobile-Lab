@@ -117,10 +117,35 @@ Respond ONLY with the exact XPath string to click to close this popup. If there 
 """
     return _call_llm(prompt, response_format="text", max_retries=max_retries, prefix_log="[AI-Popup]")
 
-def get_healed_xpath(xml_dump: str, expected_props: dict, app_package: str, max_retries: int = 3) -> Optional[Dict[str, Any]]:
+def get_healed_xpath(xml_dump: str, expected_props: dict, app_package: str, max_retries: int = 3, is_fuzzy: bool = False, element_name: str = "") -> Optional[Dict[str, Any]]:
     """Phase 2c: Suggest replacement xpath for stale element"""
     minified_xml = minify_xml(xml_dump)
-    prompt = f"""
+    
+    if is_fuzzy:
+        intent_name = element_name if element_name else expected_props.get('name_or_description', 'unknown')
+        prompt = f"""
+I am automating an Android app ('{app_package}'). The target element could not be found.
+
+We are looking for an element related to this name/intent: "{intent_name}"
+Previous expected properties were:
+```json
+{json.dumps(expected_props, indent=2)}
+```
+
+For this attempt, be flexible. Find an element that is SEMANTICALLY similar or related to the intent of the element name, even if the exact naming, text, or class is different (e.g., synonyms, different phrasing, or an updated UI component serving the same purpose).
+
+Here is the CURRENT UI XML dump:
+```xml
+{minified_xml}
+```
+
+Respond with a JSON object containing:
+- 'new_xpath': The new robust XPath to find the element.
+- 'confidence': A number from 0.0 to 1.0 indicating your confidence.
+- 'reason': A brief explanation of why this related element matches the original intent.
+"""
+    else:
+        prompt = f"""
 I am automating an Android app ('{app_package}'). The target element could not be found, likely due to an app update changing the UI hierarchy or resource IDs.
 
 Here are the expected properties of the element from a past successful run:

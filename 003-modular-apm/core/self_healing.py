@@ -259,8 +259,8 @@ class SelfHealingEngine:
     def _heal_stale_xpath(self, task: Dict[str, Any], main_xpath: str) -> Optional[str]:
         """Phase 2c: Ask AI to find replacement xpath"""
         expected = task.get("extra", {}).get("expected", {})
+        element_name = task.get("element_name")
         if not expected:
-            element_name = task.get("element_name")
             if element_name:
                 logger.info(f"[HEAL-XPATH-AI] No 'expected' data found, falling back to element_name: '{element_name}'")
                 expected = {"name_or_description": element_name}
@@ -270,32 +270,47 @@ class SelfHealingEngine:
             
         from core.ai_helper import get_healed_xpath
         
-        logger.info("[HEAL-XPATH-AI] Asking LLM for replacement xpath...")
         xml_dump = self.device.dump_hierarchy()
         app_package = self.device.get_current_package()
-        
         max_retries = self.config.get("max_ai_retries", 3)
-        result = get_healed_xpath(xml_dump, expected, app_package, max_retries)
         
-        if not result or not result.get("new_xpath"):
-            logger.info("[HEAL-XPATH-AI] AI failed to suggest a replacement xpath.")
-            return None
-            
-        new_xpath = result["new_xpath"]
-        confidence = float(result.get("confidence", 0.0))
-        reason = result.get("reason", "")
+        # We will do up to 2 logical attempts. Attempt 1 is strict, Attempt 2 is fuzzy (semantic search based on element_name).
+        max_logical_attempts = 2
         
-        threshold = self.config.get("ai_confidence_threshold", 0.85)
-        logger.info(f"[HEAL-XPATH-AI] AI suggested: {new_xpath} (Confidence: {confidence}) - {reason}")
-        
-        if confidence < threshold:
-            logger.warning(f"[HEAL-XPATH-AI] Confidence {confidence} below threshold {threshold}. Rejecting.")
-            return None
+        for attempt in range(max_logical_attempts):
+            is_fuzzy = (attempt > 0)
             
-        if self.device.find_element('xpath', new_xpath, timeout=3):
-            return new_xpath
+            if is_fuzzy:
+                logger.info(f"[HEAL-XPATH-AI] Logical attempt {attempt+1}: Retrying with fuzzy/semantic search using element_name...")
+            else:
+                logger.info(f"[HEAL-XPATH-AI] Logical attempt {attempt+1}: Asking LLM for replacement xpath...")
+                
+            result = get_healed_xpath(xml_dump, expected, app_package, max_retries, is_fuzzy=is_fuzzy, element_name=element_name or "")
             
-        logger.info("[HEAL-XPATH-AI] AI suggested xpath not found on screen.")
+            if not result or not result.get("new_xpath"):
+                logger.info(f"[HEAL-XPATH-AI] AI failed to suggest a replacement xpath on attempt {attempt+1}.")
+                continue
+                
+            new_xpath = result["new_xpath"]
+            confidence = float(result.get("confidence", 0.0))
+            reason = result.get("reason", "")
+            
+            threshold = self.config.get("ai_confidence_threshold", 0.85)
+            # Lower the confidence threshold slightly for fuzzy matching since AI might be less certain
+            if is_fuzzy:
+                threshold = max(0.6, threshold - 0.15)
+                
+            logger.info(f"[HEAL-XPATH-AI] AI suggested: {new_xpath} (Confidence: {confidence}) - {reason}")
+            
+            if confidence < threshold:
+                logger.warning(f"[HEAL-XPATH-AI] Confidence {confidence} below threshold {threshold}. Rejecting.")
+                continue
+                
+            if self.device.find_element('xpath', new_xpath, timeout=3):
+                return new_xpath
+                
+            logger.info("[HEAL-XPATH-AI] AI suggested xpath not found on screen.")
+            
         return None
 
     def _persist_healed_xpath(self, task: Dict[str, Any], old_xpath: str, new_xpath: str):
