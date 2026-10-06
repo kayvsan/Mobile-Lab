@@ -260,8 +260,13 @@ class SelfHealingEngine:
         """Phase 2c: Ask AI to find replacement xpath"""
         expected = task.get("extra", {}).get("expected", {})
         if not expected:
-            logger.warning("[HEAL-XPATH-AI] No fingerprint ('expected' data) available for AI healing.")
-            return None
+            element_name = task.get("element_name")
+            if element_name:
+                logger.info(f"[HEAL-XPATH-AI] No 'expected' data found, falling back to element_name: '{element_name}'")
+                expected = {"name_or_description": element_name}
+            else:
+                logger.warning("[HEAL-XPATH-AI] No fingerprint ('expected' data) or 'element_name' available for AI healing.")
+                return None
             
         from core.ai_helper import get_healed_xpath
         

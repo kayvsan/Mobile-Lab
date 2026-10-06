@@ -290,16 +290,29 @@ class JourneyExecutor:
             
             journey_result['end_time'] = datetime.now().isoformat()
             
-            # Push healing updates back to backend (if loaded from API)
-            if api_url:
-                has_healing = any(
-                    "expected" in getattr(t, "extra", {}) or 
-                    "learned_xpaths" in getattr(t, "extra", {}) or 
-                    "xpath_history" in getattr(t, "extra", {})
-                    for d in journey.details for t in d.tasks
-                )
-                if has_healing:
-                    self._push_healing_to_backend(api_url, api_key, journey)
+            has_healing = any(
+                "expected" in getattr(t, "extra", {}) or 
+                "learned_xpaths" in getattr(t, "extra", {}) or 
+                "xpath_history" in getattr(t, "extra", {})
+                for d in journey.details for t in d.tasks
+            )
+            if has_healing:
+                    if api_url:
+                        self._push_healing_to_backend(api_url, api_key, journey)
+                    elif journey_filename:
+                        try:
+                            journey_path = self.config_dir / "journeys" / journey_filename
+                            import json
+                            with open(journey_path, 'r', encoding='utf-8') as f:
+                                original_data = json.load(f)
+                            
+                            original_data['journey'] = journey.to_dict()
+                            
+                            with open(journey_path, 'w', encoding='utf-8') as f:
+                                json.dump(original_data, f, indent=4)
+                            logger.info(f"Self-healing updates saved locally to {journey_filename}")
+                        except Exception as e:
+                            logger.error(f"Failed to save local healing updates: {e}")
             
             # Post-run metrics
             total_rt = 0.0

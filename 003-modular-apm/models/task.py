@@ -81,7 +81,19 @@ class Task:
         }
         
         task_data = {k: v for k, v in data.items() if k in known_fields}
-        extra_data = {k: v for k, v in data.items() if k not in known_fields}
+        
+        extra_data = data.get('extra', {})
+        if not isinstance(extra_data, dict):
+            extra_data = {}
+            
+        # FIX: Flatten nested 'extra' objects to prevent recursive nesting
+        while 'extra' in extra_data and isinstance(extra_data['extra'], dict):
+            inner_extra = extra_data.pop('extra')
+            extra_data.update(inner_extra)
+            
+        for k, v in data.items():
+            if k not in known_fields and k != 'extra':
+                extra_data[k] = v
         
         # Type conversion for x/y
         if 'x' in task_data and task_data['x'] is not None:

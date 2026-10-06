@@ -39,6 +39,23 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
     });
   };
 
+  const handleRemoveLearnedXPath = (type, index) => {
+    if (!task.extra) return;
+    
+    const arrayName = type === 'healed' ? 'learned_healed_xpaths' : 'learned_xpaths';
+    const updatedExtra = { ...task.extra };
+    
+    if (updatedExtra[arrayName]) {
+      updatedExtra[arrayName] = [...updatedExtra[arrayName]];
+      updatedExtra[arrayName].splice(index, 1);
+      
+      onUpdate({
+        ...task,
+        extra: updatedExtra
+      });
+    }
+  };
+
   if (!typeSchema) {
     return <div className="p-4 bg-red-50 text-red-600 rounded-lg border border-red-200">Unknown task type: {task.type}</div>;
   }
@@ -163,6 +180,64 @@ const TaskCard = ({ task, onUpdate, onDelete, onMoveUp, onMoveDown, isFirst, isL
                 />
               ))}
             </div>
+
+            {/* Display Auto-Healed Locators */}
+            {(task.extra?.learned_healed_xpaths?.length > 0 || task.extra?.learned_xpaths?.length > 0) && (
+              <div className="mt-6 pt-5 border-t border-hairline-soft">
+                <h4 className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                  <RefreshCw size={12} className="animate-spin-slow" style={{ animationDuration: '3s' }} /> 
+                  AI Learned Locators
+                </h4>
+                <div className="flex flex-col gap-2">
+                  {task.extra?.learned_healed_xpaths?.map((xpath, idx) => (
+                    <div key={`healed-${idx}`} className="bg-amber-50 text-amber-900 border border-amber-200 text-[11px] font-mono p-2.5 rounded-xl flex items-center justify-between group">
+                      <span className="truncate mr-3 opacity-80" title={xpath}>{xpath}</span>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button 
+                          type="button"
+                          onClick={() => handleFieldChange('content', xpath)} 
+                          className="text-[10px] bg-amber-100 group-hover:bg-amber-200 text-amber-800 px-2.5 py-1 rounded-lg font-bold uppercase transition-colors"
+                          title="Set as main locator"
+                        >
+                          Use
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => handleRemoveLearnedXPath('healed', idx)} 
+                          className="text-amber-400 hover:text-amber-600 hover:bg-amber-100 p-1 rounded-lg transition-colors"
+                          title="Remove this locator"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {task.extra?.learned_xpaths?.map((xpath, idx) => (
+                    <div key={`learned-${idx}`} className="bg-indigo-50 text-indigo-900 border border-indigo-200 text-[11px] font-mono p-2.5 rounded-xl flex items-center justify-between group">
+                      <span className="truncate mr-3 opacity-80" title={xpath}>{xpath} (Popup)</span>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button 
+                          type="button"
+                          onClick={() => handleFieldChange('content', xpath)} 
+                          className="text-[10px] bg-indigo-100 group-hover:bg-indigo-200 text-indigo-800 px-2.5 py-1 rounded-lg font-bold uppercase transition-colors"
+                          title="Set as main locator"
+                        >
+                          Use
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => handleRemoveLearnedXPath('popup', idx)} 
+                          className="text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 p-1 rounded-lg transition-colors"
+                          title="Remove this locator"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
