@@ -33,7 +33,7 @@ def generate_inspect_url(udid, host=None, port=None):
     """
     host = host or Config.INSPECT_HOST
     port = port or Config.INSPECT_PORT
-    return f"http://{host}:{port}/android/{udid}"
+    return f"http://{host}:{port}"
 
 def get_device_properties(udid):
     """
