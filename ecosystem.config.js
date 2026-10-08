@@ -6,7 +6,7 @@ module.exports = {
       name: 'apm-backend',
       cwd: `${home}/004-backend`,
       script: 'venv/bin/gunicorn',
-      args: '--bind 127.0.0.1:5000 --workers 4 --threads 2 --timeout 600 --keep-alive 5 "app:create_app()"',
+      args: '--bind 0.0.0.0:5000 --workers 4 --threads 2 --timeout 600 --keep-alive 5 "app:create_app()"',
       interpreter: 'none',
       env: {
         DATABASE_URL: 'postgresql://apm_user:admin@127.0.0.1:5433/apm_db',
