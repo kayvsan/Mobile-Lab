@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIAutoDEV - Alat Debug</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>UIAutoDEV - Alat Debug</h1>
+        <div class="device-selector">
+            <label for="deviceSelect">Pilih Perangkat:</label>
+            <select id="deviceSelect">
+                <option value="">Pilih perangkat...</option>
+            </select>
+            <button id="refreshBtn" class="refresh-btn">Muat Ulang</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Panel Kiri: Tangkapan Layar -->
+        <div class="screenshot-panel">
+            <div class="panel-header">
+                <div class="header-top">
+                    <h3>Perangkat</h3>
+                    <div class="panel-actions">
+                        <button id="viewElementsBtn" class="action-btn active view-elements" title="Lihat Elemen Halaman">
+                            <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+                        </button>
+                        <button id="deviceControlBtn" class="action-btn device-control" title="Kontrol Perangkat Langsung">
+                            <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="screenshot-container">
+                <img id="deviceScreenshot" src="" alt="Tangkapan Layar" />
+                <video id="deviceVideoStream" autoplay muted playsinline style="display: none;"></video>
+                <div id="screenshotOverlay"></div>
+                <div id="hoverHighlight" class="hover-highlight"></div>
+                
+                <!-- Tombol Kontrol Perangkat -->
+                <div id="deviceControlButtons" class="device-control-buttons" style="display: none;">
+                    <button id="deviceHomeBtn" class="device-btn" title="Beranda">
+                        <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                    </button>
+                    <button id="deviceBackBtn" class="device-btn" title="Kembali">
+                        <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                    </button>
+                    <button id="deviceAppSwitchBtn" class="device-btn" title="Beralih Aplikasi">
+                        <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span>
+                    </button>
+                    <button id="deviceVolumeUpBtn" class="device-btn" title="Volume Naik">
+                        <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span>
+                    </button>
+                    <button id="deviceVolumeDownBtn" class="device-btn" title="Volume Turun">
+                        <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Tengah: Hierarki Elemen -->
+        <div class="hierarchy-panel">
+            <div class="panel-header">
+                <h3>Hierarki Elemen</h3>
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari elemen (class, id, teks)...">
+                </div>
+            </div>
+            <div class="hierarchy-container">
+                <div id="hierarchyTree"></div>
+            </div>
+        </div>
+
+        <!-- Panel Kanan: Detail Elemen -->
+        <div class="details-panel">
+            <div class="panel-header">
+                <h3>Detail Elemen</h3>
+            </div>
+            <div class="details-container">
+                <div id="elementDetails">
+                    <p class="no-selection">Pilih elemen untuk melihat detailnya</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <span id="statusText">Siap</span>
+        <span id="connectionStatus" class="status-disconnected">Terputus</span>
+        <span id="videoStatus" class="video-status">Streaming Video Terputus</span>
+    </div>
+
+    <!-- Overlay Pemuatan -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Memuat data perangkat...</div>
+        </div>
+    </div>
+
+    <script src="/static/video.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
