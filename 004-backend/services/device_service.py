@@ -15,7 +15,7 @@ def generate_scrcpy_url(udid, player='mse', host='127.0.0.1', port=None):
     """
     host = host or Config.SCRCPY_HOST
     port = port or Config.SCRCPY_PORT
-    base = f"http://{host}:{port}"
+    base = f"https://scrcpy.realdataid.dev/"
     
     # Build WebSocket URL (encoded for query param)
     ws_params = f"action=proxy-adb&remote=tcp%3A8886&udid={udid}"
