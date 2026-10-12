@@ -31,7 +31,7 @@ HEALING_CONFIG = {
     "healing_log_path": "logs/healing_log.jsonl",
 
     # AI / LLM
-    "ai_api_url": "https://ai.sumopod.com/v1",
-    "ai_api_key": "sk-WxcE6DJ3bxYi2NPIt8JlLg",
-    "ai_model": "deepseek-v4-flash",
+    "ai_api_url": "https://9router.drcod.my.id/v1",
+    "ai_api_key": "sk-d251d4c35d9c02c6-twxwif-54db472d",
+    "ai_model": "cb",
 }

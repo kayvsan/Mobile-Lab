@@ -60,7 +60,7 @@ def _call_llm(prompt: str, response_format: str = "text", max_retries: int = 3, 
         logger.error(f"{prefix_log} API_KEY is not set in HEALING_CONFIG.")
         return None
 
-    url = f"{HEALING_CONFIG.get('ai_api_url', 'https://ai.sumopod.com/v1').rstrip('/')}/chat/completions"
+    url = f"{HEALING_CONFIG.get('ai_api_url', 'https://9router.drcod.my.id/v1').rstrip('/')}/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
@@ -71,7 +71,7 @@ def _call_llm(prompt: str, response_format: str = "text", max_retries: int = 3, 
             logger.info(f"{prefix_log} Prompt size: {len(prompt)} chars. Sending (Attempt {api_attempt+1}/{max_retries})...")
             
             payload = {
-                "model": HEALING_CONFIG.get("ai_model", "deepseek-v4-flash"),
+                "model": HEALING_CONFIG.get("ai_model", "cb"),
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 2048,
                 "temperature": 0.2
