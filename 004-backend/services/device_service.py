@@ -9,20 +9,22 @@ from urllib.parse import quote
 from models import db, Device
 from config import Config
 
-def generate_scrcpy_url(udid, player='mse', host='scrcpy.realdataid.dev', port=None):
+def generate_scrcpy_url(udid, player='mse', host=None, port=None):
     """
     Generate streaming URL for ws-scrcpy
     """
-    host = host or Config.SCRCPY_HOST
-    port = port or Config.SCRCPY_PORT
-    base = f"https://scrcpy.realdataid.dev/"
+    host = host or getattr(Config, 'SCRCPY_HOST', 'scrcpy.realdataid.dev')
+    port = port if port is not None else getattr(Config, 'SCRCPY_PORT', None)
     
-    # Build WebSocket URL (encoded for query param)
+    # Jangan tambahkan port jika standar/kosong atau 80/443
+    port_str = f":{port}" if port and str(port) not in ('', '80', '443') else ""
+    
+    base = f"https://{host}{port_str}"
+    
+    # Build WebSocket URL (menggunakan wss:// untuk HTTPS)
     ws_params = f"action=proxy-adb&remote=tcp%3A8886&udid={udid}"
-    ws_url = f"https://{host}:{port}/?{ws_params}"
+    ws_url = f"wss://{host}{port_str}/?{ws_params}"
     ws_encoded = quote(ws_url, safe='')
-    
-    # Format output: http://HOST:PORT/#!action=stream&udid=UDID&player=mse&ws=ENCODED_WS_URL
     
     # Build final URL with hash fragment
     return f"{base}/#!action=stream&udid={udid}&player={player}&ws={ws_encoded}"

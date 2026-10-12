@@ -35,8 +35,8 @@ class Config:
     RECORDINGS_DIR = os.path.join(BASE_DIR, "uploads", "recordings")
 
     # Scrcpy settings
-    SCRCPY_HOST = os.environ.get('SCRCPY_HOST', 'localhost')
-    SCRCPY_PORT = os.environ.get('SCRCPY_PORT', '8000')
+    SCRCPY_HOST = os.environ.get('SCRCPY_HOST', 'scrcpy.realdataid.dev')
+    SCRCPY_PORT = os.environ.get('SCRCPY_PORT', '')
     INSPECT_HOST = os.environ.get('INSPECT_HOST', 'localhost')
     INSPECT_PORT = os.environ.get('INSPECT_PORT', '20242')
 
